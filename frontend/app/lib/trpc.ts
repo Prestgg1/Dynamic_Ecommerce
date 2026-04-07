@@ -3,7 +3,7 @@ import createClient from "openapi-react-query";
 import type { paths } from "./types";
 
 const fetchClient = createFetchClient<paths>({
-  baseUrl: process.env.API_BASE_URL,
+  baseUrl: import.meta.env.VITE_API_BASE_URL,
   credentials: "include",
 });
 

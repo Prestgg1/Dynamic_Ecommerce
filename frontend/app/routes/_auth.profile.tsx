@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import type { Route } from "./+types/_auth.profile";
 import { userContext } from "~/root";
 import { trpc } from "~/lib/trpc";
+import { useAuth } from "~/context/AuthContext";
 
 const BACKEND_URL = "http://localhost:4000";
 
@@ -15,15 +16,9 @@ function resolveAvatar(avatarUrl: string | undefined, name: string) {
     ? avatarUrl
     : `${BACKEND_URL}${avatarUrl}`;
 }
-export async function loader({
-  context,
-}: Route.LoaderArgs) {
-  const user = context.get(userContext);
-  return user;
-}
 
-export default function ProfilePage({loaderData}: Route.ComponentProps) {
-    const user = loaderData;
+export default function ProfilePage() {
+  const {user, refreshUser} = useAuth()
   const navigate = useNavigate();
   const { mutate: update } = trpc.useQuery("patch",'/auth/profile');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,6 +55,7 @@ export default function ProfilePage({loaderData}: Route.ComponentProps) {
       }
 
       const res = await update(form);
+
 
       if (!res.ok) {
         const err = (await res.json()) as { message?: string };

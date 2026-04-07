@@ -23,7 +23,8 @@ import { AuthorizedError } from "./routes/home";
 import { createContext } from "react-router";
 import type { User } from "./lib/trpc";
 import { AuthProvider } from "./context/AuthContext";
-import { globalMiddleware } from "./middleware/global";
+import { useEffect } from "react";
+import { useAuthStore } from "./store/auth.store";
 export const userContext = createContext<User | null>(null);
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -41,18 +42,30 @@ export const links: Route.LinksFunction = () => [
 const queryClient = new QueryClient({
   
 })
-export const middleware = [globalMiddleware]
 
 export async function loader({
+  request,
   context,
 }: Route.LoaderArgs) {
-  const user = context.get(userContext);
-  return user;
+
+ const cookie = request.headers.get("Cookie") ?? "";
+const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
+      headers: { Cookie: cookie },
+    });
+    if(res.ok){
+      const user = await res.json();
+      return user;
+    }
+    return null;
 }
  
 
 export function Layout({children}: React.PropsWithChildren) {
   const user = useLoaderData<typeof loader>()
+    const setUser = useAuthStore((s) => s.setUser);
+  useEffect(() => {
+        setUser(user ?? null);
+  }, [user])
 
   return (
     <html lang="en">
@@ -65,12 +78,10 @@ export function Layout({children}: React.PropsWithChildren) {
       <body>
         <QueryClientProvider client={queryClient}>
         <LanguageProvider>
-          <AuthProvider initialUser={user}>
             <Header />
               {children}
               <Footer />
               <Toaster position="top-right" />
-              </AuthProvider>
               </LanguageProvider>
               </QueryClientProvider>
         <ScrollRestoration />

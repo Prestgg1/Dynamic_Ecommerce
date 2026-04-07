@@ -4,6 +4,7 @@ import { useAuth } from "~/context/AuthContext";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
 import { userContext } from "~/root";
+import { useAuthStore } from "~/store/auth.store";
 
 type CategoryName = "tools" | "hardware" | "pipes" | "fasteners" | "electrical" | "welding" | "safety";
 
@@ -20,7 +21,8 @@ const categories: { id: CategoryName | "all"; labelKey: string }[] = [
 
 export default function Header() {
   const navigate = useNavigate();
-  const {user,isAuthenticated} = useAuth();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
   const { language, setLanguage, t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<CategoryName | "all">("all");
@@ -190,7 +192,7 @@ export default function Header() {
 
             {/* Profile */}
             <div ref={profileRef} className="relative">
-              {isAuthenticated && user ? (
+              {user ? (
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-white/5 border border-white/10 hover:border-orange-500/50 transition-all duration-300"
@@ -223,7 +225,7 @@ export default function Header() {
                 </Link>
               )}
 
-              {profileDropdownOpen && isAuthenticated && (
+              {profileDropdownOpen && user && (
                 <div className="absolute right-0 top-full mt-3 bg-gray-800 border border-white/10 rounded-2xl shadow-2xl z-50 w-64 overflow-hidden backdrop-blur-xl">
                   <div className="p-5 border-b border-white/10 bg-gradient-to-br from-white/5 to-transparent">
                     <p className="text-sm font-black text-white">{user?.fullName}</p>
@@ -304,7 +306,7 @@ export default function Header() {
           <Link to="/about" className="text-sm font-bold text-gray-400 hover:text-orange-500 transition-all">HAQQIMIZDA</Link>
           <Link to="/services" className="text-sm font-bold text-gray-400 hover:text-orange-500 transition-all">XİDMƏTLƏR</Link>
           <Link to="/contact" className="text-sm font-bold text-gray-400 hover:text-orange-500 transition-all">ƏLAQƏ</Link>
-          {!isAuthenticated && (
+          {!user && (
             <Link to="/auth/register" className="ml-auto bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl font-black text-xs tracking-tight transition-all active:scale-95 shadow-lg shadow-orange-500/20">
               QEYDİYYAT
             </Link>
@@ -324,7 +326,7 @@ export default function Header() {
           </button>
         </div>
 
-        {isAuthenticated && user && (
+        {user && user && (
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 mb-6 border border-white/5">
             <img src={user.avatarUrl ? (user.avatarUrl.startsWith('http') ? user.avatarUrl : `http://localhost:4000${user.avatarUrl}`) : `https://ui-avatars.com/api/?background=f97316&color=fff&name=${encodeURIComponent(user.fullName)}`} className="w-12 h-12 rounded-full border-2 border-orange-500 object-cover" alt="" />
             <div>
@@ -342,7 +344,7 @@ export default function Header() {
             { to: "/profile", label: "HESABIM", auth: true },
             { to: "/auth/login", label: "DAXİL OL", guest: true },
           ].map((link, i) => (
-            ((!link.auth && !link.guest) || (link.auth && isAuthenticated) || (link.guest && !isAuthenticated)) && (
+            ((!link.auth && !link.guest) || (link.auth && user) || (link.guest && !user)) && (
               <Link
                 key={i}
                 to={link.to}
@@ -353,7 +355,7 @@ export default function Header() {
               </Link>
             )
           ))}
-          {isAuthenticated && (
+          {user && (
             <button
               onClick={() => {logout(); setMobileMenuOpen(false);}}
               className="px-5 py-4 rounded-2xl text-base font-extrabold text-red-500 hover:bg-red-500/10 transition-all text-left"

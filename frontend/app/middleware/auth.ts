@@ -8,7 +8,7 @@ export const authMiddleware: MiddlewareFunction = async (
   const cookie = request.headers.get("Cookie") ?? "";
 
   try {
-    const res = await fetch(`${process.env.API_BASE_URL}/auth/me`, {
+    const res = await fetch(`${process.env.VITE_API_BASE_URL}/auth/me`, {
       headers: { Cookie: cookie },
     });
 

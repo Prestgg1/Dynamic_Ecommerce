@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import { useAuth } from "~/context/AuthContext";
 import { useWishlistStore } from "~/store/useWishlistStore";
 import { trpc } from "~/lib/trpc";
 import { useDebounce } from "~/hooks/useDebounce";
+import { useAuthStore } from "~/store/auth.store";
 
 export function useWishlist(productId: number) {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const user = useAuthStore((s) => s.user);
 
   const isInWishlist = useWishlistStore((s) => s.isInWishlist(productId));
   const optimisticAdd = useWishlistStore((s) => s.optimisticAdd);
@@ -33,7 +33,6 @@ export function useWishlist(productId: number) {
         { id: "wishlist-toast" },
       );
     } catch {
-      // API uğursuz olduqda optimistic dəyişikliyi geri al (rollback)
       if (adding) {
         optimisticRemove(id);
       } else {
@@ -46,7 +45,7 @@ export function useWishlist(productId: number) {
   }, 500);
 
   const toggle = () => {
-    if (!isAuthenticated) {
+    if (!user) {
       toast.error("Əvvəlcə daxil olmalısınız.");
       navigate("/auth/login");
       return;

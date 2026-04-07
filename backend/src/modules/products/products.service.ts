@@ -2,21 +2,46 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { Product } from './entities/product.entity';
+import { ProductResponseDto } from './dtos/product-responce.dto';
+import { plainToInstance } from 'class-transformer';
+import { Wishlist } from '../wishlist/entities/wishlist.entity';
+
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-  ) {}
 
-  async findAll(query?: {
-    categoryId?: string;
-    q?: string;
-  }): Promise<Product[]> {
+    @InjectRepository(Wishlist)
+    private readonly wishlistRepository: Repository<Wishlist>,
+  ) { }
+
+  private async getFavoriteProductIds(userId?: number): Promise<Set<number>> {
+    if (!userId) return new Set();
+
+    const items = await this.wishlistRepository.find({
+      where: { userId },
+      select: ['productId'],
+    });
+
+    return new Set(items.map((w) => w.productId));
+  }
+
+  private toDto(products: Product[], favoriteIds: Set<number>): ProductResponseDto[] {
+    return products.map((p) =>
+      plainToInstance(
+        ProductResponseDto,
+        { ...p, is_favorite: favoriteIds.has(p.id) },
+        { excludeExtraneousValues: true },
+      ),
+    );
+  }
+
+  async findAll(query?: { categoryId?: string; q?: string }, userId?: number): Promise<ProductResponseDto[]> {
     const where: FindOptionsWhere<Product>[] = [];
-
     const baseWhere: FindOptionsWhere<Product> = {};
+
     if (query?.categoryId && query.categoryId !== 'all') {
       baseWhere.categoryId = query.categoryId;
     }
@@ -32,29 +57,40 @@ export class ProductsService {
       where.push(baseWhere);
     }
 
-    return this.productsRepository.find({
-      where,
-      relations: ['category'],
-    });
+    const [products, favoriteIds] = await Promise.all([
+      this.productsRepository.find({ where, relations: ['category'] }),
+      this.getFavoriteProductIds(userId),
+    ]);
+
+    return this.toDto(products, favoriteIds);
   }
 
-  async findOne(id: number): Promise<Product | null> {
-    return this.productsRepository.findOne({
-      where: { id },
-      relations: ['category'],
-    });
+  async findOne(id: number, userId?: number): Promise<ProductResponseDto | null> {
+    const [product, favoriteIds] = await Promise.all([
+      this.productsRepository.findOne({ where: { id }, relations: ['category'] }),
+      this.getFavoriteProductIds(userId),
+    ]);
+
+    if (!product) return null;
+
+    return this.toDto([product], favoriteIds)[0];
+  }
+
+  async findFeatured(userId?: number): Promise<ProductResponseDto[]> {
+    const [products, favoriteIds] = await Promise.all([
+      this.productsRepository.find({
+        where: [{ isBestSeller: true }, { isNew: true }],
+        take: 8,
+        relations: ['category'],
+      }),
+      this.getFavoriteProductIds(userId),
+    ]);
+
+    return this.toDto(products, favoriteIds);
   }
 
   async create(product: Partial<Product>): Promise<Product> {
     const newProduct = this.productsRepository.create(product);
     return this.productsRepository.save(newProduct);
-  }
-
-  async findFeatured(): Promise<Product[]> {
-    return this.productsRepository.find({
-      where: [{ isBestSeller: true }, { isNew: true }],
-      take: 8,
-      relations: ['category'],
-    });
   }
 }
