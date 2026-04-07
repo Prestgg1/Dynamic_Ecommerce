@@ -1,0 +1,40 @@
+{
+  "name": "ironstorefrontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc",
+    "openapi": "openapi-typescript http://localhost:4000/docs-json -o ./app/lib/types.ts"
+  },
+  "dependencies": {
+    "@react-router/fs-routes": "^7.14.0",
+    "@react-router/node": "7.14.0",
+    "@react-router/serve": "7.14.0",
+    "@trpc/client": "^11.16.0",
+    "@trpc/server": "^11.16.0",
+    "formik": "^2.4.9",
+    "isbot": "^5.1.36",
+    "openapi-react-query": "^0.5.4",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hot-toast": "^2.6.0",
+    "react-router": "7.14.0",
+    "zod": "^4.3.6",
+    "zod-formik-adapter": "^2.0.0",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@react-router/dev": "7.14.0",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/node": "^22",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "openapi-typescript": "^7.13.0",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3"
+  }
+}
