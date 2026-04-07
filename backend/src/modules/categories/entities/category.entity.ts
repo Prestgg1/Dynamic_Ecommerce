@@ -1,0 +1,20 @@
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import type { Product } from '../../products/entities/product.entity';
+
+@Entity('categories')
+export class Category {
+  @PrimaryColumn()
+  id: string;
+
+  @Column()
+  labelAz: string;
+
+  @Column()
+  labelRu: string;
+
+  @Column()
+  labelEn: string;
+
+  @OneToMany('Product', 'category')
+  products: Product[];
+}
