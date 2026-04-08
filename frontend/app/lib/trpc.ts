@@ -2,13 +2,13 @@ import createFetchClient from "openapi-fetch";
 import createClient from "openapi-react-query";
 import type { paths } from "./types";
 
-const API_BASE_URL = "https://9bd8-62-212-236-132.ngrok-free.app";
+const API_BASE_URL = "https://8e5d-62-212-236-132.ngrok-free.app";
 
 const fetchClient = createFetchClient<paths>({
-  baseUrl: import.meta.env.VITE_API_BASE_URL,
+  baseUrl: API_BASE_URL,
   credentials: "include",
 });
-
+// import.meta.env.VITE_API_BASE_URL,
 export const trpc = createClient(fetchClient);
 
 
