@@ -243,7 +243,8 @@ export interface components {
             fullName: string;
             email: string;
             password: string;
-            role: string;
+            /** @enum {string} */
+            role: "ADMIN" | "CUSTOMER";
             avatarUrl: string;
             /** Format: date-time */
             createdAt: string;
