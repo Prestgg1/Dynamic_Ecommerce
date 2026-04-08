@@ -7,4 +7,7 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+  server : {
+    allowedHosts : ['semiprotective-ruthanne-trendily.ngrok-free.dev']
+  }
 });
