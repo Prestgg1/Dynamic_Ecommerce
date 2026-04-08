@@ -5,3 +5,6 @@
 # React Router
 /.react-router/
 /build/
+package-lock.json
+bun.lock
+bun.lockb

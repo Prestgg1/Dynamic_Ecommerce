@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { Product } from './entities/product.entity';
@@ -14,7 +14,7 @@ export class ProductsService {
 
     @InjectRepository(Wishlist)
     private readonly wishlistRepository: Repository<Wishlist>,
-  ) {}
+  ) { }
 
   private async getFavoriteProductIds(userId?: number): Promise<Set<number>> {
     if (!userId) return new Set();
@@ -25,6 +25,12 @@ export class ProductsService {
     });
 
     return new Set(items.map((w) => w.productId));
+  }
+  public async remove(id: number) {
+    let result = await this.productsRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`ID-si ${id} olan məhsul tapılmadı`);
+    }
   }
 
   private toDto(
@@ -38,6 +44,29 @@ export class ProductsService {
         { excludeExtraneousValues: true },
       ),
     );
+  }
+  // products.service.ts daxilinə əlavə et
+
+  async update(id: number, updateData: Partial<Product>, userId?: number): Promise<Product> {
+
+    const product = await this.productsRepository.findOne({ where: { id } });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+
+    const updatedProduct = await this.productsRepository.preload({
+      id: id,
+      ...updateData,
+    });
+
+    if (!updatedProduct) {
+      throw new Error('Update failed');
+    }
+
+    const savedProduct: Product = await this.productsRepository.save(updatedProduct);
+
+    return savedProduct;
   }
 
   async findAll(
