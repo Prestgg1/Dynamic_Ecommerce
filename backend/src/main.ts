@@ -8,7 +8,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
-  app.enableCors({ origin: process.env.FRONTEND_URL, credentials: true });
+  app.enableCors({
+    origin: [
+      'https://semiprotective-ruthanne-trendily.ngrok-free.dev',
+      'http://localhost:3000',
+      'http://localhost:5173',
+    ],
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Ironstore API')
