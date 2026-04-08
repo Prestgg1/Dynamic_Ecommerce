@@ -282,6 +282,35 @@ export interface components {
             dimensions: string;
             badge: string;
         };
+        CategoryDto: {
+            id: string;
+            name: string;
+        };
+        ProductResponseDto: {
+            id: number;
+            name: string;
+            nameRu: string;
+            nameEn: string;
+            description: string;
+            descriptionRu?: string;
+            descriptionEn?: string;
+            price: number;
+            oldPrice?: number;
+            rating: number;
+            reviewCount: number;
+            image: string;
+            images?: string[];
+            inStock: boolean;
+            isNew: boolean;
+            isBestSeller: boolean;
+            weight?: string;
+            material?: string;
+            dimensions?: string;
+            badge?: string;
+            category: components["schemas"]["CategoryDto"];
+            /** @default false */
+            is_favorite: boolean;
+        };
         Wishlist: {
             id: number;
             userId: number;
@@ -525,7 +554,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Product"][];
+                    "application/json": components["schemas"]["ProductResponseDto"][];
                 };
             };
         };
@@ -544,7 +573,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Product"][];
+                    "application/json": components["schemas"]["ProductResponseDto"][];
                 };
             };
             default: {
@@ -552,7 +581,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Product"][];
+                    "application/json": components["schemas"]["ProductResponseDto"][];
                 };
             };
         };
@@ -568,6 +597,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductResponseDto"];
+                };
+            };
             default: {
                 headers: {
                     [name: string]: unknown;

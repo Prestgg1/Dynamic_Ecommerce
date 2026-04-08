@@ -16,30 +16,20 @@ export function meta({ data }: Route.MetaArgs) {
 
 export default function ProductDetailPage({ params }: Route.ComponentProps) {
   const { id } = params;
-  const navigate = useNavigate();
   const { language, t } = useLanguage();
-  const { isAuthenticated } = useAuth();
   
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"description" | "specs" | "reviews">("description");
 
-  const { data: productData, isLoading: productLoading } = trpc.useQuery("get", "/products/{id}", {
+  const { data: product, isLoading: productLoading } = trpc.useQuery("get", "/products/{id}", {
     params: { path: { id: id as never } },
   });
 
-  const { data: allProducts } = trpc.useQuery("get", "/products");
-
-  const { data: wishlistItems, refetch: refetchWishlist } = trpc.useQuery("get", "/wishlist", {
-    enabled: isAuthenticated,
-  });
-
-  const product = productData as any; // Typecast because of TS strict typing inferences
 
   const addMutation = trpc.useMutation("post", "/wishlist/{productId}");
   const removeMutation = trpc.useMutation("delete", "/wishlist/{productId}");
 
-  const inWishlist = wishlistItems?.some((item: any) => item.product?.id === Number(id)) ?? false;
 
   const updateFavoriteApi = useDebounce(async (productId: number, favorited: boolean) => {
     try {
@@ -49,20 +39,14 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
         await removeMutation.mutateAsync({ params: { path: { productId } } });
       }
       toast.success(favorited ? "Məhsul sevilənlərə əlavə olundu" : "Məhsul sevilənlərdən çıxarıldı", { id: 'wishlist-toast' });
-      refetchWishlist();
     } catch {
       toast.error("Bir xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.", { id: 'wishlist-err' });
-      refetchWishlist();
     }
   }, 500);
 
   const handleWishlist = () => {
-    if (!isAuthenticated) {
-      toast.error("Əvvəlcə daxil olmalısınız.");
-      navigate("/auth/login");
-      return;
-    }
-    updateFavoriteApi(Number(id), !inWishlist);
+    //Update wishlist
+    
   };
 
   const handleAddToCart = () => {
@@ -101,9 +85,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
     ? Math.round(((Number(product.oldPrice) - Number(product.price)) / Number(product.oldPrice)) * 100)
     : null;
 
-  const related = allProducts
-    ? allProducts.filter((p: any) => p.categoryId === product.categoryId && p.id !== product.id).slice(0, 5)
-    : [];
+ 
 
   return (
     <main className="min-h-screen bg-gray-50 pt-32 pb-12">
@@ -266,14 +248,14 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
                 <button
                   onClick={handleWishlist}
                   className={`shrink-0 w-[68px] h-[68px] rounded-2xl border-2 transition-all flex items-center justify-center ${
-                    inWishlist
+                    product.is_favorite
                       ? "border-red-500 bg-red-50 text-red-500"
                       : "border-gray-100 hover:border-red-200 bg-white text-gray-400 hover:text-red-500"
                   }`}
                 >
                   <svg
-                    className={`w-7 h-7 transition-colors ${inWishlist ? "fill-red-500" : ""}`}
-                    fill={inWishlist ? "currentColor" : "none"}
+                    className={`w-7 h-7 transition-colors ${product.is_favorite ? "fill-red-500" : ""}`}
+                    fill={product.is_favorite ? "currentColor" : "none"}
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -376,6 +358,8 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
         </div>
 
         {/* Related Products */}
+       {/* 
+       
         {related.length > 0 && (
           <section>
             <div className="flex items-center gap-3 mb-8">
@@ -389,6 +373,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
             </div>
           </section>
         )}
+       */}
       </div>
     </main>
   );

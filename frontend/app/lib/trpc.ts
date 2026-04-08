@@ -5,7 +5,7 @@ import type { paths } from "./types";
 const API_BASE_URL = "https://9bd8-62-212-236-132.ngrok-free.app";
 
 const fetchClient = createFetchClient<paths>({
-  baseUrl: API_BASE_URL,
+  baseUrl: import.meta.env.VITE_API_BASE_URL,
   credentials: "include",
 });
 

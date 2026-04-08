@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState } from "react";
-import { trpc } from "~/lib/trpc";
 import { type components } from "~/lib/types";
 
 type User = components["schemas"]["User"];
@@ -10,12 +9,12 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<any>(null);
+const AuthContext = createContext<User | null>(null);
 
 export function AuthProvider({ children, initialUser }: { children: any, initialUser: User | null }) {
   const [user, setUser] = useState(initialUser);
 
-  const login = (userData: any) => setUser(userData);
+  const login = (userData: User) => setUser(userData);
   const logout = () => setUser(null);
 
   return (
