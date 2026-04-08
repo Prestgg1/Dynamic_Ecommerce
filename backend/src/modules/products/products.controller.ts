@@ -8,7 +8,7 @@ import type { RequestWithUser } from 'src/middleware/optional-auth-middleware';
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all products' })
@@ -36,7 +36,8 @@ export class ProductsController {
   @ApiResponse({ status: 200, type: ProductResponseDto })
   findOne(
     @Req() req: RequestWithUser,
-    @Param('id') id: string): Promise<ProductResponseDto | null> {
+    @Param('id') id: string,
+  ): Promise<ProductResponseDto | null> {
     return this.productsService.findOne(+id, req.user?.id);
   }
 }

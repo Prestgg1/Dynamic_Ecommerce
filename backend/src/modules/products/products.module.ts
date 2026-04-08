@@ -8,18 +8,13 @@ import { AuthModule } from '../auth/auth.module';
 import { OptionalAuthMiddleware } from 'src/middleware/optional-auth-middleware';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Product, Wishlist]),
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Product, Wishlist]), AuthModule],
   controllers: [ProductsController],
   providers: [ProductsService],
   exports: [ProductsService],
 })
 export class ProductsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(OptionalAuthMiddleware)
-      .forRoutes(ProductsController);
+    consumer.apply(OptionalAuthMiddleware).forRoutes(ProductsController);
   }
 }

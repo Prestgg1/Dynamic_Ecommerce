@@ -6,7 +6,6 @@ import { ProductResponseDto } from './dtos/product-responce.dto';
 import { plainToInstance } from 'class-transformer';
 import { Wishlist } from '../wishlist/entities/wishlist.entity';
 
-
 @Injectable()
 export class ProductsService {
   constructor(
@@ -15,7 +14,7 @@ export class ProductsService {
 
     @InjectRepository(Wishlist)
     private readonly wishlistRepository: Repository<Wishlist>,
-  ) { }
+  ) {}
 
   private async getFavoriteProductIds(userId?: number): Promise<Set<number>> {
     if (!userId) return new Set();
@@ -28,7 +27,10 @@ export class ProductsService {
     return new Set(items.map((w) => w.productId));
   }
 
-  private toDto(products: Product[], favoriteIds: Set<number>): ProductResponseDto[] {
+  private toDto(
+    products: Product[],
+    favoriteIds: Set<number>,
+  ): ProductResponseDto[] {
     return products.map((p) =>
       plainToInstance(
         ProductResponseDto,
@@ -38,7 +40,10 @@ export class ProductsService {
     );
   }
 
-  async findAll(query?: { categoryId?: string; q?: string }, userId?: number): Promise<ProductResponseDto[]> {
+  async findAll(
+    query?: { categoryId?: string; q?: string },
+    userId?: number,
+  ): Promise<ProductResponseDto[]> {
     const where: FindOptionsWhere<Product>[] = [];
     const baseWhere: FindOptionsWhere<Product> = {};
 
@@ -65,9 +70,15 @@ export class ProductsService {
     return this.toDto(products, favoriteIds);
   }
 
-  async findOne(id: number, userId?: number): Promise<ProductResponseDto | null> {
+  async findOne(
+    id: number,
+    userId?: number,
+  ): Promise<ProductResponseDto | null> {
     const [product, favoriteIds] = await Promise.all([
-      this.productsRepository.findOne({ where: { id }, relations: ['category'] }),
+      this.productsRepository.findOne({
+        where: { id },
+        relations: ['category'],
+      }),
       this.getFavoriteProductIds(userId),
     ]);
 
