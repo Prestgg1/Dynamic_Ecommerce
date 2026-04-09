@@ -22,7 +22,6 @@ import { Toaster } from "react-hot-toast";
 import { AuthorizedError } from "./routes/home";
 import { createContext } from "react-router";
 import type { User } from "./lib/trpc";
-import { AuthProvider } from "./context/AuthContext";
 import { useEffect } from "react";
 import { useAuthStore } from "./store/auth.store";
 export const userContext = createContext<User | null>(null);
@@ -40,7 +39,7 @@ export const links: Route.LinksFunction = () => [
 ];
 
 const queryClient = new QueryClient({
-  
+
 })
 
 export async function loader({
@@ -48,23 +47,23 @@ export async function loader({
   context,
 }: Route.LoaderArgs) {
 
- const cookie = request.headers.get("Cookie") ?? "";
-const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
-      headers: { Cookie: cookie },
-    });
-    if(res.ok){
-      const user = await res.json();
-      return user;
-    }
-    return null;
+  const cookie = request.headers.get("Cookie") ?? "";
+  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
+    headers: { Cookie: cookie },
+  });
+  if (res.ok) {
+    const user = await res.json();
+    return user;
+  }
+  return null;
 }
- 
 
-export function Layout({children}: React.PropsWithChildren) {
+
+export function Layout({ children }: React.PropsWithChildren) {
   const user = useLoaderData<typeof loader>()
-    const setUser = useAuthStore((s) => s.setUser);
+  const setUser = useAuthStore((s) => s.setUser);
   useEffect(() => {
-        setUser(user ?? null);
+    setUser(user ?? null);
   }, [user])
 
   return (
@@ -77,13 +76,13 @@ export function Layout({children}: React.PropsWithChildren) {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-        <LanguageProvider>
+          <LanguageProvider>
             <Header />
-              {children}
-              <Footer />
-              <Toaster position="top-right" />
-              </LanguageProvider>
-              </QueryClientProvider>
+            {children}
+            <Footer />
+            <Toaster position="top-right" />
+          </LanguageProvider>
+        </QueryClientProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -101,7 +100,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let stack: string | undefined;
 
   if (error instanceof AuthorizedError) {
-   return redirect("/auth/login");
+    return redirect("/auth/login");
   }
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";

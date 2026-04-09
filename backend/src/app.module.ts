@@ -10,6 +10,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { OrdersModule } from './modules/orders/order.modules';
 
 @Module({
   imports: [
@@ -22,9 +23,10 @@ import { join } from 'path';
         url: configService.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
         synchronize: true,
-        //dropSchema: true,
+        dropSchema: false,
       }),
     }),
+    OrdersModule,
     UsersModule,
     AuthModule,
     CategoriesModule,
@@ -38,4 +40,4 @@ import { join } from 'path';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

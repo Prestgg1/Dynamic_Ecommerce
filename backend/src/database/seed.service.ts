@@ -13,7 +13,7 @@ export class SeedService {
     private readonly categoriesService: CategoriesService,
     private readonly productsService: ProductsService,
     private readonly usersService: UsersService,
-  ) {}
+  ) { }
 
   async seed() {
     this.logger.log('Starting seeding...');
@@ -367,15 +367,15 @@ export class SeedService {
     }
 
     // Users
-    const testEmail = 'test@example.com';
+    const testEmail = 'admin@demirmart.az';
     const existingUser = await this.usersService.findByEmail(testEmail);
     if (!existingUser) {
       const hashedPassword = await bcrypt.hash('password123', 10);
       await this.usersService.create({
-        fullName: 'Test User',
+        fullName: 'Admin',
         email: testEmail,
         password: hashedPassword,
-        role: UserRole.CUSTOMER,
+        role: UserRole.ADMIN,
         avatarUrl:
           'https://ui-avatars.com/api/?background=f97316&color=fff&name=Test+User',
       });

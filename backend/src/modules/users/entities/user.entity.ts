@@ -1,9 +1,11 @@
+import { Order } from 'src/modules/orders/entities/order.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 export enum UserRole {
@@ -40,4 +42,5 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  @OneToMany(() => Order, (order) => order.user) orders: Order[]
 }

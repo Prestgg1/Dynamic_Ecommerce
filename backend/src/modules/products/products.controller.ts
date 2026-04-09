@@ -3,7 +3,7 @@ import { ProductsService } from './products.service';
 import { Product } from './entities/product.entity';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { CreateProductDto, ProductResponseDto, UpdateProductDto } from './dtos/product-responce.dto';
-import type { RequestWithUser } from 'src/middleware/optional-auth-middleware';
+import type { RequestWithUserOptional } from 'src/middleware/optional-auth-middleware';
 import { AdminGuard } from 'src/guards/admin.guard';
 
 @ApiTags('products')
@@ -17,7 +17,7 @@ export class ProductsController {
   @ApiQuery({ name: 'q', required: false })
   @ApiResponse({ status: 200, type: [Product] })
   findAll(
-    @Req() req: RequestWithUser,
+    @Req() req: RequestWithUserOptional,
 
     @Query('categoryId') categoryId?: string,
     @Query('q') q?: string,
@@ -36,7 +36,7 @@ export class ProductsController {
   @ApiOperation({ summary: 'Get product by id' })
   @ApiResponse({ status: 200, type: ProductResponseDto })
   findOne(
-    @Req() req: RequestWithUser,
+    @Req() req: RequestWithUserOptional,
     @Param('id') id: string,
   ): Promise<ProductResponseDto | null> {
     return this.productsService.findOne(+id, req.user?.id);
