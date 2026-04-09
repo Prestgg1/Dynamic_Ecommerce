@@ -10,7 +10,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { OrdersModule } from './modules/orders/order.modules';
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
   imports: [
@@ -26,8 +26,9 @@ import { OrdersModule } from './modules/orders/order.modules';
         dropSchema: false,
       }),
     }),
-    OrdersModule,
     UsersModule,
+
+    OrdersModule,
     AuthModule,
     CategoriesModule,
     ProductsModule,

@@ -7,7 +7,7 @@
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "openapi": "openapi-typescript https://9bd8-62-212-236-132.ngrok-free.app/docs-json -o ./app/lib/types.ts"
+    "openapi": "openapi-typescript http://localhost:4000/docs-json -o ./app/lib/types.ts"
   },
   "dependencies": {
     "@react-router/fs-routes": "^7.14.0",

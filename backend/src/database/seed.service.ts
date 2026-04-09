@@ -13,7 +13,7 @@ export class SeedService {
     private readonly categoriesService: CategoriesService,
     private readonly productsService: ProductsService,
     private readonly usersService: UsersService,
-  ) { }
+  ) {}
 
   async seed() {
     this.logger.log('Starting seeding...');

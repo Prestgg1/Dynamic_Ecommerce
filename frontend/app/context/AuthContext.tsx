@@ -6,12 +6,13 @@ type User = components["schemas"]["User"];
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  login: (userData: User) => void;
   logout: () => void;
 }
 
-const AuthContext = createContext<User | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children, initialUser }: { children: any, initialUser: User | null }) {
+export function AuthProvider({ children, initialUser }: { children: React.ReactNode; initialUser: User | null }) {
   const [user, setUser] = useState(initialUser);
 
   const login = (userData: User) => setUser(userData);
@@ -24,4 +25,10 @@ export function AuthProvider({ children, initialUser }: { children: any, initial
   );
 }
 
-export const useAuth = (): AuthContextType => useContext(AuthContext);
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

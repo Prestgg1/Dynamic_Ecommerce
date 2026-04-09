@@ -1,185 +1,241 @@
-import { useState, Suspense, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router";
+import { useState, Suspense, useEffect, useMemo, useCallback } from "react";
+import { useSearchParams } from "react-router";
 import { useLanguage } from "~/context/LanguageContext";
 import { trpc } from "~/lib/trpc";
 import { categories as staticCategories } from "~/lib/data";
 import ProductCard from "~/components/ProductCard";
 import type { TranslationKey } from "~/lib/translations";
+import { useDebounce } from "~/hooks/useDebounce";
 
+// --- Types ---
 type SortOption = "default" | "price-asc" | "price-desc" | "rating" | "new";
 
-function SearchContent() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+interface FilterState {
+  minPrice: string;
+  maxPrice: string;
+  sortBy: SortOption;
+}
+
+// --- Sub-components ---
+
+/**
+ * Sidebar for categories and price filters
+ */
+function FilterSidebar({ 
+  selectedCategory, 
+  onCategoryChange, 
+  filters, 
+  onFilterChange 
+}: { 
+  selectedCategory: string; 
+  onCategoryChange: (id: string) => void;
+  filters: FilterState;
+  onFilterChange: (key: keyof FilterState, value: string) => void;
+}) {
   const { t } = useLanguage();
 
+  return (
+    <aside className="hidden md:block w-64 flex-shrink-0">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sticky top-28">
+        <section className="mb-10">
+          <h3 className="font-black text-gray-900 mb-5 text-[10px] uppercase tracking-[0.2em] border-b border-gray-50 pb-3">
+            {t("filterByCategory" as TranslationKey)}
+          </h3>
+          <div className="space-y-1.5">
+            {staticCategories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => onCategoryChange(cat.id)}
+                className={`w-full text-left px-4 py-3 rounded-2xl text-sm transition-all relative overflow-hidden group ${
+                  selectedCategory === cat.id
+                    ? "bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30"
+                    : "text-gray-500 hover:bg-orange-50 hover:text-orange-600 font-medium"
+                }`}
+              >
+                <span className="relative z-10">{t(cat.labelKey as TranslationKey)}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3 className="font-black text-gray-900 mb-5 text-[10px] uppercase tracking-[0.2em] border-b border-gray-50 pb-3">
+            {t("priceRange" as TranslationKey)}
+          </h3>
+          <div className="space-y-3">
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">₼</span>
+              <input
+                type="number"
+                placeholder="Min"
+                value={filters.minPrice}
+                onChange={(e) => onFilterChange("minPrice", e.target.value)}
+                className="w-full pl-10 pr-4 py-3.5 border border-gray-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all bg-gray-50 placeholder:text-gray-300"
+              />
+            </div>
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">₼</span>
+              <input
+                type="number"
+                placeholder="Max"
+                value={filters.maxPrice}
+                onChange={(e) => onFilterChange("maxPrice", e.target.value)}
+                className="w-full pl-10 pr-4 py-3.5 border border-gray-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all bg-gray-50 placeholder:text-gray-300"
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+    </aside>
+  );
+}
+
+/**
+ * Main search results content
+ */
+function SearchContent() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useLanguage();
+
+  // URL state
   const queryParam = searchParams.get("q") || "";
   const categoryParam = searchParams.get("category") || "all";
 
-  const [query, setQuery] = useState(queryParam);
-  const [selectedCategory, setSelectedCategory] = useState(categoryParam);
-  const [sortBy, setSortBy] = useState<SortOption>("default");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [filterOpen, setFilterOpen] = useState(false);
+  // Local state for UI responsiveness
+  const [localQuery, setLocalQuery] = useState(queryParam);
+  const [filters, setFilters] = useState<FilterState>({
+    minPrice: "",
+    maxPrice: "",
+    sortBy: "default",
+  });
 
-  // Sync internal state when URL changes
+  // Sync state with URL when needed
   useEffect(() => {
-    setQuery(queryParam);
-    setSelectedCategory(categoryParam);
-  }, [queryParam, categoryParam]);
+    setLocalQuery(queryParam);
+  }, [queryParam]);
 
-  // Fetch live products from backend
+  // --- Search Logic ---
+
+  // Debounced navigation/param update
+  const navigateWithDebounce = useDebounce((q: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (q) params.set("q", q);
+    else params.delete("q");
+    setSearchParams(params, { replace: true });
+  }, 400);
+
+  const handleQueryChange = (val: string) => {
+    setLocalQuery(val);
+    navigateWithDebounce(val);
+  };
+
+  const handleCategoryChange = useCallback((catId: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (catId === "all") params.delete("category");
+    else params.set("category", catId);
+    setSearchParams(params, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  const handleFilterChange = (key: keyof FilterState, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  // --- Backend Query ---
   const { data: productsData, isLoading } = trpc.useQuery("get", "/products", {
     params: {
       query: {
-        categoryId: selectedCategory === "all" ? undefined : (selectedCategory as any),
+        categoryId: categoryParam === "all" ? undefined : (categoryParam as any),
         q: queryParam || undefined,
       },
     },
   });
 
-  const rawResults = productsData || [];
-
-  const filteredResults = [...rawResults]
-    .filter((p) => {
-      if (minPrice && p.price < Number(minPrice)) return false;
-      if (maxPrice && p.price > Number(maxPrice)) return false;
-      return true;
-    })
-    .sort((a, b: any) => {
-      if (sortBy === "price-asc") return a.price - b.price;
-      if (sortBy === "price-desc") return b.price - a.price;
-      if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
-      if (sortBy === "new") return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-      return 0;
-    });
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (query) params.set("q", query);
-    if (selectedCategory !== "all") params.set("category", selectedCategory);
-    navigate(`/search?${params.toString()}`);
-  };
-
-  const handleCategoryClick = (catId: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (catId === "all") {
-      params.delete("category");
-    } else {
-      params.set("category", catId);
-    }
-    navigate(`/search?${params.toString()}`);
-  };
+  // --- Client-side filtering & sorting ---
+  const results = useMemo(() => {
+    if (!productsData) return [];
+    
+    return [...productsData]
+      .filter((p) => {
+        const price = Number(p.price);
+        if (filters.minPrice && price < Number(filters.minPrice)) return false;
+        if (filters.maxPrice && price > Number(filters.maxPrice)) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const aPrice = Number(a.price);
+        const bPrice = Number(b.price);
+        
+        switch (filters.sortBy) {
+          case "price-asc": return aPrice - bPrice;
+          case "price-desc": return bPrice - aPrice;
+          case "rating": return (Number(b.rating) || 0) - (Number(a.rating) || 0);
+          case "new": return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
+          default: return 0;
+        }
+      });
+  }, [productsData, filters]);
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-20">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Search bar */}
-        <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 border border-gray-100">
-          <form onSubmit={handleSearch} className="flex gap-3">
-            <div className="flex-1 relative">
-              <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+    <main className="min-h-screen bg-gray-50 pt-24 pb-20">
+      <div className="max-w-7xl mx-auto px-4">
+        
+        {/* Search Bar Area */}
+        <section className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 p-8 mb-12 border border-gray-100 overflow-hidden relative group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-40 transition-all group-hover:scale-110"></div>
+          
+          <div className="relative z-10">
+            <h1 className="text-3xl font-black text-gray-900 mb-8 tracking-tight flex items-center gap-3">
+              Məhsul Axtarışı
+              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+            </h1>
+            
+            <div className="relative flex items-center">
+              <div className="absolute left-6 text-gray-400 group-focus-within:text-orange-500 transition-colors">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
               <input
                 type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                value={localQuery}
+                onChange={(e) => handleQueryChange(e.target.value)}
                 placeholder={t("searchPlaceholder" as TranslationKey)}
-                className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl text-base focus:outline-none focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 transition-all bg-gray-50"
+                className="w-full pl-16 pr-6 py-5.5 bg-gray-50 border border-gray-100 rounded-3xl text-lg font-bold placeholder:text-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all shadow-inner"
               />
-            </div>
-            <button
-              type="submit"
-              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-orange-500/20 transition-all text-base active:scale-95"
-            >
-              {t("search" as TranslationKey)}
-            </button>
-          </form>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Sidebar filters */}
-          <aside className="hidden md:block w-64 flex-shrink-0">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-28">
-              <h3 className="font-bold text-gray-900 mb-5 text-xs uppercase tracking-widest border-b border-gray-100 pb-2">
-                {t("filterByCategory" as TranslationKey)}
-              </h3>
-              <div className="space-y-1.5">
-                {staticCategories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => handleCategoryClick(cat.id)}
-                    className={`w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all group relative overflow-hidden ${
-                      selectedCategory === cat.id
-                        ? "bg-orange-500 text-white font-semibold shadow-md shadow-orange-500/20"
-                        : "text-gray-600 hover:bg-orange-50 hover:text-orange-600"
-                    }`}
-                  >
-                    <span className="relative z-10">{t(cat.labelKey as TranslationKey)}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-10">
-                <h3 className="font-bold text-gray-900 mb-5 text-xs uppercase tracking-widest border-b border-gray-100 pb-2">
-                  {t("priceRange" as TranslationKey)}
-                </h3>
-                <div className="space-y-3">
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">₼</span>
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
-                      className="w-full pl-8 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 bg-gray-50"
-                    />
-                  </div>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">₼</span>
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
-                      className="w-full pl-8 pr-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 bg-gray-50"
-                    />
-                  </div>
+              {isLoading && (
+                <div className="absolute right-6">
+                  <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
-              </div>
+              )}
             </div>
-          </aside>
+          </div>
+        </section>
 
-          {/* Main content */}
+        <div className="flex flex-col md:flex-row gap-10">
+          {/* Filters Sidebar */}
+          <FilterSidebar 
+            selectedCategory={categoryParam}
+            onCategoryChange={handleCategoryChange}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+          />
+
+          {/* Results Area */}
           <div className="flex-1">
             {/* Toolbar */}
-            <div className="flex items-center justify-between mb-6 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-gray-500">
-                  <span className="font-bold text-gray-900">{isLoading ? "..." : filteredResults.length}</span>{" "}
-                  {t("searchResults" as TranslationKey)}
-                </p>
+            <header className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-white/60 backdrop-blur-md p-4 rounded-3xl border border-gray-100 sticky top-24 z-20">
+              <div className="flex items-center gap-3 pl-2">
+                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{t("searchResults" as TranslationKey)}</span>
+                <div className="h-4 w-px bg-gray-200"></div>
+                <span className="text-lg font-black text-gray-900">{results.length}</span>
               </div>
 
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setFilterOpen(!filterOpen)}
-                  className="md:hidden flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-200 hover:border-orange-400 transition-colors"
-                >
-                  <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
-                  </svg>
-                  <span>Filter</span>
-                </button>
-
-                <div className="relative">
+              <div className="flex items-center gap-4">
+                <div className="relative h-full group">
                   <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as SortOption)}
-                    className="appearance-none text-sm font-medium border border-gray-200 rounded-xl px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 bg-gray-50 cursor-pointer"
+                    value={filters.sortBy}
+                    onChange={(e) => handleFilterChange("sortBy", e.target.value as SortOption)}
+                    className="appearance-none h-full text-xs font-black uppercase tracking-widest text-gray-700 bg-white border border-gray-100 rounded-2xl pl-5 pr-12 py-3.5 focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 cursor-pointer shadow-sm group-hover:shadow-md transition-all outline-none"
                   >
                     <option value="default">{t("sortBy" as TranslationKey)}</option>
                     <option value="price-asc">{t("sortByPrice" as TranslationKey)} ↑</option>
@@ -187,37 +243,53 @@ function SearchContent() {
                     <option value="rating">{t("sortByRating" as TranslationKey)}</option>
                     <option value="new">{t("sortByNew" as TranslationKey)}</option>
                   </select>
-                  <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-orange-500 transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
-            </div>
+            </header>
 
-            {/* Results */}
-            {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                  <div key={i} className="bg-gray-100 animate-pulse rounded-2xl h-80"></div>
-                ))}
-              </div>
-            ) : filteredResults.length === 0 ? (
-              <div className="bg-white rounded-3xl p-20 text-center shadow-sm border border-gray-100">
-                <div className="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-10 h-10 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+            {/* Product Rendering */}
+            <div className="relative">
+              {isLoading && results.length === 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="bg-white rounded-[2rem] p-6 h-96 animate-pulse border border-gray-100 shadow-sm" />
+                  ))}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{t("noResults" as TranslationKey)}</h3>
-                <p className="text-gray-500 max-w-xs mx-auto">Axtarış meyarlarını dəyişdirərək yenidən yoxlayın</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredResults.map((product) => (
-                  <ProductCard key={product.id} product={product as any} />
-                ))}
-              </div>
-            )}
+              ) : results.length === 0 ? (
+                <div className="bg-white rounded-[3rem] p-24 text-center border border-gray-100 shadow-xl shadow-gray-200/50">
+                  <div className="w-32 h-32 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-8 border-4 border-white shadow-lg">
+                    <svg className="w-14 h-14 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-3xl font-black text-gray-900 mb-4">{t("noResults" as TranslationKey)}</h3>
+                  <p className="text-gray-500 font-medium max-w-sm mx-auto leading-relaxed">
+                    Axtarışınıza uyğun heç bir məhsul tapılmadı. Zəhmət olmasa başqa sözlərlə cəhd edin və ya filtrləri təmizləyin.
+                  </p>
+                  <button 
+                    onClick={() => {
+                        setLocalQuery("");
+                        handleCategoryChange("all");
+                        setFilters({ minPrice: "", maxPrice: "", sortBy: "default" });
+                    }}
+                    className="mt-10 px-10 py-4 bg-gray-900 text-white rounded-2xl font-black transition-all hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95"
+                  >
+                    Filtrləri sıfırla
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                  {results.map((product) => (
+                    <ProductCard key={product.id} product={product as any} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -225,16 +297,19 @@ function SearchContent() {
   );
 }
 
+// --- Main Page Component ---
 export default function SearchPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-500 font-medium animate-pulse">Yüklənir...</p>
+    <Suspense 
+      fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-6">
+            <div className="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin shadow-xl"></div>
+            <p className="text-gray-900 font-black uppercase tracking-[0.3em] animate-pulse text-xs">Axtarılır...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <SearchContent />
     </Suspense>
   );

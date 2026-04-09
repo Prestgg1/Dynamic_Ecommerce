@@ -15,6 +15,6 @@ export class Category {
   @Column()
   labelEn: string;
 
-  @OneToMany('Product', 'category')
+  @OneToMany('Product', 'category', { onDelete: 'CASCADE', cascade: true })
   products: Product[];
 }

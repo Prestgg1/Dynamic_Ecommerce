@@ -20,6 +20,159 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create order */
+        post: operations["OrdersController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/my": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my orders */
+        get: operations["OrdersController_getMyOrders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/my/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my order by id */
+        get: operations["OrdersController_getMyOrder"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/my/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cancel my order */
+        patch: operations["OrdersController_cancelOrder"];
+        trace?: never;
+    };
+    "/orders/admin/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all orders (Admin only) */
+        get: operations["OrdersController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/admin/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get any order by id (Admin only) */
+        get: operations["OrdersController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/admin/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update order status (Admin only) */
+        patch: operations["OrdersController_updateStatus"];
+        trace?: never;
+    };
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all users (Admin only) */
+        get: operations["UsersController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get user by id (Admin only) */
+        get: operations["UsersController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/register": {
         parameters: {
             query?: never;
@@ -114,7 +267,8 @@ export interface paths {
         /** Get all categories */
         get: operations["CategoriesController_findAll"];
         put?: never;
-        post?: never;
+        /** Create category (Admin only) */
+        post: operations["CategoriesController_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -130,9 +284,11 @@ export interface paths {
         };
         /** Get category by id */
         get: operations["CategoriesController_findOne"];
-        put?: never;
+        /** Update category (Admin only) */
+        put: operations["CategoriesController_update"];
         post?: never;
-        delete?: never;
+        /** Delete category (Admin only) */
+        delete: operations["CategoriesController_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -181,9 +337,11 @@ export interface paths {
         };
         /** Get product by id */
         get: operations["ProductsController_findOne"];
-        put?: never;
+        /** Update product (Admin only) */
+        put: operations["ProductsController_update"];
         post?: never;
-        delete?: never;
+        /** Delete Product (Admin only) */
+        delete: operations["ProductsController_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -228,28 +386,39 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        RegisterDto: {
-            name: string;
-            email: string;
-            password: string;
-            repassword: string;
+        CreateOrderItemDto: {
+            /** @example 1 */
+            productId: number;
+            /** @example 2 */
+            quantity: number;
         };
-        LoginDto: {
-            email: string;
-            password: string;
+        CreateOrderDto: {
+            items: components["schemas"]["CreateOrderItemDto"][];
+            /** @example Nizami küç. 10, Bakı */
+            address?: string;
+            /** @example +994501234567 */
+            phone?: string;
+            /** @example Zəng etməyin, mesaj yazın */
+            note?: string;
         };
-        User: {
+        OrderItemResponseDto: {
             id: number;
-            fullName: string;
-            email: string;
-            password: string;
+            productId: number;
+            quantity: number;
+            unitPrice: number;
+        };
+        OrderResponseDto: {
+            id: number;
+            userId: number;
             /** @enum {string} */
-            role: "ADMIN" | "CUSTOMER";
-            avatarUrl: string;
+            status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
+            totalPrice: number;
+            address: string | null;
+            phone: string | null;
+            note: string | null;
             /** Format: date-time */
             createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
+            items: components["schemas"]["OrderItemResponseDto"][];
         };
         Category: {
             id: string;
@@ -282,6 +451,88 @@ export interface components {
             dimensions: string;
             badge: string;
         };
+        OrderItem: {
+            id: number;
+            order: components["schemas"]["Order"];
+            orderId: number;
+            product: components["schemas"]["Product"];
+            productId: number;
+            quantity: number;
+            unitPrice: number;
+        };
+        Order: {
+            id: number;
+            user: components["schemas"]["User"];
+            userId: number;
+            items: components["schemas"]["OrderItem"][];
+            /** @enum {string} */
+            status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
+            totalPrice: number;
+            address: string;
+            phone: string;
+            note: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        User: {
+            id: number;
+            fullName: string;
+            email: string;
+            password: string;
+            /** @enum {string} */
+            role: "ADMIN" | "CUSTOMER";
+            avatarUrl: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            orders: components["schemas"]["Order"][];
+        };
+        UpdateOrderStatusDto: {
+            /**
+             * @example confirmed
+             * @enum {string}
+             */
+            status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
+        };
+        UserResponseDto: {
+            id: number;
+            email: string;
+            name: string;
+            isAdmin: boolean;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        RegisterDto: {
+            name: string;
+            email: string;
+            password: string;
+            repassword: string;
+        };
+        LoginDto: {
+            email: string;
+            password: string;
+        };
+        CreateCategoryDto: {
+            /** @example electronics */
+            id: string;
+            /** @example Elektronika */
+            labelAz: string;
+            /** @example Электроника */
+            labelRu: string;
+            /** @example Electronics */
+            labelEn: string;
+        };
+        UpdateCategoryDto: {
+            /** @example electronics */
+            id?: string;
+            /** @example Elektronika */
+            labelAz?: string;
+            /** @example Электроника */
+            labelRu?: string;
+            /** @example Electronics */
+            labelEn?: string;
+        };
         CategoryDto: {
             id: string;
             name: string;
@@ -310,6 +561,41 @@ export interface components {
             category: components["schemas"]["CategoryDto"];
             /** @default false */
             is_favorite: boolean;
+        };
+        UpdateProductDto: {
+            /** @example Məhsul adı */
+            name?: string;
+            /** @example Название продукта */
+            nameRu?: string;
+            /** @example Product Name */
+            nameEn?: string;
+            /** @example Məhsul haqqında geniş məlumat */
+            description?: string;
+            /** @example Описание продукта */
+            descriptionRu?: string;
+            /** @example Product description */
+            descriptionEn?: string;
+            /** @example 15.5 */
+            price?: number;
+            /** @example 20 */
+            oldPrice?: number;
+            /** @example category-slug */
+            categoryId?: string;
+            /** @example image-url.jpg */
+            image?: string;
+            /**
+             * @example [
+             *       "img1.jpg",
+             *       "img2.jpg"
+             *     ]
+             */
+            images?: string[];
+            /** @example 500g */
+            weight?: string;
+            /** @example Plastik */
+            material?: string;
+            /** @example 10x20x30 */
+            dimensions?: string;
         };
         Wishlist: {
             id: number;
@@ -342,6 +628,267 @@ export interface operations {
                 };
                 content: {
                     "application/json": string;
+                };
+            };
+        };
+    };
+    OrdersController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOrderDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"];
+                };
+            };
+        };
+    };
+    OrdersController_getMyOrders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"][];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"][];
+                };
+            };
+        };
+    };
+    OrdersController_getMyOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"];
+                };
+            };
+        };
+    };
+    OrdersController_cancelOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"];
+                };
+            };
+        };
+    };
+    OrdersController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"][];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"][];
+                };
+            };
+        };
+    };
+    OrdersController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"];
+                };
+            };
+        };
+    };
+    OrdersController_updateStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrderStatusDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponseDto"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"];
+                };
+            };
+        };
+    };
+    UsersController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"][];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"][];
+                };
+            };
+        };
+    };
+    UsersController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
                 };
             };
         };
@@ -500,6 +1047,37 @@ export interface operations {
             };
         };
     };
+    CategoriesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCategoryDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Category"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Category"];
+                };
+            };
+        };
+    };
     CategoriesController_findOne: {
         parameters: {
             query?: never;
@@ -526,6 +1104,58 @@ export interface operations {
                 content: {
                     "application/json": Record<string, never>;
                 };
+            };
+        };
+    };
+    CategoriesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCategoryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Category"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Category"];
+                };
+            };
+        };
+    };
+    CategoriesController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -612,6 +1242,58 @@ export interface operations {
                 content: {
                     "application/json": Record<string, never>;
                 };
+            };
+        };
+    };
+    ProductsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProductDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Product"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Product"];
+                };
+            };
+        };
+    };
+    ProductsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

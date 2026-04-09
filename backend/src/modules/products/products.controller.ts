@@ -1,15 +1,30 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from './entities/product.entity';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { CreateProductDto, ProductResponseDto, UpdateProductDto } from './dtos/product-responce.dto';
+import {
+  ProductResponseDto,
+  UpdateProductDto,
+} from './dtos/product-responce.dto';
 import type { RequestWithUserOptional } from 'src/middleware/optional-auth-middleware';
 import { AdminGuard } from 'src/guards/admin.guard';
 
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all products' })
@@ -55,9 +70,7 @@ export class ProductsController {
   @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete Product (Admin only)' })
-  async delete(
-    @Param('id') id: string,
-  ): Promise<void> {
+  async delete(@Param('id') id: string): Promise<void> {
     await this.productsService.remove(+id);
   }
 }

@@ -14,7 +14,7 @@ export class ProductsService {
 
     @InjectRepository(Wishlist)
     private readonly wishlistRepository: Repository<Wishlist>,
-  ) { }
+  ) {}
 
   private async getFavoriteProductIds(userId?: number): Promise<Set<number>> {
     if (!userId) return new Set();
@@ -27,7 +27,7 @@ export class ProductsService {
     return new Set(items.map((w) => w.productId));
   }
   public async remove(id: number) {
-    let result = await this.productsRepository.delete(id);
+    const result = await this.productsRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`ID-si ${id} olan məhsul tapılmadı`);
     }
@@ -47,8 +47,7 @@ export class ProductsService {
   }
   // products.service.ts daxilinə əlavə et
 
-  async update(id: number, updateData: Partial<Product>, userId?: number): Promise<Product> {
-
+  async update(id: number, updateData: Partial<Product>): Promise<Product> {
     const product = await this.productsRepository.findOne({ where: { id } });
 
     if (!product) {
@@ -64,7 +63,8 @@ export class ProductsService {
       throw new Error('Update failed');
     }
 
-    const savedProduct: Product = await this.productsRepository.save(updatedProduct);
+    const savedProduct: Product =
+      await this.productsRepository.save(updatedProduct);
 
     return savedProduct;
   }

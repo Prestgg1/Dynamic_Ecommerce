@@ -9,6 +9,7 @@ export class AdminGuard implements CanActivate {
     const user = request.user;
 
     // OptionalAuthMiddleware-dən gələn user-i yoxlayırıq
+    console.log(user)
     if (user && user.role === UserRole.ADMIN) {
       return true;
     }
