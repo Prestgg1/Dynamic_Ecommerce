@@ -86,12 +86,15 @@
 
 ### GÜN 9 — Bug fixing & Məhsul Detal & Səbət
 
-- [ ] Logout Anlıq Çıxmır.
-- [ ] Axtarış Backend tərəfindən gəlməli və frontend tərəfdə Debounce hookundan istifadə edərək hazırlamalısan.
-- [ ] like effekti anlıq olmalıdır.
+- [x] Logout Anlıq Çıxmır.
+- [x] Axtarış Backend tərəfindən gəlməli və frontend tərəfdə Debounce hookundan istifadə edərək hazırlamalısan.
+- [x] like effekti anlıq olmalıdır.
 - [ ] Header və Footerdə Tərcümə hissəsində boşluq var.
 - [ ] Məhsul detal səhifəsinin miqrasiyası və API bağlantısı.
 - [ ] Səbət (Cart) məntiqinin qurulması (Local state və ya Backend).
+- [ ] Iftifadəçi Rəyləri
+- [ ] Statistika çıxarılması
+- [ ] Müştəri idarə etmə sistemi
 
 ### GÜN 10 — İstək Siyahısı (Wishlist)
 
