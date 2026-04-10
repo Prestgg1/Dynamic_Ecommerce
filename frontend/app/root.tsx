@@ -8,10 +8,7 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "react-router";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -38,15 +35,9 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-const queryClient = new QueryClient({
+const queryClient = new QueryClient({});
 
-})
-
-export async function loader({
-  request,
-  context,
-}: Route.LoaderArgs) {
-
+export async function loader({ request, context }: Route.LoaderArgs) {
   const cookie = request.headers.get("Cookie") ?? "";
   const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
     headers: { Cookie: cookie },
@@ -58,13 +49,12 @@ export async function loader({
   return null;
 }
 
-
 export function Layout({ children }: React.PropsWithChildren) {
-  const user = useLoaderData<typeof loader>()
+  const user = useLoaderData<typeof loader>();
   const setUser = useAuthStore((s) => s.setUser);
   useEffect(() => {
     setUser(user ?? null);
-  }, [user])
+  }, [user]);
 
   return (
     <html lang="en">

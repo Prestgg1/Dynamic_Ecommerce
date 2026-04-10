@@ -2,8 +2,10 @@ import createFetchClient from "openapi-fetch";
 import createClient from "openapi-react-query";
 import type { paths } from "./types";
 
+const API_BASE_URL = 'https://xm22sk-ip-62-212-236-132.tunnelmole.net/'
+
 const fetchClient = createFetchClient<paths>({
-  baseUrl: import.meta.env.VITE_API_BASE_URL,
+  baseUrl: API_BASE_URL,
   credentials: "include",
 });
 // import.meta.env.VITE_API_BASE_URLd,

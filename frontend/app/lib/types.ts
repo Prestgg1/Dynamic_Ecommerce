@@ -20,6 +20,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all users (Admin only) */
+        get: operations["UsersController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get user by id (Admin only) */
+        get: operations["UsersController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orders": {
         parameters: {
             query?: never;
@@ -137,40 +171,6 @@ export interface paths {
         head?: never;
         /** Update order status (Admin only) */
         patch: operations["OrdersController_updateStatus"];
-        trace?: never;
-    };
-    "/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all users (Admin only) */
-        get: operations["UsersController_findAll"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get user by id (Admin only) */
-        get: operations["UsersController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
         trace?: never;
     };
     "/auth/register": {
@@ -382,10 +382,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Məhsula rəy əlavə et */
+        post: operations["ReviewsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reviews/product/{productId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Müəyyən məhsulun rəylərini gətir */
+        get: operations["ReviewsController_findByProduct"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reviews/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Rəyi sil */
+        delete: operations["ReviewsController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reviews/admin/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Rəyi sil (Admin) */
+        delete: operations["ReviewsController_adminRemove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        UserResponseDto: {
+            id: number;
+            email: string;
+            name: string;
+            isAdmin: boolean;
+            /** Format: date-time */
+            createdAt: string;
+        };
         CreateOrderItemDto: {
             /** @example 1 */
             productId: number;
@@ -420,6 +496,17 @@ export interface components {
             createdAt: string;
             items: components["schemas"]["OrderItemResponseDto"][];
         };
+        Review: {
+            id: number;
+            message: string;
+            rating: number;
+            product: components["schemas"]["Product"];
+            productId: number;
+            user: components["schemas"]["User"];
+            userId: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
         Category: {
             id: string;
             labelAz: string;
@@ -435,6 +522,7 @@ export interface components {
             description: string;
             descriptionRu: string;
             descriptionEn: string;
+            reviews: components["schemas"]["Review"][];
             price: number;
             oldPrice?: number;
             rating: number;
@@ -494,14 +582,6 @@ export interface components {
              * @enum {string}
              */
             status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
-        };
-        UserResponseDto: {
-            id: number;
-            email: string;
-            name: string;
-            isAdmin: boolean;
-            /** Format: date-time */
-            createdAt: string;
         };
         RegisterDto: {
             name: string;
@@ -604,6 +684,47 @@ export interface components {
             user: components["schemas"]["User"];
             product: components["schemas"]["Product"];
         };
+        CreateReviewDto: {
+            /**
+             * @description Məhsulun ID-si
+             * @example 1
+             */
+            productId: number;
+            /**
+             * @description Rəy mətni
+             * @example Çox yaxşı məhsuldur
+             */
+            message: string;
+            /**
+             * @description Ulduz sayı (1-5 arası)
+             * @example 5
+             */
+            starCount: number;
+        };
+        ReviewUserDto: {
+            /** @example 7d2... */
+            id: string;
+            /** @example Aasdd DSSA */
+            name: string;
+            /** @example avatar.jpg */
+            image?: string | null;
+        };
+        ReviewResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example Məhsul keyfiyyətlidir */
+            message: string;
+            /** @example 5 */
+            starCount: number;
+            /** @example 101 */
+            productId: number;
+            user: components["schemas"]["ReviewUserDto"];
+            /**
+             * Format: date-time
+             * @example 2026-04-10T12:00:00.000Z
+             */
+            createdAt: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -628,6 +749,62 @@ export interface operations {
                 };
                 content: {
                     "application/json": string;
+                };
+            };
+        };
+    };
+    UsersController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"][];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"][];
+                };
+            };
+        };
+    };
+    UsersController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
                 };
             };
         };
@@ -833,62 +1010,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Order"];
-                };
-            };
-        };
-    };
-    UsersController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponseDto"][];
-                };
-            };
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponseDto"][];
-                };
-            };
-        };
-    };
-    UsersController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponseDto"];
-                };
-            };
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponseDto"];
                 };
             };
         };
@@ -1368,6 +1489,104 @@ export interface operations {
                 };
                 content?: never;
             };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ReviewsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReviewDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"];
+                };
+            };
+        };
+    };
+    ReviewsController_findByProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponseDto"][];
+                };
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Review"][];
+                };
+            };
+        };
+    };
+    ReviewsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ReviewsController_adminRemove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
             default: {
                 headers: {
                     [name: string]: unknown;

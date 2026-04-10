@@ -18,9 +18,9 @@ function resolveAvatar(avatarUrl: string | undefined, name: string) {
 }
 
 export default function ProfilePage() {
-  const {user, refreshUser} = useAuth()
+  const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
-  const { mutate: update } = trpc.useQuery("patch",'/auth/profile');
+  const { mutate: update } = trpc.useQuery("patch", "/auth/profile");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [fullName, setFullName] = useState("");
@@ -56,13 +56,12 @@ export default function ProfilePage() {
 
       const res = await update(form);
 
-
       if (!res.ok) {
         const err = (await res.json()) as { message?: string };
         throw new Error(err.message ?? "Xəta baş verdi");
       }
 
-     // await refetchUser();
+      // await refetchUser();
       toast.success("Profil müvəffəqiyyətlə yeniləndi!");
       setSelectedFile(null);
     } catch (err) {
@@ -174,14 +173,18 @@ export default function ProfilePage() {
                 />
 
                 <div className="mt-5 text-center">
-                  <p className="text-lg font-black text-gray-900">{fullName || user.fullName}</p>
+                  <p className="text-lg font-black text-gray-900">
+                    {fullName || user.fullName}
+                  </p>
                   <p className="text-sm text-gray-400">{user.email}</p>
                   {selectedFile && (
                     <p className="text-xs text-orange-500 font-semibold mt-1">
                       ✓ {selectedFile.name} seçildi
                     </p>
                   )}
-                  <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP · Maks 2MB</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    JPG, PNG, WebP · Maks 2MB
+                  </p>
                 </div>
 
                 <button
