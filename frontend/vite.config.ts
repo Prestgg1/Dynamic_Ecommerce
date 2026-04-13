@@ -8,6 +8,6 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   server : {
-    allowedHosts : ['semiprotective-ruthanne-trendily.ngrok-free.dev']
+    allowedHosts : ['vffmwu-ip-62-212-236-132.tunnelmole.net']
   }
 });
