@@ -1,6 +1,9 @@
 import { Link } from "react-router";
+import { useLanguage } from "~/context/LanguageContext";
+import type { TranslationKey } from "~/lib/translations";
 
 export default function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-gray-900 text-gray-300 mt-16">
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -17,10 +20,10 @@ export default function Footer() {
               </div>
               <span className="font-bold text-xl text-orange-400">DəmirMart</span>
             </div>
-            <p className="text-sm text-gray-400 mb-4">Keyfiyyətli dəmir məhsulları</p>
+            <p className="text-sm text-gray-400 mb-4">{t("footerTagline" as TranslationKey)}</p>
             {/* Social links */}
             <div>
-              <p className="text-xs text-gray-500 mb-2 uppercase tracking-wide">Bizi izləyin</p>
+              <p className="text-xs text-gray-500 mb-2 uppercase tracking-wide">{t("followUs" as TranslationKey)}</p>
               <div className="flex gap-3">
                 {/* Facebook */}
                 <a href="#" className="w-8 h-8 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors">
@@ -46,55 +49,55 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">Sürətli Keçidlər</h3>
+            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">{t("quickLinks" as TranslationKey)}</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/" className="hover:text-orange-400 transition-colors">Ana Səhifə</Link></li>
-              <li><Link to="/search" className="hover:text-orange-400 transition-colors">Kateqoriyalar</Link></li>
-              <li><Link to="/about" className="hover:text-orange-400 transition-colors">Haqqımızda</Link></li>
-              <li><Link to="/wishlist" className="hover:text-orange-400 transition-colors">İstək siyahısı</Link></li>
-              <li><Link to="/login" className="hover:text-orange-400 transition-colors">Daxil ol</Link></li>
-              <li><Link to="/register" className="hover:text-orange-400 transition-colors">Qeydiyyat</Link></li>
+              <li><Link to="/" className="hover:text-orange-400 transition-colors">{t("home" as TranslationKey)}</Link></li>
+              <li><Link to="/search" className="hover:text-orange-400 transition-colors">{t("categories" as TranslationKey)}</Link></li>
+              <li><Link to="/about" className="hover:text-orange-400 transition-colors">{t("about" as TranslationKey)}</Link></li>
+              <li><Link to="/wishlist" className="hover:text-orange-400 transition-colors">{t("wishlist" as TranslationKey)}</Link></li>
+              <li><Link to="/login" className="hover:text-orange-400 transition-colors">{t("login" as TranslationKey)}</Link></li>
+              <li><Link to="/register" className="hover:text-orange-400 transition-colors">{t("register" as TranslationKey)}</Link></li>
             </ul>
           </div>
 
           {/* Categories */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">Kateqoriyalar</h3>
+            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">{t("categories" as TranslationKey)}</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/search?category=tools" className="hover:text-orange-400 transition-colors">Alətlər</Link></li>
-              <li><Link to="/search?category=hardware" className="hover:text-orange-400 transition-colors">Çilingər məmulatları</Link></li>
-              <li><Link to="/search?category=pipes" className="hover:text-orange-400 transition-colors">Borular</Link></li>
-              <li><Link to="/search?category=fasteners" className="hover:text-orange-400 transition-colors">Bəndlər</Link></li>
-              <li><Link to="/search?category=electrical" className="hover:text-orange-400 transition-colors">Elektrik</Link></li>
-              <li><Link to="/search?category=welding" className="hover:text-orange-400 transition-colors">Qaynaq</Link></li>
+              <li><Link to="/search?category=tools" className="hover:text-orange-400 transition-colors">{t("cat_tools" as TranslationKey)}</Link></li>
+              <li><Link to="/search?category=hardware" className="hover:text-orange-400 transition-colors">{t("cat_hardware" as TranslationKey)}</Link></li>
+              <li><Link to="/search?category=pipes" className="hover:text-orange-400 transition-colors">{t("cat_pipes" as TranslationKey)}</Link></li>
+              <li><Link to="/search?category=fasteners" className="hover:text-orange-400 transition-colors">{t("cat_fasteners" as TranslationKey)}</Link></li>
+              <li><Link to="/search?category=electrical" className="hover:text-orange-400 transition-colors">{t("cat_electrical" as TranslationKey)}</Link></li>
+              <li><Link to="/search?category=welding" className="hover:text-orange-400 transition-colors">{t("cat_welding" as TranslationKey)}</Link></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">Bizimlə əlaqə</h3>
+            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">{t("contactUs" as TranslationKey)}</h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
-                <svg className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
                 <span className="text-gray-400">Bakı, Azərbaycan</span>
               </li>
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-orange-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 <span className="text-gray-400">+994 50 123 45 67</span>
               </li>
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-orange-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span className="text-gray-400">info@demirmart.az</span>
               </li>
               <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-orange-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span className="text-gray-400">09:00 - 18:00</span>
@@ -106,7 +109,7 @@ export default function Footer() {
 
       <div className="border-t border-gray-800 py-4 px-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
-          <p>© 2024 DəmirMart. Bütün hüquqlar qorunur.</p>
+          <p>© 2024 DəmirMart. {t("allRightsReserved" as TranslationKey)}.</p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-orange-400 transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-orange-400 transition-colors">Terms of Service</a>

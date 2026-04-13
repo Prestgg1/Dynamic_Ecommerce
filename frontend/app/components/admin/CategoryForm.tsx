@@ -19,6 +19,7 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
     labelAz: category?.labelAz || "",
     labelRu: category?.labelRu || "",
     labelEn: category?.labelEn || "",
+    slug: category?.slug || "",
     icon: (category?.icon || "tools") as CategoryIconKey,
   });
 
@@ -26,17 +27,29 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
   const { mutate: update } = trpc.useMutation("patch", "/categories/{id}");
 
   const handleSubmit = () => {
-    if (!form.id || !form.labelAz || !form.labelRu || !form.labelEn) {
-      toast.error("Please fill all fields");
-      return;
-    }
-
     const action = isNew ? create : update;
     const config = isNew
-      ? { body: form, onSuccess: () => { toast.success("Category created"); onSuccess(); } }
-      : { params: { path: { id: form.id } }, body: form, onSuccess: () => { toast.success("Category updated"); onSuccess(); } };
+      ? { body: form }
+      : { params: { path: { id: form.id } }, body: form };
 
-    action(config as any, { onError: () => toast.error("Failed to save") });
+    action(config as any, { 
+      onSuccess: () => {
+        toast.success(isNew ? "Category created" : "Category updated");
+        onSuccess();
+      },
+      onError: (err: any) => {
+        console.error(err);
+        toast.error("Failed to save: " + (err?.message || "Unknown error"));
+      }
+    });
+  };
+
+  const generateSlug = () => {
+    const slug = form.labelEn
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+    setForm({ ...form, slug });
   };
 
   return (
@@ -56,6 +69,24 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500" />
             <input type="text" placeholder="Label (EN)" value={form.labelEn} onChange={e => setForm({ ...form, labelEn: e.target.value })}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500" />
+            
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                placeholder="Slug (url-path)" 
+                value={form.slug} 
+                onChange={e => setForm({ ...form, slug: e.target.value })}
+                className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500" 
+              />
+              <button 
+                type="button"
+                onClick={generateSlug}
+                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
+                title="Generate slug from English label"
+              >
+                Auto
+              </button>
+            </div>
 
             <button onClick={() => setShowIconSelector(true)} className="w-full p-3 border-2 rounded-lg flex items-center justify-center gap-3 hover:border-orange-500">
               <IconDisplay icon={form.icon} size="sm" />

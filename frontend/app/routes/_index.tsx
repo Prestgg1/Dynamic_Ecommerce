@@ -4,6 +4,7 @@ import { categories as staticCategories } from "~/lib/data";
 import { trpc } from "~/lib/trpc";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
+import { IconDisplay, type CategoryIconKey, getGradient } from "~/lib/admin-icons";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   tools: (
@@ -55,17 +56,18 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { t,language } = useLanguage();
 
   // Fetch live data from backend
   const { data: featuredData, isLoading: isFeaturedLoading } = trpc.useQuery("get", "/products/featured");
   const { data: allProductsData, isLoading: isAllLoading } = trpc.useQuery("get", "/products");
+  const { data: dynamicCategories, isLoading: isCategoriesLoading } = trpc.useQuery("get", "/categories");
 
   const featured = featuredData || [];
   const products = allProductsData || [];
+  const categories = dynamicCategories || [];
   const bestSellers = products.filter((p) => p.isBestSeller);
   const newArrivals = products.filter((p) => p.isNew);
-  const allStaticCategories = staticCategories.filter((c) => c.id !== "all");
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -138,20 +140,21 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-3">
-          {allStaticCategories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/search?category=${cat.id}`}
-              className="flex flex-col items-center gap-2 group"
-            >
-              <div className={`w-14 h-14 bg-gradient-to-br ${categoryColors[cat.id] || "from-gray-500 to-gray-600"} rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-all`}>
-                {categoryIcons[cat.id]}
-              </div>
-              <span className="text-xs text-gray-600 text-center font-medium group-hover:text-orange-600 transition-colors leading-tight">
-                {t(cat.labelKey as TranslationKey)}
-              </span>
-            </Link>
-          ))}
+          {isCategoriesLoading 
+            ? Array(7).fill(0).map((_, i) => <div key={i} className="h-20 bg-gray-100 animate-pulse rounded-2xl" />)
+            : categories.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/search?category=${cat.id}`}
+                className="flex flex-col items-center gap-2 group"
+              >
+                    <IconDisplay icon={cat.icon as CategoryIconKey} size="md" />
+                <span className="text-xs text-gray-600 text-center font-medium group-hover:text-orange-600 transition-colors leading-tight">
+                     {(cat[`label${language.charAt(0).toUpperCase() + language.slice(1)}` as keyof typeof cat] as string) || (cat.labelEn as string)}
+                </span>
+              </Link>
+            ))
+          }
         </div>
       </section>
 

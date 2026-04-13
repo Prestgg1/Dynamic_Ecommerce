@@ -6,6 +6,7 @@ import { trpc } from "~/lib/trpc";
 import { useDebounce } from "~/hooks/useDebounce";
 import ProductCard from "~/components/ProductCard";
 import toast from "react-hot-toast";
+import { useCartStore } from "~/store/cart.store";
 
 export function meta({ data }: Route.MetaArgs) {
   return [
@@ -49,8 +50,11 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
     
   };
 
+  const addItem = useCartStore((s) => s.addItem);
+
   const handleAddToCart = () => {
-    toast.success("Səbətə əlavə olundu (Mock)");
+    addItem(product as any, quantity);
+    toast.success(t("addToCart") + ": " + name);
   };
 
   if (productLoading) {

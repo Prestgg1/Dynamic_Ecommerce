@@ -1,283 +1,289 @@
 ---
-name: react-router-v8-auth-middleware
-description: >
-  Step-by-step guide for implementing authentication middleware in React Router v8
-  framework mode with file-based routing. Use this skill whenever the user wants to
-  protect routes, add auth guards, implement role-based access control (RBAC), or
-  organize routes into public/protected groups in a React Router v8 project. Trigger
-  even if the user just mentions "auth", "protected routes", "login redirect",
-  "middleware", or "route guards" in a React Router context — this skill covers the
-  full pattern from context setup to loader usage.
+name: react-router-v7
+description: React Router v7 - File System Routing
 ---
 
-# React Router v8 — Auth Middleware (File-Based Routing)
+When to use: Project uses Vite + React Router v7 with file-system routing. User asks about routing, navigation, forms, data loading, URL state. You are the expert on RRv7 file-based patterns.
+Core Philosophy
 
-This skill covers the canonical pattern for protecting routes with middleware in React Router v8 framework mode using file-based routing.
+RRv7 file routes = Remix migrated into React Router. Routes = files. loader/action live next to components. <Form> replaces onSubmit. Data loads before render. Progressive enhancement by default.
+File System Conventions
 
-## Prerequisites
+File Path
 
-- React Router v8 with framework mode
-- File-based routing (Vite plugin)
-- `v8_middleware: true` flag enabled
+URL
 
----
+Purpose
 
-## Step 1 — Enable Middleware in Config
+routes/\_index.tsx
 
-```ts
-// react-router.config.ts
-import type { Config } from "@react-router/dev/config";
+/
 
-export default {
-  future: {
-    v8_middleware: true,
-  },
-} satisfies Config;
-```
+Index route
 
-> ⚠️ Enabling this flag changes the type of the `context` parameter in loaders and actions. If you use `getLoadContext`, see Step 5.
+routes/about.tsx
 
----
+/about
 
-## Step 2 — Create a Typed Auth Context
+Basic route
 
-Middleware passes data down the chain via `context`. Create a typed context object:
+routes/users.$id.tsx
 
-```ts
-// app/context/auth.ts
-import { createContext } from "react-router";
-import type { User } from "~/types";
+/users/:id
 
-export const userContext = createContext<User | null>(null);
-```
+Dynamic param
 
----
+routes/users.tsx
 
-## Step 3 — Write the Auth Middleware Function
+/users
 
-Keep middleware functions in a dedicated folder for reuse across routes:
+Parent layout, needs <Outlet>
 
-```ts
-// app/middleware/auth.ts
-import { redirect } from "react-router";
-import { userContext } from "~/context/auth";
-import { getUserFromSession } from "~/lib/session";
+routes/users.\_index.tsx
 
-export async function authMiddleware({ request, context }) {
-  const user = await getUserFromSession(request);
+/users
 
-  if (!user) {
-    // Preserve the intended destination for post-login redirect
-    const returnTo = new URL(request.url).pathname;
-    throw redirect(`/auth/login?returnTo=${encodeURIComponent(returnTo)}`);
-  }
+Index of /users
 
-  // Inject user into context — available to all loaders below this middleware
-  context.set(userContext, user);
-}
-```
+routes/blog.$slug.tsx
 
----
+/blog/:slug
 
-## Step 4 — File Structure: Pathless Layout Routes (Core Pattern)
+Nested dynamic
 
-In file-based routing, **pathless layout routes** (prefixed with `_`) are the canonical way to group routes under shared middleware. They do not add a URL segment.
+routes/dashboard.settings.tsx
 
-```
-app/routes/
-│
-├── _public/
-│   ├── _layout.tsx          ← no middleware (public)
-│   ├── index.tsx            → /
-│   └── about.tsx            → /about
-│
-├── _protected/
-│   ├── _layout.tsx          ← authMiddleware applied here ✅
-│   ├── dashboard.tsx        → /dashboard
-│   ├── profile.tsx          → /profile
-│   └── orders/
-│       ├── _layout.tsx      → /orders (nested layout)
-│       └── index.tsx        → /orders
-│
-├── _admin/
-│   ├── _layout.tsx          ← authMiddleware + adminMiddleware ✅
-│   └── users.tsx            → /admin/users
-│
-└── auth.login.tsx           → /auth/login (public)
-```
+/dashboard/settings
 
-**Rule:** Every route file inside `_protected/` automatically inherits the middleware from `_protected/_layout.tsx`. No per-file configuration needed.
+Nested layout
 
----
+routes/$.tsx
 
-## Step 5 — Export Middleware from the Layout Route
+/\*
 
-```tsx
-// app/routes/_protected/_layout.tsx
-import { Outlet } from "react-router";
-import { authMiddleware } from "~/middleware/auth";
-import type { Route } from "./+types/_layout";
+Catch-all route
 
-// All child routes under _protected/ will pass through this middleware
-export const middleware: Route.MiddlewareFunction[] = [authMiddleware];
+routes/api.users.ts
 
-export default function ProtectedLayout() {
-  return <Outlet />;
-}
-```
+/api/users
 
----
+Resource route, no UI
 
-## Step 6 — Consume the User in Loaders
+Rules:
 
-Once middleware sets the context, any loader inside `_protected/` can read it without re-fetching:
+    _ prefix → pathless layout: routes/_auth.tsx wraps children, no URL segment
+    . → nested URL segment
+    $ → dynamic param
+    _index.tsx → index route when parent has <Outlet>
+    route.tsx + route._index.tsx = parent must render <Outlet>
 
-```tsx
-// app/routes/_protected/dashboard.tsx
-import { userContext } from "~/context/auth";
-import type { Route } from "./+types/dashboard";
+Route File Structure
+TSX
 
-export async function loader({ context }: Route.LoaderArgs) {
-  const user = context.get(userContext); // already set by authMiddleware
-  const orders = await getOrders(user.id);
-  return { user, orders };
+// routes/search.tsx
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
+import { Form, useLoaderData, useActionData, useRouteError } from "react-router";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+const q = new URL(request.url).searchParams.get("q") ?? "";
+return { q, results: await searchProducts(q) };
 }
 
-export default function Dashboard({ loaderData }: Route.ComponentProps) {
-  return <h1>Salam, {loaderData.user.name}</h1>;
+export async function action({ request }: ActionFunctionArgs) {
+const formData = await request.formData();
+await saveFilter(formData);
+return redirect("/search");
 }
-```
 
----
-
-## Role-Based Access Control (RBAC)
-
-Chain multiple middleware functions for layered access control:
-
-```ts
-// app/middleware/admin.ts
-import { redirect } from "react-router";
-import { userContext } from "~/context/auth";
-
-export async function adminMiddleware({ context }) {
-  const user = context.get(userContext); // authMiddleware must run first
-  if (user?.role !== "admin") throw redirect("/dashboard");
+export default function Search() {
+const { results, q } = useLoaderData<typeof loader>();
+const actionData = useActionData<typeof action>();
+return (
+<Form method="get">
+<input name="q" defaultValue={q} />
+<button type="submit">Search</button>
+</Form>
+);
 }
-```
 
-```tsx
-// app/routes/_admin/_layout.tsx
-import { authMiddleware } from "~/middleware/auth";
-import { adminMiddleware } from "~/middleware/admin";
-import type { Route } from "./+types/_layout";
-
-// Order matters: auth first, then role check
-export const middleware: Route.MiddlewareFunction[] = [
-  authMiddleware,
-  adminMiddleware,
-];
-
-export default function AdminLayout() {
-  return <Outlet />;
+export function ErrorBoundary() {
+const error = useRouteError();
+return <div>Error: {error.message}</div>;
 }
-```
 
----
+Core APIs
 
-## Single-Route Middleware (Without Layout Group)
+Feature
 
-If only one specific route needs auth, export middleware directly from that route file:
+Use When
 
-```tsx
-// app/routes/settings.tsx
-import { authMiddleware } from "~/middleware/auth";
-import type { Route } from "./+types/settings";
+loader
 
-export const middleware: Route.MiddlewareFunction[] = [authMiddleware];
+Need data before page renders. Runs on server + client
 
-export async function loader({ context }: Route.LoaderArgs) {
-  const user = context.get(userContext);
-  return { user };
+action
+
+Handle POST/PATCH/DELETE from <Form method="post">
+
+useLoaderData()
+
+Read data from loader. Type with typeof loader
+
+useActionData()
+
+Read return from action. Show form errors
+
+<Form>
+
+
+All forms. Replaces <form onSubmit>. No FormEvent
+
+useSubmit()
+
+Submit form programmatically from JS
+
+useFetcher()
+
+Mutate without navigation. Likes, toggles
+
+useNavigation()
+
+Show global loading: navigation.state === 'loading'
+
+useSearchParams()
+
+Read/write ?q=.... URL is state
+
+useParams()
+
+Read $id from routes/users.$id.tsx
+
+Link / NavLink
+
+Internal navigation. NavLink has isActive
+
+useNavigate()
+
+Imperative redirect after action
+
+redirect()
+
+Return from loader/action to redirect
+
+useRouteError()
+
+Get error inside ErrorBoundary
+Form Pattern - No onSubmit
+TSX
+
+export async function loader({ request }: LoaderFunctionArgs) {
+const q = new URL(request.url).searchParams.get("q") ?? "";
+return { q };
 }
-```
 
----
-
-## Client Middleware (Optional — SPA Navigations)
-
-Server middleware only runs when the server is hit. For SPA navigations without a loader, add `clientMiddleware` to redirect unauthenticated users before they see the page:
-
-```tsx
-// app/routes/_protected/_layout.tsx
-import type { Route } from "./+types/_layout";
-
-export const middleware: Route.MiddlewareFunction[] = [authMiddleware];
-
-export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
-  async (_args, next) => {
-    // Read auth state from client-side store (e.g. Zustand, cookie)
-    const isAuthenticated = checkAuthFromStore();
-    if (!isAuthenticated) {
-      throw redirect("/auth/login");
-    }
-    await next();
-  },
-];
-```
-
----
-
-## Middleware Execution Order
-
-Middleware runs as a nested chain: parent → child on the way down, child → parent on the way back up.
-
-```
-GET /dashboard
-
-Root middleware (start)
-  └── _protected/_layout middleware (start)  ← authMiddleware runs here
-        └── dashboard loader runs
-  └── _protected/_layout middleware (end)
-Root middleware (end)
-```
-
----
-
-## Custom Server: Update `getLoadContext`
-
-If using a custom Express/Hono server with `getLoadContext`, return a `RouterContextProvider` instead of a plain object:
-
-```ts
-// server.ts
-import { createContext, RouterContextProvider } from "react-router";
-import { createDb } from "./db";
-
-const dbContext = createContext<Database>();
-
-function getLoadContext(req, res) {
-  const context = new RouterContextProvider();
-  context.set(dbContext, createDb());
-  return context;
+export default function Search() {
+const { q } = useLoaderData<typeof loader>();
+return (
+<Form method="get" action="/search">
+<input name="q" defaultValue={q} />
+<button type="submit">Search</button>
+</Form>
+);
 }
-```
 
----
+RR serializes name="q" to ?q=..., runs loader, re-renders. No useState, no onSubmit.
+Mutation Pattern
+TSX
 
-## Quick Reference
+export async function action({ request, params }: ActionFunctionArgs) {
+const formData = await request.formData();
+if (formData.get("intent") === "delete") {
+await deletePost(params.id);
+return redirect("/posts");
+}
+}
 
-| Use Case                       | Where to Put Middleware                      |
-| ------------------------------ | -------------------------------------------- |
-| All authenticated routes       | `_protected/_layout.tsx`                     |
-| Admin-only routes              | `_admin/_layout.tsx` with chained middleware |
-| Single route guard             | Directly in that route file                  |
-| SPA nav guard (no loader)      | `clientMiddleware` in layout                 |
-| Seed shared data (db, session) | `getLoadContext` in custom server            |
+export default function Post() {
+const fetcher = useFetcher();
+return (
+<fetcher.Form method="post">
+<button name="intent" value="delete">
+{fetcher.state === "submitting" ? "Deleting..." : "Delete"}
+</button>
+</fetcher.Form>
+);
+}
 
----
+URL State Pattern
+TSX
 
-## Common Mistakes
+export default function Products() {
+const [searchParams, setSearchParams] = useSearchParams();
+const sort = searchParams.get("sort") ?? "newest";
 
-- **Do not** use `useContext` or React hooks inside middleware — it runs on the server, not in a component.
-- **Do not** try to read `context` before the middleware that sets it has run — order in the chain matters.
-- **Do not** forget to add the `v8_middleware: true` flag — without it, the `middleware` export is silently ignored.
-- **Do not** put protected and public routes in the same pathless layout group — they will all inherit the middleware.
+return (
+<select
+value={sort}
+onChange={e => setSearchParams({ sort: e.target.value })} >
+<option value="newest">Newest</option>
+<option value="price">Price</option>
+</select>
+);
+}
+
+Active Links
+TSX
+
+<NavLink
+to="/about"
+className={({ isActive }) => isActive ? "text-orange-500" : "text-gray-400"}
+
+> About
+> </NavLink>
+
+Global Loading State
+TSX
+
+// root.tsx
+export default function Root() {
+const navigation = useNavigation();
+return (
+<>
+{navigation.state === "loading" && <Spinner />}
+<Outlet />
+</>
+);
+}
+
+Common Mistakes
+
+    Using onSubmit + navigate → Use <Form method="get|post">
+    Fetching in useEffect → Use loader
+    useState for ?q= → Use useSearchParams or <Form>
+    Manual active link logic → Use NavLink
+    Missing name on inputs → <Form> skips inputs without name
+    Forgetting <Outlet> → Children won't render in layout routes
+    Using BrowserRouter → File routes auto-generate router via Vite plugin
+    Writing FormEvent → If you see it, switch to <Form>
+
+Setup
+TypeScript
+
+// vite.config.ts
+import { reactRouter } from "@react-router/dev/vite";
+export default defineConfig({
+plugins: [reactRouter()],
+});
+
+Create files in app/routes/. No manual route config.
+Decision Tree
+
+    Navigate → <Link to="/path">
+    Submit data → <Form method="post"> + export action
+    Load data → export loader + useLoaderData()
+    Control UI with URL → useSearchParams()
+    Mutate without nav → useFetcher()
+    Show loading → useNavigation().state
+    Active link → <NavLink>
+
+Rule: Prefer RR data APIs over useEffect + fetch. If you're writing FormEvent or onSubmit, stop and use <Form>.

@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order, OrderStatus } from './entities/order.entity';
@@ -15,10 +20,11 @@ export class OrdersService {
     private readonly orderItemsRepository: Repository<OrderItem>,
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-  ) { }
+  ) {}
 
   async create(userId: number, dto: CreateOrderDto): Promise<Order> {
-    if (!dto.items.length) throw new BadRequestException('Order must have at least one item');
+    if (!dto.items.length)
+      throw new BadRequestException('Order must have at least one item');
 
     // Bütün productları bir dəfəyə çəkirik
     const productIds = dto.items.map((i) => i.productId);
@@ -33,7 +39,10 @@ export class OrdersService {
     let totalPrice = 0;
     const orderItems: Partial<OrderItem>[] = dto.items.map((item) => {
       const product = productMap.get(item.productId)!;
-      if (!product.inStock) throw new BadRequestException(`Product "${product.name}" is out of stock`);
+      if (!product.inStock)
+        throw new BadRequestException(
+          `Product "${product.name}" is out of stock`,
+        );
 
       const unitPrice = product.price;
       totalPrice += unitPrice * item.quantity;
@@ -49,6 +58,9 @@ export class OrdersService {
       userId,
       totalPrice,
       address: dto.address,
+      city: dto.city,
+      district: dto.district,
+      zipCode: dto.zipCode,
       phone: dto.phone,
       note: dto.note,
       status: OrderStatus.PENDING,
@@ -82,7 +94,8 @@ export class OrdersService {
     });
 
     if (!order) throw new NotFoundException(`Order #${id} not found`);
-    if (!isAdmin && order.userId !== userId) throw new ForbiddenException('Access denied');
+    if (!isAdmin && order.userId !== userId)
+      throw new ForbiddenException('Access denied');
 
     return order;
   }

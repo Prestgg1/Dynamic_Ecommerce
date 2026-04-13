@@ -2,6 +2,8 @@ import { Link } from "react-router";
 import { type Product } from "~/lib/data";
 import { useLanguage } from "~/context/LanguageContext";
 import { useWishlist } from "~/hooks/useWishlist";
+import { useCartStore } from "~/store/cart.store";
+import toast from "react-hot-toast";
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +12,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { language, t } = useLanguage();
   const { isInWishlist, toggle } = useWishlist(product.id);
+  const addItem = useCartStore((s) => s.addItem);
 
   const name =
     language === "az"
@@ -23,7 +26,10 @@ export default function ProductCard({ product }: ProductCardProps) {
     : null;
 
   // TODO: Backend inteqrasiyasından sonra doldurul
-  const handleAddToCart = () => {};
+  const handleAddToCart = () => {
+    addItem(product as any);
+    toast.success(t("addToCart") + ": " + name);
+  };
 
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100 flex flex-col">

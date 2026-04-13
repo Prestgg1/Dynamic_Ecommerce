@@ -1,14 +1,19 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
+import { Category } from '../categories/entities/category.entity';
+import { Review } from '../reviews/entities/review.entity';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { Wishlist } from '../wishlist/entities/wishlist.entity';
 import { AuthModule } from '../auth/auth.module';
-import { OptionalAuthMiddleware } from 'src/middleware/optional-auth-middleware';
+import { OptionalAuthMiddleware } from '../../middleware/optional-auth-middleware';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, Wishlist]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Product, Wishlist, Category, Review]),
+    AuthModule,
+  ],
   controllers: [ProductsController],
   providers: [ProductsService],
   exports: [ProductsService],

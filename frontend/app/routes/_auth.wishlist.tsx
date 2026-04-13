@@ -9,7 +9,7 @@ import type { components } from "~/lib/types";
 type Product = components["schemas"]["Product"];
 type WishlistItem = components["schemas"]["Wishlist"];
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "Sevilənlər - DəmirMart" },
     { name: "description", content: "Sevilənlər siyahınız" },
@@ -37,7 +37,7 @@ export default function WishlistPage() {
       } else {
         await removeMutation.mutateAsync({ params: { path: { productId: id } } });
       }
-      
+
       toast.success(favorited ? "Məhsul sevilənlərə əlavə olundu" : "Məhsul sevilənlərdən çıxarıldı");
       refetchWishlist();
     } catch {
@@ -147,11 +147,10 @@ export default function WishlistPage() {
                       </div>
                       <button
                         disabled={!product.inStock}
-                        className={`w-full py-3 rounded-xl text-sm font-black transition-all ${
-                          product.inStock
+                        className={`w-full py-3 rounded-xl text-sm font-black transition-all ${product.inStock
                             ? "bg-gray-900 hover:bg-orange-500 text-white shadow-lg hover:shadow-orange-500/30 active:scale-[0.98]"
                             : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        }`}
+                          }`}
                       >
                         {product.inStock ? "Səbətə at" : "Bitib"}
                       </button>

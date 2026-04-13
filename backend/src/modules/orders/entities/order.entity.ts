@@ -42,6 +42,15 @@ export class Order {
   address: string;
 
   @Column({ nullable: true })
+  city: string;
+
+  @Column({ nullable: true })
+  district: string;
+
+  @Column({ nullable: true })
+  zipCode: string;
+
+  @Column({ nullable: true })
   phone: string;
 
   @Column({ nullable: true })

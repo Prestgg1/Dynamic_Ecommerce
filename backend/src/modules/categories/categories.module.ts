@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { CategoriesService } from './categories.service';
@@ -17,7 +22,7 @@ export class CategoriesModule implements NestModule {
     consumer
       .apply(OptionalAuthMiddleware)
       .forRoutes(
-        { path: 'categories/:id', method: RequestMethod.PUT },
+        { path: 'categories/:id', method: RequestMethod.PATCH },
         { path: 'categories/:id', method: RequestMethod.DELETE },
       );
   }

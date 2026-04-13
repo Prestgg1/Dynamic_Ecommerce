@@ -26,6 +26,21 @@ export class CreateOrderDto {
   @IsString()
   address?: string;
 
+  @ApiPropertyOptional({ example: 'Bakı' })
+  @IsOptional()
+  @IsString()
+  city?: string;
+
+  @ApiPropertyOptional({ example: 'Səbail' })
+  @IsOptional()
+  @IsString()
+  district?: string;
+
+  @ApiPropertyOptional({ example: 'AZ1000' })
+  @IsOptional()
+  @IsString()
+  zipCode?: string;
+
   @ApiPropertyOptional({ example: '+994501234567' })
   @IsOptional()
   @IsString()

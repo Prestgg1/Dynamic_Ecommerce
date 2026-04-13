@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { Category } from './entities/category.entity';
@@ -8,7 +19,7 @@ import { CreateCategoryDto, UpdateCategoryDto } from './dtos/category.dto';
 @ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) { }
+  constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all categories' })
@@ -32,7 +43,7 @@ export class CategoriesController {
     return this.categoriesService.create(createCategoryDto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Update category (Admin only)' })
   @ApiResponse({ status: 200, type: Category })

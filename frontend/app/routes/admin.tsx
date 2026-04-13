@@ -45,6 +45,15 @@ export default function AdminLayout() {
             >
               <span>📦</span> Products
             </NavLink>
+            <NavLink
+              to="/admin/orders"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-orange-50 text-orange-600 border-r-2 border-orange-500" : "text-gray-600 hover:bg-gray-50"
+                }`
+              }
+            >
+              <span>🛒</span> Orders
+            </NavLink>
           </nav>
         </aside>
 

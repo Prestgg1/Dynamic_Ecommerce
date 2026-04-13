@@ -1,69 +1,37 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useLoaderData, useNavigate } from "react-router";
-import { useAuth } from "~/context/AuthContext";
+import { Link, useNavigate, useLocation, NavLink, Form } from "react-router";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
-import { userContext } from "~/root";
+import { trpc } from "~/lib/trpc";
 import { useAuthStore } from "~/store/auth.store";
-
-type CategoryName =
-  | "tools"
-  | "hardware"
-  | "pipes"
-  | "fasteners"
-  | "electrical"
-  | "welding"
-  | "safety";
-
-const categories: { id: CategoryName | "all"; labelKey: string }[] = [
-  { id: "all", labelKey: "cat_all" },
-  { id: "tools", labelKey: "cat_tools" },
-  { id: "hardware", labelKey: "cat_hardware" },
-  { id: "pipes", labelKey: "cat_pipes" },
-  { id: "fasteners", labelKey: "cat_fasteners" },
-  { id: "electrical", labelKey: "cat_electrical" },
-  { id: "welding", labelKey: "cat_welding" },
-  { id: "safety", labelKey: "cat_safety" },
-];
+import { useCartStore } from "~/store/cart.store";
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const { mutate: logoutServer } = trpc.useMutation('post', '/auth/logout');
   const { language, setLanguage, t } = useLanguage();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<
-    CategoryName | "all"
-  >("all");
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
-  const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
-  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
+
   const langRef = useRef<HTMLDivElement>(null);
-  const cartRef = useRef<HTMLDivElement>(null);
-  const catRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Placeholder cart data
-  const cartCount = 0;
-  const wishlistCount = 0;
+  const cartCount = useCartStore((s) => s.items.reduce((acc, item) => acc + item.quantity, 0));
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+      if (langRef.current &&!langRef.current.contains(e.target as Node)) {
         setLangDropdownOpen(false);
-      }
-      if (cartRef.current && !cartRef.current.contains(e.target as Node)) {
-        setCartDropdownOpen(false);
-      }
-      if (catRef.current && !catRef.current.contains(e.target as Node)) {
-        setCategoriesOpen(false);
       }
       if (
         profileRef.current &&
-        !profileRef.current.contains(e.target as Node)
+      !profileRef.current.contains(e.target as Node)
       ) {
         setProfileDropdownOpen(false);
       }
@@ -72,23 +40,22 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim() && selectedCategory === "all") return;
-    const params = new URLSearchParams();
-    if (searchQuery) params.set("q", searchQuery);
-    if (selectedCategory !== "all") params.set("category", selectedCategory);
-    navigate(`/search?${params.toString()}`);
-  };
-
-  const langFlags = { az: "🇦🇿", ru: "🇷🇺", en: "🇬🇧" };
-  const langLabels = { az: "AZ", ru: "RU", en: "EN" };
+  const langFlags = { az: "🇦🇿", ru: "🇷🇺", en: "🇬🇧" } as const;
+  const langLabels = { az: "AZ", ru: "RU", en: "EN" } as const;
 
   const shippingBanner = {
     az: "Pulsuz çatdırılma - 50 AZN-dən yuxarı sifarişlərə!",
     ru: "Бесплатная доставка при заказе от 50 AZN!",
     en: "Free shipping on orders over 50 AZN!",
-  };
+  } as const;
+
+  const navLinks = [
+    { to: "/", key: "home" as TranslationKey },
+    { to: "/search", key: "products" as TranslationKey },
+    { to: "/about", key: "about" as TranslationKey },
+    { to: "/services", key: "services" as TranslationKey },
+    { to: "/contact", key: "contactUs" as TranslationKey },
+  ];
 
   return (
     <header className="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
@@ -101,10 +68,7 @@ export default function Header() {
         {/* Main header */}
         <div className="flex items-center gap-4 py-4">
           {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2.5 flex-shrink-0 group"
-          >
+          <Link to="/" className="flex items-center gap-2.5 flex-shrink-0 group">
             <div className="bg-orange-500 p-2.5 rounded-xl shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-all duration-300">
               <svg
                 className="w-6 h-6 text-white"
@@ -116,7 +80,7 @@ export default function Header() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2.5}
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
                 />
                 <path
                   strokeLinecap="round"
@@ -130,74 +94,23 @@ export default function Header() {
               <span className="font-extrabold text-2xl tracking-tighter text-white">
                 DəmirMart
               </span>
-              <p className="text-[10px] text-orange-500 font-bold uppercase tracking-widest leading-none mt-0.5">
+              <p className="text- text-orange-500 font-bold uppercase tracking-widest leading-none mt-0.5">
                 Premium Tools
               </p>
             </div>
           </Link>
 
-          {/* Search bar */}
-          <form
-            onSubmit={handleSearch}
+          {/* Search bar - RRv7 Form component, no onSubmit, no FormEvent */}
+          <Form
+            method="get"
+            action="/search"
             className="flex-1 flex items-center bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 focus-within:border-orange-500/50 transition-all duration-300 group ml-2"
           >
-            <div
-              ref={catRef}
-              className="relative flex-shrink-0 hidden md:block"
-            >
-              <button
-                type="button"
-                onClick={() => setCategoriesOpen(!categoriesOpen)}
-                className="flex items-center gap-2 px-4 py-3 text-gray-300 text-sm font-semibold hover:bg-white/5 transition-colors border-r border-white/10 h-full"
-              >
-                <span className="max-w-[100px] truncate">
-                  {t(
-                    categories.find((c) => c.id === selectedCategory)
-                      ?.labelKey as TranslationKey,
-                  )}
-                </span>
-                <svg
-                  className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-300 ${categoriesOpen ? "rotate-180" : ""}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              {categoriesOpen && (
-                <div className="absolute top-full left-0 mt-2 bg-gray-800 border border-white/10 rounded-xl shadow-2xl z-50 w-56 py-2 backdrop-blur-xl">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedCategory(cat.id);
-                        setCategoriesOpen(false);
-                      }}
-                      className={`w-full text-left px-5 py-2.5 text-sm transition-all ${
-                        selectedCategory === cat.id
-                          ? "bg-orange-500 text-white font-bold"
-                          : "text-gray-300 hover:bg-white/5 hover:text-orange-400"
-                      }`}
-                    >
-                      {t(cat.labelKey as TranslationKey)}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
             <input
               type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t("searchPlaceholder" as TranslationKey)}
+              name="q"
+              defaultValue={new URLSearchParams(location.search).get("q")?? ""}
+              placeholder={t("searchPlaceholder")}
               className="flex-1 px-5 py-3 text-white text-sm outline-none bg-transparent placeholder:text-gray-500"
             />
             <button
@@ -218,7 +131,7 @@ export default function Header() {
                 />
               </svg>
             </button>
-          </form>
+          </Form>
 
           {/* Actions */}
           <div className="flex items-center gap-2 lg:gap-4 flex-shrink-0 ml-2">
@@ -244,7 +157,7 @@ export default function Header() {
                       }}
                       className={`flex items-center gap-3 w-full px-5 py-2.5 text-sm transition-all ${
                         language === lang
-                          ? "bg-orange-500 text-white font-bold"
+                        ? "bg-orange-500 text-white font-bold"
                           : "text-gray-300 hover:bg-white/5 hover:text-orange-400"
                       }`}
                     >
@@ -258,17 +171,17 @@ export default function Header() {
 
             {/* Profile */}
             <div ref={profileRef} className="relative">
-              {user ? (
+              {user? (
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-white/5 border border-white/10 hover:border-orange-500/50 transition-all duration-300"
                 >
                   <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-orange-500 shadow-lg shadow-orange-500/20">
-                    {user?.avatarUrl ? (
+                    {user?.avatarUrl? (
                       <img
                         src={
                           user.avatarUrl.startsWith("http")
-                            ? user.avatarUrl
+                          ? user.avatarUrl
                             : `http://localhost:4000${user.avatarUrl}`
                         }
                         alt={user?.fullName || "User"}
@@ -281,15 +194,15 @@ export default function Header() {
                     )}
                   </div>
                   <div className="hidden lg:block text-left">
-                    <p className="text-xs font-bold text-white truncate max-w-[100px] leading-tight">
+                    <p className="text-xs font-bold text-white truncate max-w- leading-tight">
                       {user?.fullName || "User"}
                     </p>
-                    <p className="text-[10px] text-gray-400 font-medium">
-                      Hesabım
-                    </p>
+                    <p className="text- text-gray-400 font-medium">Hesabım</p>
                   </div>
                   <svg
-                    className={`w-3.5 h-3.5 text-gray-400 hidden lg:block transition-transform duration-300 ${profileDropdownOpen ? "rotate-180" : ""}`}
+                    className={`w-3.5 h-3.5 text-gray-400 hidden lg:block transition-transform duration-300 ${
+                      profileDropdownOpen? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -369,7 +282,7 @@ export default function Header() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                          d="M4.318 6.318a4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 0 00-6.364 0z"
                         />
                       </svg>
                       İstək siyahısı
@@ -377,6 +290,7 @@ export default function Header() {
                     <button
                       onClick={() => {
                         logout();
+                        logoutServer();
                         setProfileDropdownOpen(false);
                       }}
                       className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-all mt-1"
@@ -401,7 +315,7 @@ export default function Header() {
               )}
             </div>
 
-            {/* Cart icons (summary) */}
+            {/* Cart icons */}
             <div className="flex items-center gap-1">
               <Link
                 to="/wishlist"
@@ -417,7 +331,7 @@ export default function Header() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2.5}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364L12 7.636l-1.318-1.318a4.5 0 00-6.364 0z"
                   />
                 </svg>
               </Link>
@@ -438,6 +352,11 @@ export default function Header() {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-lg shadow-orange-500/40">
+                    {cartCount}
+                  </span>
+                )}
               </button>
             </div>
 
@@ -452,7 +371,7 @@ export default function Header() {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                {mobileMenuOpen ? (
+                {mobileMenuOpen? (
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -474,13 +393,28 @@ export default function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-8 py-3 border-t border-white/5">
-          <Link to="/" className="text-sm font-bold text-gray-400 hover:text-orange-500 transition-all relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-orange-500 hover:after:w-full after:transition-all">ANA SƏHİFƏ</Link>
-          <Link to="/search" className="text-sm font-bold text-gray-400 hover:text-orange-500 transition-all">MƏHSULLAR</Link>
-          <Link to="/about" className="text-sm font-bold text-gray-400 hover:text-orange-500 transition-all">HAQQIMIZDA</Link>
-          <Link to="/services" className="text-sm font-bold text-gray-400 hover:text-orange-500 transition-all">XİDMƏTLƏR</Link>
-          <Link to="/contact" className="text-sm font-bold text-gray-400 hover:text-orange-500 transition-all">ƏLAQƏ</Link>
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                `text-sm font-bold transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-orange-500 after:transition-all ${
+                  isActive
+                  ? "text-orange-500 after:w-full"
+                    : "text-gray-400 hover:text-orange-500 after:w-0 hover:after:w-full"
+                }`
+              }
+            >
+              {(link as any).key ? t((link as any).key) : (link as any).label}
+            </NavLink>
+          ))}
+
+
           {!user && (
-            <Link to="/auth/register" className="ml-auto bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl font-black text-xs tracking-tight transition-all active:scale-95 shadow-lg shadow-orange-500/20">
+            <Link
+              to="/auth/register"
+              className="ml-auto bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl font-black text-xs tracking-tight transition-all active:scale-95 shadow-lg shadow-orange-500/20"
+            >
               QEYDİYYAT
             </Link>
           )}
@@ -489,11 +423,15 @@ export default function Header() {
 
       {/* Mobile Drawer */}
       <div
-        className={`fixed inset-0 bg-gray-950/80 backdrop-blur-sm transition-all duration-500 lg:hidden ${mobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}
+        className={`fixed inset-0 bg-gray-950/80 backdrop-blur-sm transition-all duration-500 lg:hidden ${
+          mobileMenuOpen? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+        }`}
         onClick={() => setMobileMenuOpen(false)}
       ></div>
       <div
-        className={`fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-gray-900 shadow-2xl z-[100] transform transition-transform duration-500 ease-out lg:hidden p-6 ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-gray-900 shadow-2xl z-100 transform transition-transform duration-500 ease-out lg:hidden p-6 ${
+          mobileMenuOpen? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="flex items-center justify-between mb-8">
           <span className="font-extrabold text-xl text-orange-500">MENYU</span>
@@ -501,12 +439,7 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(false)}
             className="p-2 rounded-xl bg-white/5 text-gray-400"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -517,23 +450,23 @@ export default function Header() {
           </button>
         </div>
 
-        {user && user && (
+        {user && (
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 mb-6 border border-white/5">
             <img
               src={
                 user?.avatarUrl
-                  ? user.avatarUrl.startsWith("http")
-                    ? user.avatarUrl
+                ? user.avatarUrl.startsWith("http")
+                  ? user.avatarUrl
                     : `http://localhost:4000${user.avatarUrl}`
-                  : `https://ui-avatars.com/api/?background=f97316&color=fff&name=${encodeURIComponent(user?.fullName || "User")}`
+                  : `https://ui-avatars.com/api/?background=f97316&color=fff&name=${encodeURIComponent(
+                      user?.fullName || "User"
+                    )}`
               }
               className="w-12 h-12 rounded-full border-2 border-orange-500 object-cover"
               alt={user?.fullName || "User"}
             />
             <div>
-              <p className="font-bold text-white leading-tight">
-                {user?.fullName || "User"}
-              </p>
+              <p className="font-bold text-white leading-tight">{user?.fullName || "User"}</p>
               <button
                 onClick={() => {
                   navigate("/profile");
@@ -549,27 +482,35 @@ export default function Header() {
 
         <nav className="flex flex-col gap-2">
           {[
-            { to: "/", label: "ANA SƏHİFƏ" },
-            { to: "/search", label: "MƏHSULLAR" },
-            { to: "/about", label: "HAQQIMIZDA" },
-            { to: "/profile", label: "HESABIM", auth: true },
-            { to: "/auth/login", label: "DAXİL OL", guest: true },
-          ].map((link, i) => (
-            ((!link.auth && !link.guest) || (link.auth && user) || (link.guest && !user)) && (
-              <Link
-                key={i}
-                to={link.to}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-5 py-4 rounded-2xl text-base font-extrabold text-gray-300 hover:bg-white/5 hover:text-orange-500 transition-all border border-transparent hover:border-white/5"
-              >
-                {link.label}
-              </Link>
-            )
-          ))}
+            { to: "/", key: "home" as TranslationKey },
+            { to: "/search", key: "products" as TranslationKey },
+            { to: "/about", key: "about" as TranslationKey },
+            { to: "/profile", key: "profile" as TranslationKey, auth: true },
+            { to: "/auth/login", key: "login" as TranslationKey, guest: true },
+          ].map(
+            (link, i) =>
+              ((!link.auth &&!link.guest) || (link.auth && user) || (link.guest &&!user)) && (
+                <NavLink
+                  key={i}
+                  to={link.to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `px-5 py-4 rounded-2xl text-base font-extrabold transition-all border ${
+                      isActive
+                      ? "bg-orange-500/20 text-orange-500 border-orange-500/50"
+                        : "text-gray-300 hover:bg-white/5 hover:text-orange-500 border-transparent hover:border-white/5"
+                    }`
+                  }
+                >
+                  {t(link.key)}
+                </NavLink>
+              )
+          )}
           {user && (
             <button
               onClick={() => {
                 logout();
+                logoutServer();
                 setMobileMenuOpen(false);
               }}
               className="px-5 py-4 rounded-2xl text-base font-extrabold text-red-500 hover:bg-red-500/10 transition-all text-left"

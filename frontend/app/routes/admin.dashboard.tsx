@@ -2,21 +2,21 @@
 import { trpc } from "~/lib/trpc";
 
 export default function AdminDashboard() {
-  const { data: categories } = trpc.useQuery("get", "/categories");
-  const { data: products } = trpc.useQuery("get", "/products");
+  const { data: statsData } = trpc.useQuery("get", "/statistics/admin/dashboard");
 
   const stats = {
-    categories: Array.isArray(categories) ? categories.length : 0,
-    products: Array.isArray(products) ? products.length : 0,
+    users: (statsData as any)?.users || 0,
+    products: (statsData as any)?.products || 0,
+    orders: (statsData as any)?.orders || 0,
   };
 
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Categories" value={stats.categories} icon="📁" color="blue" />
+        <StatCard title="Total Users" value={stats.users} icon="👥" color="blue" />
         <StatCard title="Total Products" value={stats.products} icon="📦" color="orange" />
-        <StatCard title="Orders" value="0" icon="🛒" color="green" />
+        <StatCard title="Total Orders" value={stats.orders} icon="🛒" color="green" />
         <StatCard title="Revenue" value="$0" icon="💰" color="purple" />
       </div>
     </div>

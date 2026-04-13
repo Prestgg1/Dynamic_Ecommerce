@@ -9,7 +9,7 @@ export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private readonly categoriesRepository: Repository<Category>,
-  ) { }
+  ) {}
 
   async findAll(): Promise<Category[]> {
     return this.categoriesRepository.find();
@@ -20,6 +20,15 @@ export class CategoriesService {
   }
 
   async create(dto: CreateCategoryDto): Promise<Category> {
+    if (!dto.slug) {
+      dto.slug = dto.labelEn
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+    }
+    if (!dto.icon) {
+      dto.icon = 'tools';
+    }
     const newCategory = this.categoriesRepository.create(dto);
     return this.categoriesRepository.save(newCategory);
   }

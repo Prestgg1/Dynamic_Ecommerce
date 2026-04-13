@@ -15,6 +15,12 @@ export class Category {
   @Column()
   labelEn: string;
 
+  @Column({ unique: true })
+  slug: string;
+
+  @Column({ nullable: true })
+  icon: string;
+
   @OneToMany('Product', 'category', { onDelete: 'CASCADE', cascade: true })
   products: Product[];
 }

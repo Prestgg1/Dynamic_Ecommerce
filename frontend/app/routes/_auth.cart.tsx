@@ -1,7 +1,10 @@
 import type { Route } from "./+types/_auth.cart";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useCartStore } from "~/store/cart.store";
+import { useLanguage } from "~/context/LanguageContext";
+import { trpc } from "~/lib/trpc";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,63 +13,58 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-  category: string;
-}
 
-const INITIAL_MOCK_DATA: CartItem[] = [
-  {
-    id: 1,
-    name: "Apple iPhone 15 Pro Max, 256GB, Natural Titanium",
-    price: 2999.00,
-    image: "https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=500&auto=format&fit=crop",
-    quantity: 1,
-    category: "Smartfonlar"
-  },
-  {
-    id: 2,
-    name: "Sony WH-1000XM5 Wireless Noise Canceling Headphones",
-    price: 649.00,
-    image: "https://images.unsplash.com/photo-1670055745823-10d939f60f64?q=80&w=500&auto=format&fit=crop",
-    quantity: 2,
-    category: "Aksesuarlar"
-  },
-  {
-    id: 3,
-    name: "MacBook Air M3, 13-inch, 16GB RAM, 512GB SSD",
-    price: 2499.00,
-    image: "https://images.unsplash.com/photo-1517336714460-4c9889a7968b?q=80&w=500&auto=format&fit=crop",
-    quantity: 1,
-    category: "Noutbuklar"
-  }
-];
 
 export default function CartPage() {
-  const [items, setItems] = useState<CartItem[]>(INITIAL_MOCK_DATA);
+  const { language, t } = useLanguage();
+  const navigate = useNavigate();
+  const { items, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore();
+  
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [addressData, setAddressData] = useState({
+    city: "",
+    district: "",
+    address: "",
+    zipCode: "",
+    phone: "",
+    note: ""
+  });
 
-  const updateQuantity = (id: number, delta: number) => {
-    setItems(prev => prev.map(item => {
-      if (item.id === id) {
-        const newQty = Math.max(1, item.quantity + delta);
-        return { ...item, quantity: newQty };
-      }
-      return item;
-    }));
-  };
+  const { mutate: createOrder, isPending: isCheckingOut } = trpc.useMutation("post", "/orders");
 
-  const removeItem = (id: number) => {
-    setItems(prev => prev.filter(item => item.id !== id));
-    toast.success("Məhsul səbətdən silindi");
-  };
-
-  const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const shipping = subtotal > 500 ? 0 : 10;
+  const subtotal = getTotalPrice();
+  const shipping = subtotal > 500 || subtotal === 0 ? 0 : 10;
   const total = subtotal + shipping;
+
+  const handleCheckoutClick = () => {
+    if (items.length === 0) return;
+    setIsAddressModalOpen(true);
+  };
+
+  const submitOrder = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (items.length === 0) return;
+
+    const orderData = {
+      items: items.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+      })),
+      ...addressData
+    };
+
+    createOrder({ body: orderData as any }, {
+      onSuccess: () => {
+        toast.success(t("checkoutSuccess") || "Sifarişiniz uğurla tamamlandı!");
+        clearCart();
+        setIsAddressModalOpen(false);
+        navigate("/profile");
+      },
+      onError: (err: any) => {
+        toast.error(err?.message || "Sifariş zamanı xəta baş verdi");
+      },
+    });
+  };
 
   if (items.length === 0) {
     return (
@@ -117,15 +115,15 @@ export default function CartPage() {
           
           <button 
             onClick={() => {
-              setItems([]);
-              toast.success("Səbət təmizləndi");
+              clearCart();
+              toast.success(t("cartCleared") || "Səbət təmizləndi");
             }}
             className="text-gray-400 hover:text-red-500 font-bold text-sm transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
-            Səbəti təmizlə
+            {t("clearCart" as any) || "Səbəti təmizlə"}
           </button>
         </div>
 
@@ -158,9 +156,9 @@ export default function CartPage() {
 
                 {/* Details */}
                 <div className="flex-1 text-center sm:text-left">
-                  <span className="text-orange-600 text-xs font-black uppercase tracking-widest">{item.category}</span>
+                  <span className="text-orange-600 text-xs font-black uppercase tracking-widest">{item.category?.id}</span>
                   <h3 className="text-lg font-black text-gray-900 mt-1 mb-2 line-clamp-1 group-hover:text-orange-500 transition-colors">
-                    {item.name}
+                    {language === "az" ? item.name : language === "ru" ? item.nameRu : item.nameEn}
                   </h3>
                   <div className="flex items-center justify-center sm:justify-start gap-4 mb-4">
                     <span className="text-xl font-black text-gray-900">{item.price.toFixed(2)} AZN</span>
@@ -172,7 +170,7 @@ export default function CartPage() {
                   {/* Mobile Quantity Control (Hidden on Desktop) */}
                   <div className="flex sm:hidden items-center justify-center gap-4 bg-gray-50 rounded-xl p-1 mb-4">
                     <button 
-                      onClick={() => updateQuantity(item.id, -1)}
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-orange-500 hover:text-white transition-all disabled:opacity-50"
                       disabled={item.quantity <= 1}
                     >
@@ -180,7 +178,7 @@ export default function CartPage() {
                     </button>
                     <span className="text-sm font-black w-8 text-center">{item.quantity}</span>
                     <button 
-                      onClick={() => updateQuantity(item.id, 1)}
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-orange-500 hover:text-white transition-all"
                     >
                       <span className="font-black">+</span>
@@ -192,7 +190,7 @@ export default function CartPage() {
                 <div className="hidden sm:flex flex-col items-end gap-6">
                   <div className="flex items-center gap-2 bg-gray-50 rounded-2xl p-1.5 border border-gray-100">
                     <button 
-                      onClick={() => updateQuantity(item.id, -1)}
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-sm hover:bg-orange-500 hover:text-white transition-all disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-gray-400"
                       disabled={item.quantity <= 1}
                     >
@@ -202,7 +200,7 @@ export default function CartPage() {
                     </button>
                     <span className="text-lg font-black w-12 text-center text-gray-900">{item.quantity}</span>
                     <button 
-                      onClick={() => updateQuantity(item.id, 1)}
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-sm hover:bg-orange-500 hover:text-white transition-all"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,11 +284,21 @@ export default function CartPage() {
                 <span className="text-3xl font-black text-orange-600">{total.toFixed(2)} AZN</span>
               </div>
 
-              <button className="w-full bg-gray-900 hover:bg-orange-500 text-white py-5 rounded-2xl font-black text-lg transition-all shadow-xl shadow-gray-900/10 hover:shadow-orange-500/30 active:scale-[0.98] flex items-center justify-center gap-3 group">
-                Sifarişi tamamla
-                <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+              <button 
+                onClick={handleCheckoutClick}
+                disabled={isCheckingOut || items.length === 0}
+                className="w-full bg-gray-900 hover:bg-orange-500 text-white py-5 rounded-2xl font-black text-lg transition-all shadow-xl shadow-gray-900/10 hover:shadow-orange-500/30 active:scale-[0.98] flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isCheckingOut ? (
+                  <span className="inline-block w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                ) : (
+                  <>
+                    {t("checkout" as any) || "Sifarişi tamamla"}
+                    <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </>
+                )}
               </button>
 
               <div className="mt-8 grid grid-cols-2 gap-4">
@@ -311,6 +319,63 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+
+      {isAddressModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl relative">
+            <button 
+              onClick={() => setIsAddressModalOpen(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-900 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <h3 className="text-2xl font-black text-gray-900 mb-6">Çatdırılma Ünvanı</h3>
+            <form onSubmit={submitOrder} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1 block">Şəhər *</label>
+                  <input required value={addressData.city} onChange={e => setAddressData(d => ({...d, city: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="Bakı" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1 block">Rayon *</label>
+                  <input required value={addressData.district} onChange={e => setAddressData(d => ({...d, district: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="Nəsimi" />
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-xs font-bold text-gray-500 mb-1 block">Tam Ünvan *</label>
+                <input required value={addressData.address} onChange={e => setAddressData(d => ({...d, address: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="Nizami küç. ev 10, mənzil 5" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1 block">Poçt İndeksi</label>
+                  <input value={addressData.zipCode} onChange={e => setAddressData(d => ({...d, zipCode: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="AZ1000" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1 block">Telefon *</label>
+                  <input required value={addressData.phone} onChange={e => setAddressData(d => ({...d, phone: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="+994501234567" />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 mb-1 block">Əlavə Qeyd</label>
+                <textarea value={addressData.note} onChange={e => setAddressData(d => ({...d, note: e.target.value}))} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500 resize-none h-24" placeholder="Kuryer üçün əlavə məlumat..."></textarea>
+              </div>
+
+              <button 
+                type="submit"
+                disabled={isCheckingOut}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-black text-lg transition-all mt-4 disabled:opacity-50"
+              >
+                {isCheckingOut ? "Gözləyin..." : "Təsdiqlə və Sifariş Et"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

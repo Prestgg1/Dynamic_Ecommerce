@@ -13,6 +13,9 @@ export const translations = {
     home: "Ana Səhifə",
     categories: "Kateqoriyalar",
     allCategories: "Bütün Kateqoriyalar",
+    products: "Məhsullar",
+    services: "Xidmətlər",
+    profile: "Hesabım",
     // Home
     heroTitle: "Dəmir Məhsulları",
     heroSubtitle: "Ən keyfiyyətli dəmir məhsulları burada",
@@ -78,6 +81,9 @@ export const translations = {
     total: "Cəmi",
     checkout: "Ödəniş",
     remove: "Sil",
+    checkoutSuccess: "Sifarişiniz uğurla tamamlandı!",
+    cartCleared: "Səbət təmizləndi",
+    clearCart: "Səbəti təmizlə",
     // Footer
     footerTagline: "Keyfiyyətli dəmir məhsulları",
     quickLinks: "Sürətli Keçidlər",
@@ -105,6 +111,9 @@ export const translations = {
     home: "Главная",
     categories: "Категории",
     allCategories: "Все категории",
+    products: "Товары",
+    services: "Услуги",
+    profile: "Профиль",
     // Home
     heroTitle: "Металлические изделия",
     heroSubtitle: "Высококачественные металлические товары здесь",
@@ -170,6 +179,9 @@ export const translations = {
     total: "Итого",
     checkout: "Оформить заказ",
     remove: "Удалить",
+    checkoutSuccess: "Ваш заказ успешно завершен!",
+    cartCleared: "Корзина очищена",
+    clearCart: "Очистить корзину",
     // Footer
     footerTagline: "Качественные металлические изделия",
     quickLinks: "Быстрые ссылки",
@@ -197,6 +209,9 @@ export const translations = {
     home: "Home",
     categories: "Categories",
     allCategories: "All Categories",
+    products: "Products",
+    services: "Services",
+    profile: "My Profile",
     // Home
     heroTitle: "Iron & Metal Products",
     heroSubtitle: "The highest quality metal products right here",
@@ -262,6 +277,9 @@ export const translations = {
     total: "Total",
     checkout: "Checkout",
     remove: "Remove",
+    checkoutSuccess: "Your order has been completed successfully!",
+    cartCleared: "Cart cleared",
+    clearCart: "Clear cart",
     // Footer
     footerTagline: "Quality metal products",
     quickLinks: "Quick Links",

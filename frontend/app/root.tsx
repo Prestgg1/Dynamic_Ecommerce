@@ -3,71 +3,74 @@ import {
   Links,
   Meta,
   Outlet,
-  redirect,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "react-router";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Route } from "./+types/root";
 import "./app.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { LanguageProvider } from "./context/LanguageContext";
+import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
-import { AuthorizedError } from "./routes/home";
-import { createContext } from "react-router";
-import type { User } from "./lib/trpc";
-import { useEffect } from "react";
-import { useAuthStore } from "./store/auth.store";
-export const userContext = createContext<User | null>(null);
+import { useWishlistStore } from "~/store/useWishlistStore";
+
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
+  { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
 
-const queryClient = new QueryClient({
-
-})
-
-export async function loader({
-  request,
-  context,
-}: Route.LoaderArgs) {
-
-  const cookie = request.headers.get("Cookie") ?? "";
-  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
-    headers: { Cookie: cookie },
-  });
-  if (res.ok) {
-    const user = await res.json();
-    return user;
-  }
-  return null;
-}
+// ─── Middleware ───────────────────────────────────────────────────────────────
 
 
-export function Layout({ children }: React.PropsWithChildren) {
-  const user = useLoaderData<typeof loader>()
-  const setUser = useAuthStore((s) => s.setUser);
-  useEffect(() => {
-    setUser(user ?? null);
-  }, [user])
+import { useAuthStore } from "~/store/auth.store";
 
+export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
+  async (_args, next) => {
+    await next();
+
+    const { user, setUser } = useAuthStore.getState();
+    const { isHydrated, hydrate } = useWishlistStore.getState();
+    
+    // Auth Hydration
+    if (!user) {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, { credentials: "include" });
+        if (res.ok) {
+          const userData = await res.json();
+          setUser(userData);
+        }
+      } catch (err) {}
+    }
+
+    // Wishlist Hydration
+    if (isHydrated) return; 
+
+    try {
+      const res = await fetch("/api/wishlist", { credentials: "include" });
+      if (res.ok) {
+        const items = await res.json();
+        hydrate(items ?? []);
+      }
+    } catch {}
+  },
+];
+
+// ─── QueryClient ─────────────────────────────────────────────────────────────
+
+const queryClient = new QueryClient();
+
+// ─── Layout ──────────────────────────────────────────────────────────────────
+
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="az">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -77,10 +80,10 @@ export function Layout({ children }: React.PropsWithChildren) {
       <body>
         <QueryClientProvider client={queryClient}>
           <LanguageProvider>
-            <Header />
-            {children}
-            <Footer />
-            <Toaster position="top-right" />
+              <Header />
+              {children}
+              <Footer />
+              <Toaster position="top-right" />
           </LanguageProvider>
         </QueryClientProvider>
         <ScrollRestoration />
@@ -90,25 +93,26 @@ export function Layout({ children }: React.PropsWithChildren) {
   );
 }
 
+// ─── App ─────────────────────────────────────────────────────────────────────
+
 export default function App() {
   return <Outlet />;
 }
 
+// ─── Error Boundary ───────────────────────────────────────────────────────────
+
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
-  let details = "An unexpected error occurred.";
+  let details = "Gözlənilməz xəta baş verdi.";
   let stack: string | undefined;
 
-  if (error instanceof AuthorizedError) {
-    return redirect("/auth/login");
-  }
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? "404" : "Xəta";
     details =
       error.status === 404
-        ? "The requested page could not be found."
+        ? "Axtardığınız səhifə tapılmadı."
         : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
+  } else if (import.meta.env.DEV && error instanceof Error) {
     details = error.message;
     stack = error.stack;
   }

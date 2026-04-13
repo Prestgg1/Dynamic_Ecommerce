@@ -56,7 +56,8 @@ const categoryColors: Record<string, string> = {
 
 export default function Home() {
   const { t } = useLanguage();
-  const featured = getFeaturedProducts();
+  
+
   const bestSellers = products.filter((p) => p.isBestSeller);
   const newArrivals = products.filter((p) => p.isNew);
   const allCategories = categories.filter((c) => c.id !== "all");

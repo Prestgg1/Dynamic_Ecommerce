@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: [
-      'https://5a58-62-212-236-132.ngrok-free.app',
+      'https://semiprotective-ruthanne-trendily.ngrok-free.dev',
       'http://localhost:3000',
       'http://localhost:5173',
     ],

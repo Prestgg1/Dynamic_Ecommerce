@@ -34,7 +34,7 @@
 | Əlaqə (`/contact`)             | —            | ✅           | —                     | Hazırdır |
 | Məhsul detal (`/products/:id`) | ✅           | ✅           | ✅                    | Hazırdır |
 | Wishlist (`/wishlist`)         | ✅           | ✅           | ✅                    | Hazırdır |
-| Admin Panel                    | ❌           | ⏳           | ❌                    | Gün 11   |
+| Admin Panel                    | ✅           | ✅           | ✅                    | Gün 11   |
 
 ---
 
@@ -89,9 +89,9 @@
 - [x] Logout Anlıq Çıxmır.
 - [x] Axtarış Backend tərəfindən gəlməli və frontend tərəfdə Debounce hookundan istifadə edərək hazırlamalısan.
 - [x] like effekti anlıq olmalıdır.
-- [ ] Header və Footerdə Tərcümə hissəsində boşluq var.
-- [ ] Məhsul detal səhifəsinin miqrasiyası və API bağlantısı.
-- [ ] Səbət (Cart) məntiqinin qurulması (Local state və ya Backend).
+- [x] Header və Footerdə Tərcümə hissəsində boşluq var.
+- [x] Səbət (Cart) məntiqinin qurulması (Local state və ya Backend).
+- [x] Məhsul detal səhifəsinin miqrasiyası və API bağlantısı.
 - [ ] Iftifadəçi Rəyləri
 - [ ] Statistika çıxarılması
 - [ ] Müştəri idarə etmə sistemi
@@ -102,6 +102,27 @@
 - [x] Frontend-də `useDebounce` hook-u yaradıldı (API istəklərini gecikdirmək/throttling üçün).
 - [x] Wishlist səhifəsinin köhnə dizayndan tam miqrasiyası edildi və trpc ilə backende bağlandı.
 - [x] Köhnə wishlist papkası (`/oldprojectdesigns/app/wishlist`) silindi.
+
+### GÜN 11 — Kateqoriya Sistemi & Admin Panel
+
+- [x] Backend Category Entity-də `slug` və `icon` field-ləri əlavə edildi.
+- [x] Backend `CategoriesService`-də avtomatik slug generasiya məntiqi quruldu.
+- [x] Database seed skripti kateqoriya icon və slug-ları ilə yeniləndi.
+- [x] Frontend Admin kateqoriya formunda **"Auto"** slug generasiya düyməsi əlavə edildi.
+- [x] **Premium UI**: Kateqoriyalar Ana Səhifədə dinamik ikonlar və gradient-lərlə göstərilir (`IconDisplay` inteqrasiyası).
+- [x] Frontend Admin panelində `PATCH` xətası və backend route uyğunsuzluğu aradan qaldırıldı.
+- [x] TypeORM metadata circular dependency və import xətaları həll edildi.
+- [x] Kateqoriyalar Header-dən silindi (UX sadələşdirilməsi).
+
+* ### GÜN 12 — Səbət (Cart) Sistemi
+*
+* - [x] Zustand store yaradıldı və `persist` middleware ilə local storage-ə bağlandı.
+* - [x] Header-də dinamik səbət sayı (cart count badge) əlavə edildi.
+* - [x] `ProductCard` və `ProductDetailPage`-də "Səbətə əlavə et" funksionallığı reallaşdırıldı.
+* - [x] Cart səhifəsi tamamilə dinamikləşdirildi (Məhsulların idarə olunması, xülasə hesablama).
+* - [x] Checkout (Sifarişi tamamlama) backend `POST /orders` endpoint-inə bağlandı.
+* - [x] i18n dəstəyi cart səhifəsi üçün bütün dillərdə (AZ, RU, EN) təmin edildi.
+*
 
 ---
 
