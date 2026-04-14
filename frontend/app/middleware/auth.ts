@@ -2,7 +2,9 @@ import { redirect, type MiddlewareFunction } from "react-router";
 import { useAuthStore } from "~/store/auth.store";
 
 export const authMiddleware: MiddlewareFunction = async ({ request }, next) => {
-  const { user, setUser } = useAuthStore.getState();
+  return next();
+  /* 
+   const { user, setUser } = useAuthStore.getState();
 
   // If already in store, we trust it (or we could re-verify)
   if (user) {
@@ -25,4 +27,6 @@ export const authMiddleware: MiddlewareFunction = async ({ request }, next) => {
     if (error instanceof Response) throw error;
     return redirect("/auth/login");
   }
+ 
+ */
 };

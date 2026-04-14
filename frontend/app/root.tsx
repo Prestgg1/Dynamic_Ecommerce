@@ -1,3 +1,4 @@
+// root.tsx
 import {
   isRouteErrorResponse,
   Links,
@@ -12,10 +13,11 @@ import "./app.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { LanguageProvider } from "./context/LanguageContext";
-import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { useWishlistStore } from "~/store/useWishlistStore";
-
+import { useAuthStore } from "~/store/auth.store";
+import { trpc } from "./lib/trpc";
+import InitialLayout from "./components/InitialLayout";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -26,45 +28,12 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
-
-
-import { useAuthStore } from "~/store/auth.store";
-
-export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
-  async (_args, next) => {
-    await next();
-
-    const { user, setUser } = useAuthStore.getState();
-    const { isHydrated, hydrate } = useWishlistStore.getState();
-    
-    // Auth Hydration
-    if (!user) {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, { credentials: "include" });
-        if (res.ok) {
-          const userData = await res.json();
-          setUser(userData);
-        }
-      } catch (err) {}
-    }
-
-    // Wishlist Hydration
-    if (isHydrated) return; 
-
-    try {
-      const res = await fetch("/api/wishlist", { credentials: "include" });
-      if (res.ok) {
-        const items = await res.json();
-        hydrate(items ?? []);
-      }
-    } catch {}
-  },
-];
-
 // ─── QueryClient ─────────────────────────────────────────────────────────────
 
 const queryClient = new QueryClient();
+
+
+
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 
@@ -80,10 +49,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <QueryClientProvider client={queryClient}>
           <LanguageProvider>
+            <InitialLayout >
+
               <Header />
               {children}
               <Footer />
               <Toaster position="top-right" />
+
+
+            </InitialLayout>
           </LanguageProvider>
         </QueryClientProvider>
         <ScrollRestoration />

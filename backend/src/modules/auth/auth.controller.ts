@@ -41,7 +41,7 @@ export class AuthController {
     const sessionId = await this.authService.register(dto);
     res.cookie('sid', sessionId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true, //process.env.NODE_ENV === 'production'
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -58,8 +58,8 @@ export class AuthController {
     const sessionId = await this.authService.login(dto);
     res.cookie('sid', sessionId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return { success: true };

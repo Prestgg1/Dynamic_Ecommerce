@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: [
-      'https://semiprotective-ruthanne-trendily.ngrok-free.dev',
+      'https://cksxli-ip-62-212-236-132.tunnelmole.net',
       'http://localhost:3000',
       'http://localhost:5173',
     ],
