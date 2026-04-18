@@ -13,8 +13,8 @@ export class Review {
   @Column('int')
   rating: number; // Star count (məs: 1-5 arası)
 
-  @ManyToOne(() => Product, (product) => product.reviews, { onDelete: 'CASCADE' })
-  product: Product;
+@ManyToOne('Product', 'reviews', { onDelete: 'CASCADE' })
+product: Product;
 
   @Column()
   productId: number;
