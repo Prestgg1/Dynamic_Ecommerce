@@ -11,9 +11,9 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ReviewsService } from './review.service';
 import { CreateReviewDto, ReviewResponseDto } from './dtos/review.dto';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { AdminGuard } from 'src/guards/admin.guard';
-import type { RequestWithUser } from 'src/middleware/optional-auth-middleware';
+import { AuthGuard } from '../../guards/auth.guard';
+import { AdminGuard } from '../../guards/admin.guard';
+import type { RequestWithUser } from '../../middleware/optional-auth-middleware';
 
 @ApiTags('reviews')
 @Controller('reviews')

@@ -5,7 +5,7 @@ import { OrdersService } from './orders.service';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { Product } from '../products/entities/product.entity';
-import { OptionalAuthMiddleware } from 'src/middleware/optional-auth-middleware';
+import { OptionalAuthMiddleware } from '../../middleware/optional-auth-middleware';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({

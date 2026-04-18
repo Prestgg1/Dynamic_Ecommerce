@@ -2,9 +2,9 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, U
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto, OrderResponseDto, UpdateOrderStatusDto } from './dtos/order.dto';
-import { AdminGuard } from 'src/guards/admin.guard';
-import { AuthGuard } from 'src/guards/auth.guard';
-import type { RequestWithUser } from 'src/middleware/optional-auth-middleware';
+import { AdminGuard } from '../../guards/admin.guard';
+import { AuthGuard } from '../../guards/auth.guard';
+import type { RequestWithUser } from '../../middleware/optional-auth-middleware';
 
 @ApiTags('orders')
 @Controller('orders')

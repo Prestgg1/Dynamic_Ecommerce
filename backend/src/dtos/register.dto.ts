@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, MinLength, Matches } from 'class-validator';
-import { Match } from 'src/match.decorator';
+import { Match } from '../match.decorator';
 
 export class RegisterDto {
   @IsNotEmpty({ message: 'Name boş ola bilməz' })
