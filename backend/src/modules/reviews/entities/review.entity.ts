@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import type { Product } from '../../products/entities/product.entity';
 import { User } from '../../users/entities/user.entity'; // User entity-nizin yolu
 
 @Entity('reviews')
@@ -12,8 +13,8 @@ export class Review {
   @Column('int')
   rating: number; // Star count (məs: 1-5 arası)
 
-@ManyToOne('Product', 'reviews', { onDelete: 'CASCADE' })
-product: any;
+  @ManyToOne('Product', 'reviews', { onDelete: 'CASCADE' })
+  product: Product;
 
   @Column()
   productId: number;
