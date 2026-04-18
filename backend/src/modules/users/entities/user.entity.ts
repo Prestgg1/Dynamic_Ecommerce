@@ -1,4 +1,4 @@
-import { Order } from 'src/modules/orders/entities/order.entity';
+import type { Order } from 'src/modules/orders/entities/order.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -42,5 +42,5 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
-  @OneToMany(() => Order, (order) => order.user) orders: Order[]
+  @OneToMany('Order', (order: Order) => order.user) orders: Order[]
 }
