@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
-import { Product } from '../../products/entities/product.entity';
 import { User } from '../../users/entities/user.entity'; // User entity-nizin yolu
 
 @Entity('reviews')

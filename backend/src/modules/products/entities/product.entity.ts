@@ -7,7 +7,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
-import { Review } from '../../reviews/entities/review.entity';
 
 @Entity('products')
 export class Product {
