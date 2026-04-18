@@ -32,7 +32,7 @@ export class Product {
   descriptionEn: string;
 
    @OneToMany('Review', 'product')
-reviews: Review[];
+reviews: any[];
 
   @Column('decimal', {
     precision: 10,
