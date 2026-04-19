@@ -48,8 +48,7 @@ export default function Home() {
   // Easy-to-swap industrial steel images
   const images = {
     hero: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg", // Steel plant at dusk
-    about:
-      "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg", // Factory interior
+    about: "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg", // Factory interior
     steelCoils:
       "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg", // Massive steel coils
     fabrication:
@@ -404,7 +403,7 @@ export default function Home() {
       {/* TESTIMONIALS & WHY US - Combined for better flow */}
       <section
         ref={testimonialsRef}
-        className="py-28 bg-zinc-100 text-zinc-900"
+        className="py-20 bg-zinc-100 text-zinc-900"
       >
         <div className="max-w-7xl mx-auto px-6">
           <h2
@@ -426,40 +425,46 @@ export default function Home() {
                 Michael Berger — EuroBuild Group
               </div>
             </div>
+            <div
+              className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+            >
+              <p className="italic text-lg">
+                "SultanovSteel consistently delivers on time with excellent
+                quality. They have become our strategic partner for all major
+                projects."
+              </p>
+              <div className="mt-8 font-semibold">
+                Michael Berger — EuroBuild Group
+              </div>
+            </div>
+            <div
+              className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+            >
+              <p className="italic text-lg">
+                "SultanovSteel consistently delivers on time with excellent
+                quality. They have become our strategic partner for all major
+                projects."
+              </p>
+              <div className="mt-8 font-semibold">
+                Michael Berger — EuroBuild Group
+              </div>
+            </div>
+            <div
+              className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+            >
+              <p className="italic text-lg">
+                "SultanovSteel consistently delivers on time with excellent
+                quality. They have become our strategic partner for all major
+                projects."
+              </p>
+              <div className="mt-8 font-semibold">
+                Michael Berger — EuroBuild Group
+              </div>
+            </div>
             {/* You can easily add more testimonial cards here */}
           </div>
 
-          {/* Why Choose Us */}
-          <h2
-            className={`text-5xl font-bold tracking-tighter text-center mb-12 transition-all ${whyVisible ? "opacity-100" : "opacity-0"}`}
-          >
-            Why Leading Enterprises Choose Us
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Unmatched Reliability",
-                desc: "99.8% on-time delivery with full traceability",
-              },
-              {
-                title: "Transparent Pricing",
-                desc: "No hidden costs. Volume discounts for enterprise partners",
-              },
-              {
-                title: "Dedicated Support",
-                desc: "Personal account managers and 24/7 technical assistance",
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className={`p-10 bg-white border border-zinc-200 rounded-3xl hover:border-[#22d3ee] transition-all ${whyVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-                style={{ transitionDelay: `${i * 150}ms` }}
-              >
-                <h3 className="text-2xl font-semibold mb-4">{item.title}</h3>
-                <p className="text-zinc-600">{item.desc}</p>
-              </div>
-            ))}
-          </div>
+       
         </div>
       </section>
 
