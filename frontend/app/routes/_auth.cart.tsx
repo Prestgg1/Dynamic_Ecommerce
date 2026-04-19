@@ -13,13 +13,13 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-
-
 export default function CartPage() {
   const { language, t } = useLanguage();
   const navigate = useNavigate();
-  const { items, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore();
-  
+
+  const { items, updateQuantity, removeItem, clearCart, getTotalPrice } =
+    useCartStore();
+
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [addressData, setAddressData] = useState({
     city: "",
@@ -27,10 +27,13 @@ export default function CartPage() {
     address: "",
     zipCode: "",
     phone: "",
-    note: ""
+    note: "",
   });
 
-  const { mutate: createOrder, isPending: isCheckingOut } = trpc.useMutation("post", "/orders");
+  const { mutate: createOrder, isPending: isCheckingOut } = trpc.useMutation(
+    "post",
+    "/orders",
+  );
 
   const subtotal = getTotalPrice();
   const shipping = subtotal > 500 || subtotal === 0 ? 0 : 10;
@@ -50,48 +53,66 @@ export default function CartPage() {
         productId: item.id,
         quantity: item.quantity,
       })),
-      ...addressData
+      ...addressData,
     };
 
-    createOrder({ body: orderData as any }, {
-      onSuccess: () => {
-        toast.success(t("checkoutSuccess") || "Sifarişiniz uğurla tamamlandı!");
-        clearCart();
-        setIsAddressModalOpen(false);
-        navigate("/profile");
+    createOrder(
+      { body: orderData as any },
+      {
+        onSuccess: () => {
+          toast.success(
+            t("checkoutSuccess") || "Sifarişiniz uğurla tamamlandı!",
+          );
+          clearCart();
+          setIsAddressModalOpen(false);
+          navigate("/profile");
+        },
+        onError: (err: any) => {
+          toast.error(err?.message || "Sifariş zamanı xəta baş verdi");
+        },
       },
-      onError: (err: any) => {
-        toast.error(err?.message || "Sifariş zamanı xəta baş verdi");
-      },
-    });
+    );
   };
 
+  // Empty Cart State
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-gray-50 pt-36 pb-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 p-16 max-w-2xl mx-auto overflow-hidden relative">
-            {/* Abstract Background Shapes */}
-            <div className="absolute -top-12 -right-12 w-48 h-48 bg-orange-50 rounded-full blur-3xl opacity-60"></div>
-            <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-50 rounded-full blur-3xl opacity-60"></div>
-            
+      <main className="min-h-screen bg-[#0a1428] pt-36 pb-12 flex items-center justify-center">
+        <div className="max-w-2xl mx-auto px-6 text-center">
+          <div className="bg-[#13223f] rounded-3xl p-16 border border-white/10 relative overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl" />
+
             <div className="relative z-10">
-              <div className="w-24 h-24 bg-orange-50 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-orange-100 rotate-6 hover:rotate-0 transition-transform duration-500">
-                <svg className="w-12 h-12 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <div className="w-28 h-28 bg-orange-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-orange-500/20">
+                <svg
+                  className="w-16 h-16 text-orange-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
                 </svg>
               </div>
-              <h1 className="text-4xl font-black text-gray-900 mb-4">Səbətiniz boşdur</h1>
-              <p className="text-gray-500 mb-10 text-lg font-medium max-w-sm mx-auto">Görünür hələ heç bir məhsul əlavə etməmisiniz. Ən yeni məhsullarımızı kəşf edin!</p>
+
+              <h1 className="text-4xl font-bold tracking-tighter text-white mb-4">
+                Səbətiniz boşdur
+              </h1>
+              <p className="text-zinc-400 text-lg max-w-sm mx-auto mb-10">
+                Görünür hələ heç bir məhsul əlavə etməmisiniz. Ən yeni
+                məhsullarımızı kəşf edin!
+              </p>
+
               <Link
                 to="/search"
-                className="inline-flex items-center gap-2 bg-gray-900 hover:bg-orange-500 text-white px-10 py-4 rounded-2xl font-black transition-all shadow-xl shadow-gray-900/20 hover:shadow-orange-500/40 active:scale-95 group"
+                className="inline-flex items-center gap-3 bg-orange-500 hover:bg-orange-600 text-white px-10 py-5 rounded-2xl font-bold text-lg transition-all active:scale-95 shadow-lg"
               >
                 Alış-verişə başla
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="ArrowRightIcon" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+                <span>→</span>
               </Link>
             </div>
           </div>
@@ -101,276 +122,296 @@ export default function CartPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-36 pb-24">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
+    <main className="min-h-screen bg-[#0a1428] text-white pt-28 pb-24">
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div className="flex items-center gap-4">
-            <div className="w-2 h-10 bg-orange-500 rounded-full"></div>
-            <div>
-              <h1 className="text-4xl font-black text-gray-900 tracking-tight">Səbətim</h1>
-              <p className="text-gray-500 font-bold mt-1">{items.length} məhsul seçilib</p>
+          <div>
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-3 h-8 bg-orange-500 rounded" />
+              <h1 className="text-4xl font-bold tracking-tighter">Səbətim</h1>
             </div>
+            <p className="text-zinc-400">{items.length} məhsul seçilib</p>
           </div>
-          
-          <button 
+
+          <button
             onClick={() => {
               clearCart();
-              toast.success(t("cartCleared") || "Səbət təmizləndi");
+              toast.success("Səbət təmizləndi");
             }}
-            className="text-gray-400 hover:text-red-500 font-bold text-sm transition-colors flex items-center gap-2"
+            className="flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-red-400 transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
             </svg>
-            {t("clearCart" as any) || "Səbəti təmizlə"}
+            Səbəti təmizlə
           </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Cart Items */}
           <div className="lg:col-span-8 space-y-6">
-            <Link 
-              to="/search" 
-              className="inline-flex items-center gap-2 text-sm font-black text-gray-500 hover:text-orange-500 transition-colors mb-2 group"
+            <Link
+              to="/search"
+              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-orange-400 transition-colors mb-4"
             >
-              <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-              </svg>
-              Alış-verişə davam et
+              ← Alış-verişə davam et
             </Link>
 
             {items.map((item) => (
-              <div 
+              <div
                 key={item.id}
-                className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-center gap-8 group"
+                className="bg-[#13223f] border border-white/10 rounded-3xl p-6 flex flex-col md:flex-row gap-6 group hover:border-orange-500/30 transition-all"
               >
                 {/* Image */}
-                <div className="w-32 h-32 bg-gray-50 rounded-3xl overflow-hidden shrink-0 border border-gray-100 relative group-hover:bg-white transition-colors">
-                  <img 
-                    src={item.image} 
-                    alt={item.name}
-                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 p-2"
+                <div className="w-full md:w-40 h-40 bg-[#0a1428] rounded-2xl overflow-hidden border border-white/10 flex-shrink-0 relative group">
+                  <img
+                    src={item.image }
+                    alt={item.name || "Product"}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  
                   />
                 </div>
 
                 {/* Details */}
-                <div className="flex-1 text-center sm:text-left">
-                  <span className="text-orange-600 text-xs font-black uppercase tracking-widest">{item.category?.id}</span>
-                  <h3 className="text-lg font-black text-gray-900 mt-1 mb-2 line-clamp-1 group-hover:text-orange-500 transition-colors">
-                    {language === "az" ? item.name : language === "ru" ? item.nameRu : item.nameEn}
+                <div className="flex-1">
+                  <h3 className="font-bold text-xl text-white mb-1 line-clamp-2 group-hover:text-orange-400 transition-colors">
+                    {language === "az"
+                      ? item.name
+                      : language === "ru"
+                        ? item.nameRu
+                        : item.nameEn}
                   </h3>
-                  <div className="flex items-center justify-center sm:justify-start gap-4 mb-4">
-                    <span className="text-xl font-black text-gray-900">{item.price.toFixed(2)} AZN</span>
-                    {deltaPrice(item.price) && (
-                      <span className="text-sm font-bold text-gray-400 line-through">{(item.price * 1.2).toFixed(2)} AZN</span>
-                    )}
-                  </div>
+                  <p className="text-orange-400 text-sm font-medium mb-4">
+                    {item.price.toFixed(2)} AZN
+                  </p>
 
-                  {/* Mobile Quantity Control (Hidden on Desktop) */}
-                  <div className="flex sm:hidden items-center justify-center gap-4 bg-gray-50 rounded-xl p-1 mb-4">
-                    <button 
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-orange-500 hover:text-white transition-all disabled:opacity-50"
-                      disabled={item.quantity <= 1}
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center bg-[#0a1428] rounded-2xl border border-white/10">
+                      <button
+                        onClick={() =>
+                          updateQuantity(item.id, item.quantity - 1)
+                        }
+                        disabled={item.quantity <= 1}
+                        className="w-12 h-12 flex items-center justify-center text-xl font-bold hover:bg-white/5 disabled:opacity-40 transition-all"
+                      >
+                        −
+                      </button>
+                      <span className="w-12 text-center font-bold text-lg">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() =>
+                          updateQuantity(item.id, item.quantity + 1)
+                        }
+                        className="w-12 h-12 flex items-center justify-center text-xl font-bold hover:bg-white/5 transition-all"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => removeItem(item.id)}
+                      className="text-red-400 hover:text-red-500 text-sm font-medium flex items-center gap-2 transition-colors"
                     >
-                      <span className="font-black">-</span>
-                    </button>
-                    <span className="text-sm font-black w-8 text-center">{item.quantity}</span>
-                    <button 
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm hover:bg-orange-500 hover:text-white transition-all"
-                    >
-                      <span className="font-black">+</span>
+                      Sil
                     </button>
                   </div>
                 </div>
 
-                {/* Desktop Quantity & Remove */}
-                <div className="hidden sm:flex flex-col items-end gap-6">
-                  <div className="flex items-center gap-2 bg-gray-50 rounded-2xl p-1.5 border border-gray-100">
-                    <button 
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-sm hover:bg-orange-500 hover:text-white transition-all disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-gray-400"
-                      disabled={item.quantity <= 1}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M20 12H4" />
-                      </svg>
-                    </button>
-                    <span className="text-lg font-black w-12 text-center text-gray-900">{item.quantity}</span>
-                    <button 
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-sm hover:bg-orange-500 hover:text-white transition-all"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                      </svg>
-                    </button>
-                  </div>
-                  
-                  <button 
-                    onClick={() => removeItem(item.id)}
-                    className="text-xs font-black text-gray-400 hover:text-red-500 uppercase tracking-widest flex items-center gap-1.5 px-3 py-1 transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Sil
-                  </button>
+                {/* Price */}
+                <div className="text-right md:min-w-[140px] flex items-center md:items-start justify-end">
+                  <p className="text-2xl font-bold text-white">
+                    {(item.price * item.quantity).toFixed(2)} AZN
+                  </p>
                 </div>
-
-                {/* Mobile Remove (Hidden on Desktop) */}
-                <button 
-                  onClick={() => removeItem(item.id)}
-                  className="sm:hidden absolute top-4 right-4 text-gray-300 hover:text-red-500 p-2"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
               </div>
             ))}
           </div>
 
-          {/* Summary */}
+          {/* Order Summary */}
           <div className="lg:col-span-4">
-            <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl shadow-gray-200/50 sticky top-36">
-              <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-3">
+            <div className="bg-[#13223f] border border-white/10 rounded-3xl p-8 sticky top-28">
+              <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
                 Sifarişin xülasəsi
-                <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                <div className="flex-1 h-px bg-white/10" />
               </h2>
 
-              {/* Coupon Code */}
-              <div className="mb-8 group">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block px-1">Kupon kodu</label>
-                <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    placeholder="YAY2024"
-                    className="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-orange-500/50 transition-all placeholder:text-gray-300"
-                  />
-                  <button className="bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-3 rounded-xl font-black text-xs transition-all active:scale-95">
-                    Tətbiq et
-                  </button>
+              <div className="space-y-5 mb-10">
+                <div className="flex justify-between text-zinc-400">
+                  <span>Məhsullar ({items.length})</span>
+                  <span className="text-white font-medium">
+                    {subtotal.toFixed(2)} AZN
+                  </span>
                 </div>
-              </div>
-
-              <div className="space-y-4 mb-8">
-                <div className="flex justify-between items-center text-gray-500 font-bold">
-                  <span>Məhsullar</span>
-                  <span className="text-gray-900">{subtotal.toFixed(2)} AZN</span>
-                </div>
-                <div className="flex justify-between items-center text-gray-500 font-bold">
+                <div className="flex justify-between text-zinc-400">
                   <span>Çatdırılma</span>
-                  <span className={shipping === 0 ? "text-green-500" : "text-gray-900"}>
+                  <span
+                    className={
+                      shipping === 0 ? "text-emerald-400" : "text-white"
+                    }
+                  >
                     {shipping === 0 ? "Pulsuz" : `${shipping.toFixed(2)} AZN`}
                   </span>
                 </div>
-                {shipping > 0 && (
-                  <div className="bg-orange-50 rounded-2xl p-4 border border-orange-100/50">
-                    <p className="text-[10px] text-orange-700 font-black uppercase tracking-wider leading-relaxed">
-                      💡 500 AZN üzəri alış-verişdə çatdırılma pulsuzdur! 
-                      <span className="block mt-1">Daha {(500 - subtotal).toFixed(2)} AZN əlavə edin.</span>
-                    </p>
-                  </div>
-                )}
               </div>
 
-              <div className="h-px bg-gray-100 mb-6"></div>
+              {shipping > 0 && (
+                <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-5 mb-8 text-sm text-orange-300">
+                  500 AZN üzəri sifarişdə çatdırılma pulsuzdur.
+                </div>
+              )}
 
-              <div className="flex justify-between items-center mb-8">
-                <span className="text-xl font-black text-gray-900">Yekun</span>
-                <span className="text-3xl font-black text-orange-600">{total.toFixed(2)} AZN</span>
+              <div className="h-px bg-white/10 my-8" />
+
+              <div className="flex justify-between items-end mb-10">
+                <span className="text-xl">Yekun məbləğ</span>
+                <span className="text-4xl font-bold text-orange-400">
+                  {total.toFixed(2)} AZN
+                </span>
               </div>
 
-              <button 
+              <button
                 onClick={handleCheckoutClick}
-                disabled={isCheckingOut || items.length === 0}
-                className="w-full bg-gray-900 hover:bg-orange-500 text-white py-5 rounded-2xl font-black text-lg transition-all shadow-xl shadow-gray-900/10 hover:shadow-orange-500/30 active:scale-[0.98] flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isCheckingOut}
+                className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white py-5 rounded-2xl font-bold text-lg transition-all active:scale-[0.98]"
               >
-                {isCheckingOut ? (
-                  <span className="inline-block w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                ) : (
-                  <>
-                    {t("checkout" as any) || "Sifarişi tamamla"}
-                    <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </>
-                )}
+                {isCheckingOut ? "Sifariş tamamlanır..." : "Sifarişi tamamla"}
               </button>
 
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                  <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-tighter">Təhlükəsiz ödəniş</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                  <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-tighter">Asan geri qaytarma</span>
-                </div>
-              </div>
+              <p className="text-center text-xs text-zinc-500 mt-6">
+                Təhlükəsiz ödəniş • Ən yaxşı qiymət zəmanəti
+              </p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Address Modal */}
       {isAddressModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl relative">
-            <button 
-              onClick={() => setIsAddressModalOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-900 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <h3 className="text-2xl font-black text-gray-900 mb-6">Çatdırılma Ünvanı</h3>
-            <form onSubmit={submitOrder} className="space-y-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-white text-gray-900 rounded-3xl p-10 max-w-lg w-full shadow-2xl">
+            <div className="flex justify-between items-center mb-8">
+              <h3 className="text-2xl font-bold">Çatdırılma Ünvanı</h3>
+              <button
+                onClick={() => setIsAddressModalOpen(false)}
+                className="text-gray-400 hover:text-gray-900"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={submitOrder} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-gray-500 mb-1 block">Şəhər *</label>
-                  <input required value={addressData.city} onChange={e => setAddressData(d => ({...d, city: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="Bakı" />
+                  <label className="block text-sm font-medium mb-2">
+                    Şəhər *
+                  </label>
+                  <input
+                    required
+                    value={addressData.city}
+                    onChange={(e) =>
+                      setAddressData((d) => ({ ...d, city: e.target.value }))
+                    }
+                    className="w-full border border-gray-200 rounded-2xl px-5 py-3 focus:border-orange-500 outline-none"
+                    placeholder="Bakı"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 mb-1 block">Rayon *</label>
-                  <input required value={addressData.district} onChange={e => setAddressData(d => ({...d, district: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="Nəsimi" />
+                  <label className="block text-sm font-medium mb-2">
+                    Rayon *
+                  </label>
+                  <input
+                    required
+                    value={addressData.district}
+                    onChange={(e) =>
+                      setAddressData((d) => ({
+                        ...d,
+                        district: e.target.value,
+                      }))
+                    }
+                    className="w-full border border-gray-200 rounded-2xl px-5 py-3 focus:border-orange-500 outline-none"
+                    placeholder="Nəsimi"
+                  />
                 </div>
               </div>
-              
+
               <div>
-                <label className="text-xs font-bold text-gray-500 mb-1 block">Tam Ünvan *</label>
-                <input required value={addressData.address} onChange={e => setAddressData(d => ({...d, address: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="Nizami küç. ev 10, mənzil 5" />
+                <label className="block text-sm font-medium mb-2">
+                  Tam ünvan *
+                </label>
+                <input
+                  required
+                  value={addressData.address}
+                  onChange={(e) =>
+                    setAddressData((d) => ({ ...d, address: e.target.value }))
+                  }
+                  className="w-full border border-gray-200 rounded-2xl px-5 py-3 focus:border-orange-500 outline-none"
+                  placeholder="Nizami küç., ev 45, mənzil 12"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-gray-500 mb-1 block">Poçt İndeksi</label>
-                  <input value={addressData.zipCode} onChange={e => setAddressData(d => ({...d, zipCode: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="AZ1000" />
+                  <label className="block text-sm font-medium mb-2">
+                    Poçt indeksi
+                  </label>
+                  <input
+                    value={addressData.zipCode}
+                    onChange={(e) =>
+                      setAddressData((d) => ({ ...d, zipCode: e.target.value }))
+                    }
+                    className="w-full border border-gray-200 rounded-2xl px-5 py-3 focus:border-orange-500 outline-none"
+                    placeholder="AZ1000"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 mb-1 block">Telefon *</label>
-                  <input required value={addressData.phone} onChange={e => setAddressData(d => ({...d, phone: e.target.value}))} type="text" className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500" placeholder="+994501234567" />
+                  <label className="block text-sm font-medium mb-2">
+                    Telefon *
+                  </label>
+                  <input
+                    required
+                    value={addressData.phone}
+                    onChange={(e) =>
+                      setAddressData((d) => ({ ...d, phone: e.target.value }))
+                    }
+                    className="w-full border border-gray-200 rounded-2xl px-5 py-3 focus:border-orange-500 outline-none"
+                    placeholder="+994 50 123 45 67"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-gray-500 mb-1 block">Əlavə Qeyd</label>
-                <textarea value={addressData.note} onChange={e => setAddressData(d => ({...d, note: e.target.value}))} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500 resize-none h-24" placeholder="Kuryer üçün əlavə məlumat..."></textarea>
+                <label className="block text-sm font-medium mb-2">
+                  Əlavə qeyd
+                </label>
+                <textarea
+                  value={addressData.note}
+                  onChange={(e) =>
+                    setAddressData((d) => ({ ...d, note: e.target.value }))
+                  }
+                  className="w-full border border-gray-200 rounded-2xl px-5 py-4 focus:border-orange-500 outline-none resize-y min-h-[100px]"
+                  placeholder="Kuryer üçün əlavə məlumat..."
+                />
               </div>
 
-              <button 
+              <button
                 type="submit"
                 disabled={isCheckingOut}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-black text-lg transition-all mt-4 disabled:opacity-50"
+                className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white py-4 rounded-2xl font-bold text-lg transition-all mt-4"
               >
-                {isCheckingOut ? "Gözləyin..." : "Təsdiqlə və Sifariş Et"}
+                {isCheckingOut ? "Sifariş tamamlanır..." : "Sifarişi təsdiqlə"}
               </button>
             </form>
           </div>
@@ -378,8 +419,4 @@ export default function CartPage() {
       )}
     </main>
   );
-}
-
-function deltaPrice(price: number) {
-  return price > 1000;
 }

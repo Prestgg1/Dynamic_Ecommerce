@@ -8,6 +8,6 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   server : {
-    allowedHosts : ['vffmwu-ip-62-212-236-132.tunnelmole.net']
+    allowedHosts : ['tapz3h-ip-37-114-131-126.tunnelmole.net']
   }
 });

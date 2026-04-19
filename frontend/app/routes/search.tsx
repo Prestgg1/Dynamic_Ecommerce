@@ -1,3 +1,4 @@
+"use client";
 import { useState, Suspense, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router";
 import { useLanguage } from "~/context/LanguageContext";
@@ -17,17 +18,13 @@ interface FilterState {
 }
 
 // --- Sub-components ---
-
-/**
- * Sidebar for categories and price filters
- */
-function FilterSidebar({ 
-  selectedCategory, 
-  onCategoryChange, 
-  filters, 
-  onFilterChange 
-}: { 
-  selectedCategory: string; 
+function FilterSidebar({
+  selectedCategory,
+  onCategoryChange,
+  filters,
+  onFilterChange,
+}: {
+  selectedCategory: string;
   onCategoryChange: (id: string) => void;
   filters: FilterState;
   onFilterChange: (key: keyof FilterState, value: string) => void;
@@ -35,52 +32,58 @@ function FilterSidebar({
   const { t } = useLanguage();
 
   return (
-    <aside className="hidden md:block w-64 flex-shrink-0">
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sticky top-28">
-        <section className="mb-10">
-          <h3 className="font-black text-gray-900 mb-5 text-[10px] uppercase tracking-[0.2em] border-b border-gray-50 pb-3">
+    <aside className="hidden md:block w-72 flex-shrink-0">
+      <div className="bg-[#13223f] border border-white/10 rounded-3xl p-8 sticky top-28 shadow-xl">
+        <section className="mb-12">
+          <h3 className="font-black text-[#22d3ee] mb-6 text-xs uppercase tracking-[0.2em] border-b border-white/10 pb-4">
             {t("filterByCategory" as TranslationKey)}
           </h3>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {staticCategories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => onCategoryChange(cat.id)}
-                className={`w-full text-left px-4 py-3 rounded-2xl text-sm transition-all relative overflow-hidden group ${
+                className={`w-full text-left px-5 py-4 rounded-2xl text-sm transition-all duration-300 relative overflow-hidden group ${
                   selectedCategory === cat.id
                     ? "bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30"
-                    : "text-gray-500 hover:bg-orange-50 hover:text-orange-600 font-medium"
+                    : "text-zinc-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <span className="relative z-10">{t(cat.labelKey as TranslationKey)}</span>
+                <span className="relative z-10">
+                  {t(cat.labelKey as TranslationKey)}
+                </span>
               </button>
             ))}
           </div>
         </section>
 
         <section>
-          <h3 className="font-black text-gray-900 mb-5 text-[10px] uppercase tracking-[0.2em] border-b border-gray-50 pb-3">
+          <h3 className="font-black text-[#22d3ee] mb-6 text-xs uppercase tracking-[0.2em] border-b border-white/10 pb-4">
             {t("priceRange" as TranslationKey)}
           </h3>
-          <div className="space-y-3">
-            <div className="relative group">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">₼</span>
+          <div className="space-y-4">
+            <div className="relative">
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm font-bold">
+                ₼
+              </span>
               <input
                 type="number"
                 placeholder="Min"
                 value={filters.minPrice}
                 onChange={(e) => onFilterChange("minPrice", e.target.value)}
-                className="w-full pl-10 pr-4 py-3.5 border border-gray-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all bg-gray-50 placeholder:text-gray-300"
+                className="w-full pl-12 pr-5 py-4 bg-[#0a1428] border border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:border-[#22d3ee] transition-all placeholder:text-zinc-500"
               />
             </div>
-            <div className="relative group">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">₼</span>
+            <div className="relative">
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm font-bold">
+                ₼
+              </span>
               <input
                 type="number"
                 placeholder="Max"
                 value={filters.maxPrice}
                 onChange={(e) => onFilterChange("maxPrice", e.target.value)}
-                className="w-full pl-10 pr-4 py-3.5 border border-gray-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all bg-gray-50 placeholder:text-gray-300"
+                className="w-full pl-12 pr-5 py-4 bg-[#0a1428] border border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:border-[#22d3ee] transition-all placeholder:text-zinc-500"
               />
             </div>
           </div>
@@ -101,7 +104,7 @@ function SearchContent() {
   const queryParam = searchParams.get("q") || "";
   const categoryParam = searchParams.get("category") || "all";
 
-  // Local state for UI responsiveness
+  // Local state
   const [localQuery, setLocalQuery] = useState(queryParam);
   const [filters, setFilters] = useState<FilterState>({
     minPrice: "",
@@ -109,14 +112,12 @@ function SearchContent() {
     sortBy: "default",
   });
 
-  // Sync state with URL when needed
+  // Sync with URL
   useEffect(() => {
     setLocalQuery(queryParam);
   }, [queryParam]);
 
-  // --- Search Logic ---
-
-  // Debounced navigation/param update
+  // Debounced search
   const navigateWithDebounce = useDebounce((q: string) => {
     const params = new URLSearchParams(searchParams);
     if (q) params.set("q", q);
@@ -129,31 +130,35 @@ function SearchContent() {
     navigateWithDebounce(val);
   };
 
-  const handleCategoryChange = useCallback((catId: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (catId === "all") params.delete("category");
-    else params.set("category", catId);
-    setSearchParams(params, { replace: true });
-  }, [searchParams, setSearchParams]);
+  const handleCategoryChange = useCallback(
+    (catId: string) => {
+      const params = new URLSearchParams(searchParams);
+      if (catId === "all") params.delete("category");
+      else params.set("category", catId);
+      setSearchParams(params, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
 
   const handleFilterChange = (key: keyof FilterState, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  // --- Backend Query ---
+  // Backend Query
   const { data: productsData, isLoading } = trpc.useQuery("get", "/products", {
     params: {
       query: {
-        categoryId: categoryParam === "all" ? undefined : (categoryParam as any),
+        categoryId:
+          categoryParam === "all" ? undefined : (categoryParam as any),
         q: queryParam || undefined,
       },
     },
   });
 
-  // --- Client-side filtering & sorting ---
+  // Client-side filtering & sorting
   const results = useMemo(() => {
     if (!productsData) return [];
-    
+
     return [...productsData]
       .filter((p) => {
         const price = Number(p.price);
@@ -164,35 +169,50 @@ function SearchContent() {
       .sort((a, b) => {
         const aPrice = Number(a.price);
         const bPrice = Number(b.price);
-        
+
         switch (filters.sortBy) {
-          case "price-asc": return aPrice - bPrice;
-          case "price-desc": return bPrice - aPrice;
-          case "rating": return (Number(b.rating) || 0) - (Number(a.rating) || 0);
-          case "new": return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-          default: return 0;
+          case "price-asc":
+            return aPrice - bPrice;
+          case "price-desc":
+            return bPrice - aPrice;
+          case "rating":
+            return (Number(b.rating) || 0) - (Number(a.rating) || 0);
+          case "new":
+            return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
+          default:
+            return 0;
         }
       });
   }, [productsData, filters]);
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-4">
-        
-        {/* Search Bar Area */}
-        <section className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 p-8 mb-12 border border-gray-100 overflow-hidden relative group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-40 transition-all group-hover:scale-110"></div>
-          
+    <main className="min-h-screen bg-[#0a1428] text-white pt-24 pb-20 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Search Bar Area - Premium Blue Style */}
+        <section className="relative bg-[#13223f] border border-white/10 rounded-3xl shadow-2xl p-10 mb-16 overflow-hidden">
+          {/* Background accent */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#22d3ee]/5 rounded-full blur-3xl -mr-40 -mt-40" />
+
           <div className="relative z-10">
-            <h1 className="text-3xl font-black text-gray-900 mb-8 tracking-tight flex items-center gap-3">
+            <h1 className="text-4xl font-bold tracking-tighter mb-10 flex items-center gap-4">
               Məhsul Axtarışı
-              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+              <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
             </h1>
-            
-            <div className="relative flex items-center">
-              <div className="absolute left-6 text-gray-400 group-focus-within:text-orange-500 transition-colors">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+
+            <div className="relative group">
+              <div className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#22d3ee] transition-colors">
+                <svg
+                  className="w-7 h-7"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
               <input
@@ -200,20 +220,20 @@ function SearchContent() {
                 value={localQuery}
                 onChange={(e) => handleQueryChange(e.target.value)}
                 placeholder={t("searchPlaceholder" as TranslationKey)}
-                className="w-full pl-16 pr-6 py-5.5 bg-gray-50 border border-gray-100 rounded-3xl text-lg font-bold placeholder:text-gray-300 focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all shadow-inner"
+                className="w-full pl-20 pr-8 py-6 bg-[#0a1428] border border-white/10 rounded-3xl text-xl font-medium placeholder:text-zinc-500 focus:outline-none focus:border-[#22d3ee] transition-all"
               />
               {isLoading && (
-                <div className="absolute right-6">
-                  <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="absolute right-8 top-1/2 -translate-y-1/2">
+                  <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
                 </div>
               )}
             </div>
           </div>
         </section>
 
-        <div className="flex flex-col md:flex-row gap-10">
+        <div className="flex flex-col md:flex-row gap-12">
           {/* Filters Sidebar */}
-          <FilterSidebar 
+          <FilterSidebar
             selectedCategory={categoryParam}
             onCategoryChange={handleCategoryChange}
             filters={filters}
@@ -223,67 +243,111 @@ function SearchContent() {
           {/* Results Area */}
           <div className="flex-1">
             {/* Toolbar */}
-            <header className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-white/60 backdrop-blur-md p-4 rounded-3xl border border-gray-100 sticky top-24 z-20">
-              <div className="flex items-center gap-3 pl-2">
-                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{t("searchResults" as TranslationKey)}</span>
-                <div className="h-4 w-px bg-gray-200"></div>
-                <span className="text-lg font-black text-gray-900">{results.length}</span>
+            <header className="flex flex-wrap items-center justify-between gap-6 mb-10 bg-[#13223f]/80 backdrop-blur-lg border border-white/10 p-6 rounded-3xl sticky top-24 z-30">
+              <div className="flex items-center gap-4 pl-2">
+                <span className="text-xs font-black text-zinc-400 uppercase tracking-widest">
+                  {t("searchResults" as TranslationKey)}
+                </span>
+                <div className="h-5 w-px bg-white/10" />
+                <span className="text-2xl font-bold text-white">
+                  {results.length}
+                </span>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="relative h-full group">
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) => handleFilterChange("sortBy", e.target.value as SortOption)}
-                    className="appearance-none h-full text-xs font-black uppercase tracking-widest text-gray-700 bg-white border border-gray-100 rounded-2xl pl-5 pr-12 py-3.5 focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 cursor-pointer shadow-sm group-hover:shadow-md transition-all outline-none"
+              <div className="relative">
+                <select
+                  value={filters.sortBy}
+                  onChange={(e) =>
+                    handleFilterChange("sortBy", e.target.value as SortOption)
+                  }
+                  className="appearance-none bg-[#0a1428] border border-white/10 text-sm font-medium px-6 py-4 pr-12 rounded-2xl focus:outline-none focus:border-[#22d3ee] cursor-pointer transition-all"
+                >
+                  <option value="default">
+                    {t("sortBy" as TranslationKey)}
+                  </option>
+                  <option value="price-asc">
+                    {t("sortByPrice" as TranslationKey)} ↑
+                  </option>
+                  <option value="price-desc">
+                    {t("sortByPrice" as TranslationKey)} ↓
+                  </option>
+                  <option value="rating">
+                    {t("sortByRating" as TranslationKey)}
+                  </option>
+                  <option value="new">
+                    {t("sortByNew" as TranslationKey)}
+                  </option>
+                </select>
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <option value="default">{t("sortBy" as TranslationKey)}</option>
-                    <option value="price-asc">{t("sortByPrice" as TranslationKey)} ↑</option>
-                    <option value="price-desc">{t("sortByPrice" as TranslationKey)} ↓</option>
-                    <option value="rating">{t("sortByRating" as TranslationKey)}</option>
-                    <option value="new">{t("sortByNew" as TranslationKey)}</option>
-                  </select>
-                  <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-orange-500 transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={3}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
                 </div>
               </div>
             </header>
 
-            {/* Product Rendering */}
+            {/* Product Grid */}
             <div className="relative">
               {isLoading && results.length === 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div key={i} className="bg-white rounded-[2rem] p-6 h-96 animate-pulse border border-gray-100 shadow-sm" />
+                    <div
+                      key={i}
+                      className="bg-[#13223f] border border-white/10 rounded-3xl h-96 animate-pulse"
+                    />
                   ))}
                 </div>
               ) : results.length === 0 ? (
-                <div className="bg-white rounded-[3rem] p-24 text-center border border-gray-100 shadow-xl shadow-gray-200/50">
-                  <div className="w-32 h-32 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-8 border-4 border-white shadow-lg">
-                    <svg className="w-14 h-14 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <div className="bg-[#13223f] border border-white/10 rounded-3xl p-20 text-center">
+                  <div className="w-28 h-28 bg-orange-500/10 rounded-full flex items-center justify-center mx-auto mb-10">
+                    <svg
+                      className="w-16 h-16 text-orange-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
                     </svg>
                   </div>
-                  <h3 className="text-3xl font-black text-gray-900 mb-4">{t("noResults" as TranslationKey)}</h3>
-                  <p className="text-gray-500 font-medium max-w-sm mx-auto leading-relaxed">
-                    Axtarışınıza uyğun heç bir məhsul tapılmadı. Zəhmət olmasa başqa sözlərlə cəhd edin və ya filtrləri təmizləyin.
+                  <h3 className="text-3xl font-bold mb-4">
+                    {t("noResults" as TranslationKey)}
+                  </h3>
+                  <p className="text-zinc-400 max-w-md mx-auto">
+                    Axtarışınıza uyğun heç bir məhsul tapılmadı. Zəhmət olmasa
+                    başqa sözlərlə cəhd edin və ya filtrləri təmizləyin.
                   </p>
-                  <button 
+                  <button
                     onClick={() => {
-                        setLocalQuery("");
-                        handleCategoryChange("all");
-                        setFilters({ minPrice: "", maxPrice: "", sortBy: "default" });
+                      setLocalQuery("");
+                      handleCategoryChange("all");
+                      setFilters({
+                        minPrice: "",
+                        maxPrice: "",
+                        sortBy: "default",
+                      });
                     }}
-                    className="mt-10 px-10 py-4 bg-gray-900 text-white rounded-2xl font-black transition-all hover:bg-orange-500 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95"
+                    className="mt-10 px-12 py-5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-2xl transition-all active:scale-95"
                   >
                     Filtrləri sıfırla
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                   {results.map((product) => (
                     <ProductCard key={product.id} product={product as any} />
                   ))}
@@ -300,12 +364,14 @@ function SearchContent() {
 // --- Main Page Component ---
 export default function SearchPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[#0a1428] flex items-center justify-center">
           <div className="flex flex-col items-center gap-6">
-            <div className="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin shadow-xl"></div>
-            <p className="text-gray-900 font-black uppercase tracking-[0.3em] animate-pulse text-xs">Axtarılır...</p>
+            <div className="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-zinc-400 font-black uppercase tracking-[0.3em] text-xs">
+              Axtarılır...
+            </p>
           </div>
         </div>
       }

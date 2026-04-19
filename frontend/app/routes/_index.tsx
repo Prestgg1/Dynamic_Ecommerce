@@ -1,395 +1,484 @@
+"use client";
 import { Link } from "react-router";
-import ProductCard from "~/components/ProductCard";
-import { categories as staticCategories } from "~/lib/data";
-import { trpc } from "~/lib/trpc";
-import { useLanguage } from "~/context/LanguageContext";
-import type { TranslationKey } from "~/lib/translations";
+import { useEffect, useRef, useState } from "react";
 
-const categoryIcons: Record<string, React.ReactNode> = {
-  tools: (
-    <svg
-      className="w-7 h-7"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"
-      />
-    </svg>
-  ),
-  hardware: (
-    <svg
-      className="w-7 h-7"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
-      />
-    </svg>
-  ),
-  pipes: (
-    <svg
-      className="w-7 h-7"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-      />
-    </svg>
-  ),
-  fasteners: (
-    <svg
-      className="w-7 h-7"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-      />
-    </svg>
-  ),
-  electrical: (
-    <svg
-      className="w-7 h-7"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M13 10V3L4 14h7v7l9-11h-7z"
-      />
-    </svg>
-  ),
-  welding: (
-    <svg
-      className="w-7 h-7"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"
-      />
-    </svg>
-  ),
-  safety: (
-    <svg
-      className="w-7 h-7"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-      />
-    </svg>
-  ),
-};
+const useScrollReveal = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-const categoryColors: Record<string, string> = {
-  tools: "from-orange-500 to-orange-600",
-  hardware: "from-blue-500 to-blue-600",
-  pipes: "from-gray-500 to-gray-600",
-  fasteners: "from-yellow-500 to-yellow-600",
-  electrical: "from-yellow-400 to-orange-500",
-  welding: "from-red-500 to-red-600",
-  safety: "from-green-500 to-green-600",
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.15, rootMargin: "-60px 0px" },
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, isVisible] as const;
 };
 
 export default function Home() {
-  const { t } = useLanguage();
+  const [heroRef, heroVisible] = useScrollReveal();
+  const [aboutRef, aboutVisible] = useScrollReveal();
+  const [capabilitiesRef, capabilitiesVisible] = useScrollReveal();
+  const [productsRef, productsVisible] = useScrollReveal();
+  const [globalReachRef, globalReachVisible] = useScrollReveal();
+  const [certificationsRef, certificationsVisible] = useScrollReveal();
+  const [testimonialsRef, testimonialsVisible] = useScrollReveal();
+  const [whyRef, whyVisible] = useScrollReveal();
 
-  // Fetch live data from backend
-  const { data: featuredData, isLoading: isFeaturedLoading } = trpc.useQuery(
-    "get",
-    "/products/featured",
-  );
-  const { data: allProductsData, isLoading: isAllLoading } = trpc.useQuery(
-    "get",
-    "/products",
-  );
+  const [scrollY, setScrollY] = useState(0);
 
-  const featured = featuredData || [];
-  const products = allProductsData || [];
-  const bestSellers = products.filter((p) => p.isBestSeller);
-  const newArrivals = products.filter((p) => p.isNew);
-  const allStaticCategories = staticCategories.filter((c) => c.id !== "all");
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = "smooth";
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.documentElement.style.scrollBehavior = "auto";
+    };
+  }, []);
+
+  // Easy-to-swap industrial steel images
+  const images = {
+    hero: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg", // Steel plant at dusk
+    about:
+      "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg", // Factory interior
+    steelCoils:
+      "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg", // Massive steel coils
+    fabrication:
+      "https://images.pexels.com/photos/27102103/pexels-photo-27102103.jpeg", // Steel fabrication
+    workshop:
+      "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
+  };
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=80')] bg-cover bg-center"></div>
-        </div>
-        <div className="relative w-full px-4 md:px-12 py-24 md:py-32">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div>
-              <span className="inline-block bg-orange-600 text-white text-xs font-black px-4 py-2 rounded-full mb-6 uppercase tracking-widest">
-                #1 METAL LİDERİ
-              </span>
-              <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight text-white">
-                {t("heroTitle" as TranslationKey)}
-              </h1>
-              <p className="text-gray-400 text-lg mb-10 leading-relaxed max-w-lg">
-                {t("heroSubtitle" as TranslationKey)}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/search"
-                  className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-orange-600/30 text-center"
-                >
-                  {t("shopNow" as TranslationKey)}
-                </Link>
-                <Link
-                  to="/about"
-                  className="bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 px-8 py-4 rounded-xl font-bold transition-all text-center"
-                >
-                  {t("about" as TranslationKey)}
-                </Link>
-              </div>
+    <main className="bg-[#0a1428] text-white overflow-hidden">
+      {/* Top Bar - Orange accent like your reference */}
+
+      {/* HERO - Deep Blue with Strong Parallax */}
+      <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('${images.hero}')`,
+            transform: `translateY(${scrollY * 0.4}px)`,
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1428]/90 via-[#0a1428]/75 to-[#13223f]/80" />
+
+        {/* Subtle grid pattern overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(#ffffff08_1px,transparent_1px),linear-gradient(90deg,#ffffff08_1px,transparent_1px)] bg-[size:60px_60px]" />
+
+        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center z-10">
+          <div ref={heroRef} className="space-y-10">
+            <div
+              className={`inline-flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-full text-sm tracking-[2px] transition-all duration-1000 ${
+                heroVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-10"
+              }`}
+            >
+              ⚒️ EST. 2010 • BAKU, AZERBAIJAN
             </div>
 
-            {/* Right Stats */}
-            <div className="flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-5 w-full max-w-md">
-                {[
-                  { num: "500+", label: t("categories" as TranslationKey) },
-                  { num: "12K+", label: t("reviews" as TranslationKey) },
-                  { num: "2010", label: "Year Est." },
-                  { num: "99%", label: "Satisfaction" },
-                ].map((stat, i) => (
-                  <div
-                    key={i}
-                    className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/10 hover:border-orange-500/30 transition-all"
-                  >
-                    <p className="text-4xl font-black text-orange-500 mb-2">
-                      {stat.num}
-                    </p>
-                    <p className="text-sm text-gray-400 font-medium">
-                      {stat.label}
-                    </p>
+            <h1
+              className={`text-6xl lg:text-7xl font-bold tracking-tighter leading-none transition-all duration-1000 delay-100 ${
+                heroVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-16"
+              }`}
+            >
+              Premium Steel Solutions
+              <br />
+              <span className="text-[#22d3ee]">Built for Enterprise</span>
+            </h1>
+
+            <p
+              className={`text-xl lg:text-2xl text-zinc-300 max-w-lg transition-all duration-1000 delay-300 ${
+                heroVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-16"
+              }`}
+            >
+              Trusted by leading construction, manufacturing, and infrastructure
+              companies across 35+ countries.
+            </p>
+
+            <div
+              className={`flex flex-wrap gap-5 transition-all duration-1000 delay-500 ${
+                heroVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-16"
+              }`}
+            >
+              <Link
+                to="/contact"
+                className="px-10 py-5 bg-orange-500 hover:bg-orange-600 font-semibold rounded-2xl text-lg transition-all active:scale-95 shadow-lg"
+              >
+                Request a Quote
+              </Link>
+              <Link
+                to="/products"
+                className="px-10 py-5 border-2 border-[#22d3ee] text-[#22d3ee] hover:bg-[#22d3ee]/10 font-semibold rounded-2xl text-lg transition-all"
+              >
+                View Our Catalog
+              </Link>
+            </div>
+
+            <div
+              className={`grid grid-cols-3 gap-8 pt-12 border-t border-white/10 transition-all duration-1000 delay-700 ${
+                heroVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-16"
+              }`}
+            >
+              {[
+                { num: "15+", label: "Years Experience" },
+                { num: "5,000+", label: "Enterprise Clients" },
+                { num: "99.8%", label: "Delivery Reliability" },
+              ].map((stat, i) => (
+                <div key={i}>
+                  <div className="text-4xl font-bold text-[#22d3ee]">
+                    {stat.num}
                   </div>
-                ))}
-              </div>
+                  <div className="text-sm text-zinc-400 mt-1 tracking-wide">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Wave divider */}
-      </section>
-
-      {/* Category Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-black text-gray-900">
-            {t("categories" as TranslationKey)}
-          </h2>
-          <Link
-            to="/search"
-            className="text-orange-600 hover:text-orange-700 text-sm font-bold flex items-center gap-2"
+          <div
+            className={`hidden lg:block relative transition-all duration-1000 delay-300 ${
+              heroVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+            }`}
           >
-            {t("viewAll" as TranslationKey)}
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Link>
-        </div>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-4">
-          {allStaticCategories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/search?category=${cat.id}`}
-              className="flex flex-col items-center gap-3 group"
-            >
-              <div
-                className={`w-16 h-16 bg-gradient-to-br ${categoryColors[cat.id] || "from-gray-500 to-gray-600"} rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-all`}
-              >
-                {categoryIcons[cat.id]}
-              </div>
-              <span className="text-xs text-gray-700 text-center font-semibold group-hover:text-orange-600 transition-colors leading-tight">
-                {t(cat.labelKey as TranslationKey)}
-              </span>
-            </Link>
-          ))}
+            <img
+              src={images.steelCoils}
+              alt="Industrial Steel Facility"
+              className="rounded-3xl shadow-2xl border border-white/10"
+            />
+          </div>
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="max-w-7xl mx-auto px-4 mb-16">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-black text-gray-900">
-            {t("featuredProducts" as TranslationKey)}
-          </h2>
-          <Link
-            to="/search"
-            className="text-orange-600 hover:text-orange-700 text-sm font-bold flex items-center gap-2"
-          >
-            {t("viewAll" as TranslationKey)}
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {isFeaturedLoading
-            ? Array(5)
-                .fill(0)
-                .map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-gray-200 animate-pulse rounded-2xl h-72"
-                  />
-                ))
-            : featured.map((product) => (
-                <ProductCard key={product.id} product={product as any} />
-              ))}
-        </div>
-      </section>
+      {/* ABOUT SECTION - Cool Blue Gradient */}
+      <section
+        ref={aboutRef}
+        className="py-28 bg-gradient-to-br from-[#0f253f] to-[#1a324f] relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(#22d3ee12_1px,transparent_1px)] bg-[size:50px_50px] opacity-40" />
 
-      {/* Best Sellers */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-1.5 h-10 bg-orange-600 rounded-full"></div>
-              <h2 className="text-3xl font-black text-gray-900">
-                {t("bestSellers" as TranslationKey)}
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div
+              className={`transition-all duration-1000 ${aboutVisible ? "opacity-100 -translate-x-4" : "opacity-0 -translate-x-20"}`}
+            >
+              <img
+                src={images.about}
+                alt="Manufacturing Excellence"
+                className="rounded-3xl shadow-2xl"
+              />
+            </div>
+
+            <div
+              className={`space-y-8 transition-all duration-1000 delay-200 ${aboutVisible ? "opacity-100 translate-x-4" : "opacity-0 translate-x-20"}`}
+            >
+              <h2 className="text-5xl font-bold tracking-tighter leading-tight">
+                Engineering Trust Through Excellence
               </h2>
-            </div>
-            <Link
-              to="/search"
-              className="text-orange-600 hover:text-orange-700 text-sm font-bold flex items-center gap-2"
-            >
-              {t("viewAll" as TranslationKey)}
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <div className="space-y-6 text-lg text-zinc-300">
+                <p>
+                  For over 15 years, SultanovSteel has been a reliable partner
+                  for large-scale industrial projects. We combine advanced
+                  metallurgy with strict quality control.
+                </p>
+                <p>
+                  Our commitment to transparency, consistency, and long-term
+                  relationships makes us the preferred supplier for enterprises
+                  that demand the best.
+                </p>
+              </div>
+              <Link
+                to="/about"
+                className="inline-flex items-center gap-3 text-[#22d3ee] font-semibold hover:gap-5 transition-all"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {isAllLoading
-              ? Array(4)
-                  .fill(0)
-                  .map((_, i) => (
-                    <div
-                      key={i}
-                      className="bg-gray-200 animate-pulse rounded-2xl h-72"
-                    />
-                  ))
-              : bestSellers.map((product) => (
-                  <ProductCard key={product.id} product={product as any} />
-                ))}
+                Learn more about us →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* New Arrivals */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="w-1.5 h-10 bg-blue-600 rounded-full"></div>
-            <h2 className="text-3xl font-black text-gray-900">
-              {t("newArrivals" as TranslationKey)}
-            </h2>
-          </div>
-          <Link
-            to="/search"
-            className="text-orange-600 hover:text-orange-700 text-sm font-bold flex items-center gap-2"
+      {/* CAPABILITIES - Dark Navy with Pattern */}
+      <section ref={capabilitiesRef} className="py-28 bg-[#0a1428] relative">
+        <div className="absolute inset-0 bg-[linear-gradient(#ffffff08_1px,transparent_1px)] bg-[size:40px_40px]" />
+
+        <div className="max-w-7xl mx-auto px-6">
+          <div
+            className={`text-center mb-16 transition-all duration-1000 ${capabilitiesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
           >
-            {t("viewAll" as TranslationKey)}
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Link>
+            <h2 className="text-5xl font-bold tracking-tighter">
+              Our Capabilities
+            </h2>
+            <p className="text-xl text-zinc-400 mt-4 max-w-2xl mx-auto">
+              State-of-the-art facilities engineered for scale and precision
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Advanced Metallurgy",
+                desc: "Custom alloy development and heat treatment",
+                stat: "120,000 tons/year",
+              },
+              {
+                title: "Precision Processing",
+                desc: "Cutting, bending, coating & fabrication",
+                stat: "ISO-certified lines",
+              },
+              {
+                title: "Quality Assurance",
+                desc: "100% material testing and full traceability",
+                stat: "Zero-defect policy",
+              },
+            ].map((cap, i) => (
+              <div
+                key={i}
+                className={`bg-[#13223f] p-10 rounded-3xl border border-white/10 hover:border-[#22d3ee] transition-all duration-700 hover:-translate-y-3 ${capabilitiesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}`}
+                style={{ transitionDelay: `${i * 150}ms` }}
+              >
+                <div className="text-[#22d3ee] text-4xl font-bold mb-6">
+                  {cap.stat}
+                </div>
+                <h3 className="text-2xl font-semibold mb-4">{cap.title}</h3>
+                <p className="text-zinc-400">{cap.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {isAllLoading
-            ? Array(4)
-                .fill(0)
-                .map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-gray-200 animate-pulse rounded-2xl h-72"
+      </section>
+
+      {/* PRODUCTS SECTION - Clean with Light Blue Tint */}
+      <section
+        ref={productsRef}
+        className="py-28 bg-gradient-to-b from-[#0f253f] to-[#0a1428]"
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <div
+            className={`mb-16 transition-all duration-1000 ${productsVisible ? "opacity-100" : "opacity-0"}`}
+          >
+            <h2 className="text-5xl font-bold tracking-tighter">
+              Our Core Solutions
+            </h2>
+            <p className="text-xl text-zinc-400 mt-3">
+              Reliable materials. Proven performance at scale.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Bulk Steel Supply",
+                desc: "Structural steel, plates, coils & profiles in all grades",
+                img: images.steelCoils,
+              },
+              {
+                title: "Specialty Alloys",
+                desc: "Corrosion-resistant, high-strength and heat-resistant materials",
+                img: images.steelCoils,
+              },
+              {
+                title: "Fabrication Services",
+                desc: "Custom cutting, welding and pre-assembly solutions",
+                img: images.fabrication,
+              },
+            ].map((product, i) => (
+              <div
+                key={i}
+                className={`group bg-[#13223f] rounded-3xl overflow-hidden border border-white/10 hover:border-[#22d3ee] transition-all duration-700 hover:-translate-y-4 ${productsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}`}
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                <div className="h-72 overflow-hidden">
+                  <img
+                    src={product.img}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    alt={product.title}
                   />
-                ))
-            : newArrivals.map((product) => (
-                <ProductCard key={product.id} product={product as any} />
-              ))}
+                </div>
+                <div className="p-9">
+                  <h3 className="text-2xl font-semibold mb-4 group-hover:text-[#22d3ee] transition-colors">
+                    {product.title}
+                  </h3>
+                  <p className="text-zinc-400 leading-relaxed">
+                    {product.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GLOBAL REACH - Dark with Teal Accents */}
+      <section ref={globalReachRef} className="py-28 bg-[#0a1428]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div
+            className={`text-center mb-16 transition-all ${globalReachVisible ? "opacity-100" : "opacity-0"}`}
+          >
+            <h2 className="text-5xl font-bold tracking-tighter">
+              Global Reach, Local Expertise
+            </h2>
+            <p className="text-xl text-zinc-400 mt-4">
+              Supplying major projects across Europe, Middle East & Central Asia
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-6">
+            {[
+              "Azerbaijan",
+              "Turkey",
+              "Kazakhstan",
+              "Georgia",
+              "UAE",
+              "Germany",
+              "Russia",
+              "Uzbekistan",
+            ].map((country, i) => (
+              <div
+                key={i}
+                className={`py-8 bg-[#13223f] border border-white/10 hover:border-[#22d3ee] rounded-3xl text-center font-medium transition-all duration-700 ${globalReachVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+                style={{ transitionDelay: `${i * 80}ms` }}
+              >
+                {country}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CERTIFICATIONS */}
+      <section ref={certificationsRef} className="py-28 bg-white text-zinc-900">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <div
+            className={`mb-16 transition-all ${certificationsVisible ? "opacity-100" : "opacity-0 translate-y-8"}`}
+          >
+            <h2 className="text-5xl font-bold tracking-tighter text-zinc-900">
+              Certified Excellence
+            </h2>
+            <p className="text-xl text-zinc-600 mt-4">
+              Meeting the highest international industrial standards
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-10">
+            {[
+              "ISO 9001:2015",
+              "ISO 14001:2015",
+              "EN 1090",
+              "CE Marking",
+              "OHSAS 18001",
+              "API Certified",
+            ].map((cert, i) => (
+              <div
+                key={i}
+                className={`bg-white border border-zinc-200 px-12 py-9 rounded-3xl text-xl font-semibold shadow-sm hover:shadow-xl hover:border-[#22d3ee] transition-all ${certificationsVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                {cert}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS & WHY US - Combined for better flow */}
+      <section
+        ref={testimonialsRef}
+        className="py-28 bg-zinc-100 text-zinc-900"
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <h2
+            className={`text-5xl font-bold tracking-tighter text-center mb-16 transition-all ${testimonialsVisible ? "opacity-100" : "opacity-0"}`}
+          >
+            Trusted by Industry Leaders
+          </h2>
+
+          <div className="grid lg:grid-cols-2 gap-8 mb-20">
+            <div
+              className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+            >
+              <p className="italic text-lg">
+                "SultanovSteel consistently delivers on time with excellent
+                quality. They have become our strategic partner for all major
+                projects."
+              </p>
+              <div className="mt-8 font-semibold">
+                Michael Berger — EuroBuild Group
+              </div>
+            </div>
+            {/* You can easily add more testimonial cards here */}
+          </div>
+
+          {/* Why Choose Us */}
+          <h2
+            className={`text-5xl font-bold tracking-tighter text-center mb-12 transition-all ${whyVisible ? "opacity-100" : "opacity-0"}`}
+          >
+            Why Leading Enterprises Choose Us
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Unmatched Reliability",
+                desc: "99.8% on-time delivery with full traceability",
+              },
+              {
+                title: "Transparent Pricing",
+                desc: "No hidden costs. Volume discounts for enterprise partners",
+              },
+              {
+                title: "Dedicated Support",
+                desc: "Personal account managers and 24/7 technical assistance",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className={`p-10 bg-white border border-zinc-200 rounded-3xl hover:border-[#22d3ee] transition-all ${whyVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+                style={{ transitionDelay: `${i * 150}ms` }}
+              >
+                <h3 className="text-2xl font-semibold mb-4">{item.title}</h3>
+                <p className="text-zinc-600">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA - Strong Orange + Teal Gradient */}
+      <section className="py-24 bg-gradient-to-r from-orange-600 via-orange-500 to-[#22d3ee] text-center text-white">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-5xl font-bold tracking-tighter mb-6">
+            Ready to secure your next project with confidence?
+          </h2>
+          <p className="text-xl mb-10 opacity-90">
+            Let’s discuss how SultanovSteel can support your upcoming
+            initiatives.
+          </p>
+          <Link
+            to="/contact"
+            className="inline-block px-14 py-6 bg-white text-[#0a1428] font-bold rounded-2xl text-xl hover:bg-zinc-100 transition transform hover:scale-105"
+          >
+            Get in Touch with Our Team
+          </Link>
         </div>
       </section>
     </main>
