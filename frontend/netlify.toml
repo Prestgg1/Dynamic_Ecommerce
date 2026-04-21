@@ -1,4 +1,5 @@
 [build]
+  base = "frontend"
   command = "npm run build"
   publish = "build/client"
 
@@ -8,4 +9,6 @@
   status = 200
 
 [functions]
+  # React Router 7-nin yaratdığı server funksiyasının yerini Netlify-a göstəririk
+  directory = "frontend/.netlify/functions-internal"
   node_bundler = "esbuild"
