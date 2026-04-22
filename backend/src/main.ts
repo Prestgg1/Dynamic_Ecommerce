@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: [
-      'https://cksxli-ip-62-212-236-132.tunnelmole.net',
+      'https://sultanovsteel.netlify.app',
       'http://localhost:3000',
       'http://localhost:5173',
     ],
