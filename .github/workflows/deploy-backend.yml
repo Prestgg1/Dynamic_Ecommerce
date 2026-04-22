@@ -27,4 +27,4 @@ jobs:
             cd backend
             bun install
             bun run build
-            sudo systemctl restart SultanovSteelBackend
+            sudo systemctl restart sultanovsteel.service
