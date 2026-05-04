@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: [
-      'https://semiprotective-ruthanne-trendily.ngrok-free.dev',
+      'https://sultanovsteel.netlify.app',
       'http://localhost:3000',
       'http://localhost:5173',
     ],

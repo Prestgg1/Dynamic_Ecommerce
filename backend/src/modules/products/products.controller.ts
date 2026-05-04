@@ -18,8 +18,8 @@ import {
   ProductResponseDto,
   UpdateProductDto,
 } from './dtos/product-responce.dto';
-import type { RequestWithUserOptional } from 'src/middleware/optional-auth-middleware';
-import { AdminGuard } from 'src/guards/admin.guard';
+import type { RequestWithUserOptional } from '../../middleware/optional-auth-middleware';
+import { AdminGuard } from '../../guards/admin.guard';
 
 @ApiTags('products')
 @Controller('products')

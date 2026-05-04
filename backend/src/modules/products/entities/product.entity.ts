@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
-import { Review } from '../../reviews/entities/review.entity';
+import type { Review } from '../../reviews/entities/review.entity';
 
 @Entity('products')
 export class Product {
@@ -32,8 +32,8 @@ export class Product {
   @Column('text', { nullable: true })
   descriptionEn: string;
 
-  @OneToMany(() => Review, (review) => review.product)
-  reviews: Review[];
+   @OneToMany('Review', 'product')
+reviews: Review[];
 
   @Column('decimal', {
     precision: 10,

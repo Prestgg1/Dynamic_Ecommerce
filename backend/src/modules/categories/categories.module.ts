@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { CategoriesService } from './categories.service';
 import { CategoriesController } from './categories.controller';
-import { OptionalAuthMiddleware } from 'src/middleware/optional-auth-middleware';
+import { OptionalAuthMiddleware } from '../../middleware/optional-auth-middleware';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({

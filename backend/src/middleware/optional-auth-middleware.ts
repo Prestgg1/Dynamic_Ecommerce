@@ -1,9 +1,9 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { AuthService } from 'src/modules/auth/auth.service';
+import { AuthService } from '../modules/auth/auth.service';
 
 import { Request } from 'express';
-import { User } from 'src/modules/users/entities/user.entity';
+import { User } from '../modules/users/entities/user.entity';
 export interface RequestWithUserOptional extends Request {
   user?: User;
 }

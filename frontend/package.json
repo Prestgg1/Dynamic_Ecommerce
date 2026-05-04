@@ -10,6 +10,7 @@
     "openapi": "openapi-typescript https://skc1ns-ip-62-212-236-132.tunnelmole.net/docs-json -o ./app/lib/types.ts"
   },
   "dependencies": {
+    "@netlify/vite-plugin-react-router": "^3.1.1",
     "@react-router/fs-routes": "^7.14.0",
     "@react-router/node": "7.14.0",
     "@react-router/serve": "7.14.0",
@@ -22,6 +23,7 @@
     "react-dom": "^19.2.4",
     "react-hot-toast": "^2.6.0",
     "react-router": "7.14.0",
+    "vite-tsconfig-paths": "^6.1.1",
     "zod": "^4.3.6",
     "zod-formik-adapter": "^2.0.0",
     "zustand": "^5.0.12"

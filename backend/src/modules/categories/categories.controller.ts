@@ -13,7 +13,7 @@ import {
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { Category } from './entities/category.entity';
-import { AdminGuard } from 'src/guards/admin.guard';
+import { AdminGuard } from '../../guards/admin.guard';
 import { CreateCategoryDto, UpdateCategoryDto } from './dtos/category.dto';
 
 @ApiTags('categories')

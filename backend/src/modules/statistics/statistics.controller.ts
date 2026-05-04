@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StatisticsService } from './statistics.service';
-import { AdminGuard } from 'src/guards/admin.guard';
+import { AdminGuard } from '../../guards/admin.guard';
 
 @ApiTags('statistics')
 @Controller('statistics')

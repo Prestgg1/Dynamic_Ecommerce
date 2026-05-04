@@ -3,8 +3,8 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UserResponseDto } from './dtos/user.dto';
 import { plainToInstance } from 'class-transformer';
-import { AdminGuard } from 'src/guards/admin.guard';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AdminGuard } from '../../guards/admin.guard';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @ApiTags('users')
 @Controller('users')
