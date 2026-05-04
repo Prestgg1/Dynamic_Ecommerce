@@ -195,7 +195,7 @@ function SearchContent() {
 
           <div className="relative z-10">
             <h1 className="text-4xl font-bold tracking-tighter mb-10 flex items-center gap-4">
-              Məhsul Axtarışı
+              <span>{t("searchName" as TranslationKey)}</span>
               <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
             </h1>
 

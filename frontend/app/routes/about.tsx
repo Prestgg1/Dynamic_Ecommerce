@@ -1,4 +1,7 @@
 import type { Route } from "./+types/about";
+import { useContext } from "react";
+import { useLanguage } from "~/context/LanguageContext";
+import type { TranslationKey } from "~/lib/translations";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -30,32 +33,33 @@ const teamMembers = [
 ];
 
 const milestones = [
-  { year: "2010", text: "Şirkətin əsası qoyuldu" },
-  { year: "2013", text: "İlk mağaza açıldı" },
-  { year: "2017", text: "Online satış başlandı" },
-  { year: "2020", text: "500+ məhsul çeşidi" },
-  { year: "2024", text: "10.000+ müştəri" },
+  { year: "2010", textKey: "milestone2010" },
+  { year: "2013", textKey: "milestone2013" },
+  { year: "2017", textKey: "milestone2017" },
+  { year: "2020", textKey: "milestone2020" },
+  { year: "2024", textKey: "milestone2024" },
 ];
 
 export default function AboutPage() {
+ const { t } = useLanguage();
+
   return (
-    <main className="min-h-screen bg-[#0a1428] text-white overflow-hidden">
+    <main className="min-h-screen overflow-hidden bg-[#0a1428] text-white">
       {/* HERO - Deep Blue with Parallax Feel */}
-      <section className="relative py-32 pt-40 bg-gradient-to-br from-[#0a1428] via-[#13223f] to-[#0f253f] overflow-hidden">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0a1428] via-[#13223f] to-[#0f253f] py-32 pt-40">
         <div className="absolute inset-0 bg-[radial-gradient(#22d3ee12_1px,transparent_1px)] bg-[size:50px_50px] opacity-30" />
 
-        <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
-          <span className="inline-block px-6 py-2 bg-orange-500/20 border border-orange-500/30 text-orange-400 text-sm font-bold rounded-full mb-6 uppercase tracking-widest">
-            Haqqımızda
+        <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
+          <span className="mb-6 inline-block rounded-full border border-orange-500/30 bg-orange-500/20 px-6 py-2 text-sm font-bold uppercase tracking-widest text-orange-400">
+            {t("aboutUs" as TranslationKey)}
           </span>
 
-          <h1 className="text-6xl md:text-7xl font-bold tracking-tighter mb-6">
+          <h1 className="mb-6 text-6xl font-bold tracking-tighter md:text-7xl">
             DəmirMart
           </h1>
 
-          <p className="text-xl text-zinc-300 max-w-2xl mx-auto leading-relaxed">
-            2010-cu ildən bəri Azərbaycanda keyfiyyətli dəmir, metal və tikinti
-            materiallarının etibarlı tədarükçüsü.
+          <p className="mx-auto max-w-2xl text-xl leading-relaxed text-zinc-300">
+            {t("aboutDescription" as TranslationKey)}
           </p>
         </div>
 
@@ -65,20 +69,20 @@ export default function AboutPage() {
 
       {/* STATS BAR - Orange Accent */}
       <section className="bg-orange-600 py-12">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="gap-8 grid grid-cols-2 md:grid-cols-4">
             {[
-              { num: "14+", label: "İl təcrübə" },
-              { num: "500+", label: "Məhsul çeşidi" },
-              { num: "10K+", label: "Müştəri" },
-              { num: "99%", label: "Məmnuniyyət" },
+              { num: "14+", labelKey: "yearsExperience" },
+              { num: "500+", labelKey: "productsRange" },
+              { num: "10K+", labelKey: "totalCustomers" },
+              { num: "99%", labelKey: "satisfactionRate" },
             ].map((stat, i) => (
-              <div key={i} className="text-center group">
-                <p className="text-5xl font-black text-white transition-transform group-hover:scale-110 duration-300">
+              <div key={i} className="group text-center">
+                <p className="text-5xl font-black text-white transition-transform duration-300 group-hover:scale-110">
                   {stat.num}
                 </p>
-                <p className="text-orange-100 text-sm mt-2 font-medium tracking-wide">
-                  {stat.label}
+                <p className="mt-2 text-sm font-medium tracking-wide text-orange-100">
+                  {t(stat.labelKey as TranslationKey)}
                 </p>
               </div>
             ))}
@@ -87,35 +91,32 @@ export default function AboutPage() {
       </section>
 
       {/* MISSION SECTION */}
-      <section className="max-w-5xl mx-auto px-6 py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <section className="mx-auto max-w-5xl px-6 py-24">
+        <div className="items-center gap-16 grid grid-cols-1 lg:grid-cols-2">
           <div className="space-y-8">
-            <span className="text-orange-400 font-bold text-sm uppercase tracking-[0.125em]">
-              Missiyamız
+            <span className="text-sm font-bold uppercase tracking-[0.125em] text-orange-400">
+              {t("ourMission" as TranslationKey)}
             </span>
 
-            <h2 className="text-4xl font-bold tracking-tighter leading-tight text-white">
-              Keyfiyyəti hamıya əlçatan etmək
+            <h2 className="text-4xl font-bold leading-tight tracking-tighter text-white">
+              {t("makeQualityAccessible" as TranslationKey)}
             </h2>
 
-            <p className="text-zinc-400 text-lg leading-relaxed">
-              DəmirMart, müştərilərimizə ən yüksək keyfiyyətli dəmir və metal
-              məhsullarını əlverişli qiymətlərlə çatdırmaq missiyası ilə
-              yaradılmışdır. İnşaat, sənaye və ev istifadəsi üçün geniş çeşidli
-              məhsul portfelimiz mövcuddur.
+            <p className="text-lg leading-relaxed text-zinc-400">
+              {t("missionDescription" as TranslationKey)}
             </p>
 
             <div className="space-y-5 pt-4">
               {[
-                "Sertifikatlı məhsullar",
-                "Sürətli çatdırılma",
-                "Peşəkar məsləhət",
-                "Rəqabətli qiymətlər",
+                "certifiedProducts",
+                "fastDelivery",
+                "professionalAdvice",
+                "competitivePrice",
               ].map((item, i) => (
-                <div key={i} className="flex items-start gap-4 group">
-                  <div className="mt-1 w-7 h-7 bg-orange-500/10 rounded-xl flex items-center justify-center border border-orange-500/30 group-hover:border-orange-400 transition-colors">
+                <div key={i} className="group flex items-start gap-4">
+                  <div className="mt-1 flex h-7 w-7 items-center justify-center rounded-xl border border-orange-500/30 bg-orange-500/10 transition-colors group-hover:border-orange-400">
                     <svg
-                      className="w-4 h-4 text-orange-400"
+                      className="h-4 w-4 text-orange-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -128,27 +129,29 @@ export default function AboutPage() {
                       />
                     </svg>
                   </div>
-                  <span className="text-zinc-300 text-lg">{item}</span>
+                  <span className="text-lg text-zinc-300">
+                    {t(item as TranslationKey)}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+          <div className="overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
             <img
               src="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&q=80"
-              alt="Haqqımızda"
-              className="w-full h-full object-cover"
+              alt={t("aboutUs" as TranslationKey)}
+              className="h-full w-full object-cover"
             />
           </div>
         </div>
       </section>
 
       {/* TIMELINE - Dark Background */}
-      <section className="bg-[#13223f] py-24 relative">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-4xl font-bold tracking-tighter text-center mb-16 text-white">
-            Tariximiz
+      <section className="relative bg-[#13223f] py-24">
+        <div className="mx-auto max-w-4xl px-6">
+          <h2 className="mb-16 text-center text-4xl font-bold tracking-tighter text-white">
+            {t("ourHistory" as TranslationKey)}
           </h2>
 
           <div className="relative">
@@ -164,13 +167,15 @@ export default function AboutPage() {
                   <div
                     className={`flex-1 ${i % 2 === 0 ? "text-right" : "text-left"}`}
                   >
-                    <div className="inline-block bg-[#0a1428] border border-white/10 rounded-2xl px-8 py-5 shadow-xl">
-                      <p className="text-zinc-300 text-lg">{m.text}</p>
+                    <div className="shadow-xl inline-block rounded-2xl border border-white/10 bg-[#0a1428] px-8 py-5">
+                      <p className="text-lg text-zinc-300">
+                        {t(m.textKey as TranslationKey)}
+                      </p>
                     </div>
                   </div>
 
                   <div className="relative z-10">
-                    <div className="w-20 h-20 bg-orange-500 rounded-3xl flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-orange-500/40 border-4 border-[#13223f]">
+                    <div className="shadow-orange-500/40 border-4 border-[#13223f] flex h-20 w-20 items-center justify-center rounded-3xl bg-orange-500 text-2xl font-black text-white shadow-xl">
                       {m.year}
                     </div>
                   </div>
@@ -184,31 +189,31 @@ export default function AboutPage() {
       </section>
 
       {/* TEAM SECTION */}
-      <section className="max-w-6xl mx-auto px-6 py-24">
-        <h2 className="text-4xl font-bold tracking-tighter text-center mb-16 text-white">
-          Komandamız
+      <section className="mx-auto max-w-6xl px-6 py-24">
+        <h2 className="mb-16 text-center text-4xl font-bold tracking-tighter text-white">
+          {t("ourTeam" as TranslationKey)}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="gap-8 grid grid-cols-1 md:grid-cols-3">
           {teamMembers.map((member, i) => (
             <div
               key={i}
-              className="group bg-[#13223f] border border-white/10 rounded-3xl overflow-hidden hover:border-orange-500/50 transition-all duration-500 hover:-translate-y-3"
+              className="group overflow-hidden rounded-3xl border border-white/10 bg-[#13223f] transition-all duration-500 hover:-translate-y-3 hover:border-orange-500/50"
             >
               <div className="relative h-80 overflow-hidden">
                 <img
                   src={member.img}
                   alt={member.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
               </div>
 
               <div className="p-8 text-center">
-                <h3 className="font-bold text-2xl text-white mb-2">
+                <h3 className="mb-2 text-2xl font-bold text-white">
                   {member.name}
                 </h3>
-                <p className="text-orange-400 font-medium">{member.role}</p>
+                <p className="font-medium text-orange-400">{member.role}</p>
               </div>
             </div>
           ))}

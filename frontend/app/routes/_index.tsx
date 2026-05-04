@@ -1,6 +1,8 @@
 "use client";
 import { Link } from "react-router";
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "~/context/LanguageContext";
+import type { TranslationKey } from "~/lib/translations";
 
 const useScrollReveal = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -31,9 +33,9 @@ export default function Home() {
   const [globalReachRef, globalReachVisible] = useScrollReveal();
   const [certificationsRef, certificationsVisible] = useScrollReveal();
   const [testimonialsRef, testimonialsVisible] = useScrollReveal();
-  const [whyRef, whyVisible] = useScrollReveal();
 
   const [scrollY, setScrollY] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
@@ -47,20 +49,103 @@ export default function Home() {
 
   // Easy-to-swap industrial steel images
   const images = {
-    hero: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg", // Steel plant at dusk
-    about: "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg", // Factory interior
+    hero: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
+    about: "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg",
     steelCoils:
-      "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg", // Massive steel coils
+      "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg",
     fabrication:
-      "https://images.pexels.com/photos/27102103/pexels-photo-27102103.jpeg", // Steel fabrication
-    workshop:
-      "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
+      "https://images.pexels.com/photos/27102103/pexels-photo-27102103.jpeg",
   };
+
+  // Country list for global reach section
+  const countries = [
+    "Azerbaijan",
+    "Turkey",
+    "Kazakhstan",
+    "Georgia",
+    "UAE",
+    "Germany",
+    "Russia",
+    "Uzbekistan",
+  ];
+
+  // Certifications list
+  const certifications = [
+    "ISO 9001:2015",
+    "ISO 14001:2015",
+    "EN 1090",
+    "CE Marking",
+    "OHSAS 18001",
+    "API Certified",
+  ];
+
+  // Stats for hero section
+  const stats = [
+    { num: "15+", label: t("yearsExperience" as TranslationKey) },
+    { num: "5,000+", label: t("enterpriseClients" as TranslationKey) },
+    { num: "99.8%", label: t("deliveryReliability" as TranslationKey) },
+  ];
+
+  // Capabilities cards
+  const capabilities = [
+    {
+      title: t("advancedMetallurgyTitle" as TranslationKey),
+      desc: t("advancedMetallurgyDesc" as TranslationKey),
+      stat: t("advancedMetallurgyStat" as TranslationKey),
+    },
+    {
+      title: t("precisionProcessingTitle" as TranslationKey),
+      desc: t("precisionProcessingDesc" as TranslationKey),
+      stat: t("precisionProcessingStat" as TranslationKey),
+    },
+    {
+      title: t("qualityAssuranceTitle" as TranslationKey),
+      desc: t("qualityAssuranceDesc" as TranslationKey),
+      stat: t("qualityAssuranceStat" as TranslationKey),
+    },
+  ];
+
+  // Products cards
+  const products = [
+    {
+      title: t("bulkSteelTitle" as TranslationKey),
+      desc: t("bulkSteelDesc" as TranslationKey),
+      img: images.steelCoils,
+    },
+    {
+      title: t("specialtyAlloysTitle" as TranslationKey),
+      desc: t("specialtyAlloysDesc" as TranslationKey),
+      img: images.steelCoils,
+    },
+    {
+      title: t("fabricationTitle" as TranslationKey),
+      desc: t("fabricationDesc" as TranslationKey),
+      img: images.fabrication,
+    },
+  ];
+
+  // Testimonials
+  const testimonials = [
+    {
+      text: t("testimonialText" as TranslationKey),
+      author: t("testimonialAuthor" as TranslationKey),
+    },
+    {
+      text: t("testimonialText" as TranslationKey),
+      author: t("testimonialAuthor" as TranslationKey),
+    },
+    {
+      text: t("testimonialText" as TranslationKey),
+      author: t("testimonialAuthor" as TranslationKey),
+    },
+    {
+      text: t("testimonialText" as TranslationKey),
+      author: t("testimonialAuthor" as TranslationKey),
+    },
+  ];
 
   return (
     <main className="bg-[#0a1428] text-white overflow-hidden">
-      {/* Top Bar - Orange accent like your reference */}
-
       {/* HERO - Deep Blue with Strong Parallax */}
       <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
         <div
@@ -84,7 +169,7 @@ export default function Home() {
                   : "opacity-0 translate-y-10"
               }`}
             >
-              ⚒️ EST. 2010 • BAKU, AZERBAIJAN
+              ⚒️ {t("heroEstablished" as TranslationKey)}
             </div>
 
             <h1
@@ -94,9 +179,11 @@ export default function Home() {
                   : "opacity-0 translate-y-16"
               }`}
             >
-              Premium Steel Solutions
+              {t("heroMainTitle" as TranslationKey)}
               <br />
-              <span className="text-[#22d3ee]">Built for Enterprise</span>
+              <span className="text-[#22d3ee]">
+                {t("heroMainSubtitle" as TranslationKey)}
+              </span>
             </h1>
 
             <p
@@ -106,8 +193,7 @@ export default function Home() {
                   : "opacity-0 translate-y-16"
               }`}
             >
-              Trusted by leading construction, manufacturing, and infrastructure
-              companies across 35+ countries.
+              {t("heroDescription" as TranslationKey)}
             </p>
 
             <div
@@ -121,13 +207,13 @@ export default function Home() {
                 to="/contact"
                 className="px-10 py-5 bg-orange-500 hover:bg-orange-600 font-semibold rounded-2xl text-lg transition-all active:scale-95 shadow-lg"
               >
-                Request a Quote
+                {t("requestQuote" as TranslationKey)}
               </Link>
               <Link
                 to="/products"
                 className="px-10 py-5 border-2 border-[#22d3ee] text-[#22d3ee] hover:bg-[#22d3ee]/10 font-semibold rounded-2xl text-lg transition-all"
               >
-                View Our Catalog
+                {t("viewCatalog" as TranslationKey)}
               </Link>
             </div>
 
@@ -138,11 +224,7 @@ export default function Home() {
                   : "opacity-0 translate-y-16"
               }`}
             >
-              {[
-                { num: "15+", label: "Years Experience" },
-                { num: "5,000+", label: "Enterprise Clients" },
-                { num: "99.8%", label: "Delivery Reliability" },
-              ].map((stat, i) => (
+              {stats.map((stat, i) => (
                 <div key={i}>
                   <div className="text-4xl font-bold text-[#22d3ee]">
                     {stat.num}
@@ -192,25 +274,17 @@ export default function Home() {
               className={`space-y-8 transition-all duration-1000 delay-200 ${aboutVisible ? "opacity-100 translate-x-4" : "opacity-0 translate-x-20"}`}
             >
               <h2 className="text-5xl font-bold tracking-tighter leading-tight">
-                Engineering Trust Through Excellence
+                {t("aboutSectionTitle" as TranslationKey)}
               </h2>
               <div className="space-y-6 text-lg text-zinc-300">
-                <p>
-                  For over 15 years, SultanovSteel has been a reliable partner
-                  for large-scale industrial projects. We combine advanced
-                  metallurgy with strict quality control.
-                </p>
-                <p>
-                  Our commitment to transparency, consistency, and long-term
-                  relationships makes us the preferred supplier for enterprises
-                  that demand the best.
-                </p>
+                <p>{t("aboutParagraph1" as TranslationKey)}</p>
+                <p>{t("aboutParagraph2" as TranslationKey)}</p>
               </div>
               <Link
                 to="/about"
                 className="inline-flex items-center gap-3 text-[#22d3ee] font-semibold hover:gap-5 transition-all"
               >
-                Learn more about us →
+                {t("learnMoreAboutUs" as TranslationKey)}
               </Link>
             </div>
           </div>
@@ -226,31 +300,15 @@ export default function Home() {
             className={`text-center mb-16 transition-all duration-1000 ${capabilitiesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
           >
             <h2 className="text-5xl font-bold tracking-tighter">
-              Our Capabilities
+              {t("capabilitiesTitle" as TranslationKey)}
             </h2>
             <p className="text-xl text-zinc-400 mt-4 max-w-2xl mx-auto">
-              State-of-the-art facilities engineered for scale and precision
+              {t("capabilitiesSubtitle" as TranslationKey)}
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Advanced Metallurgy",
-                desc: "Custom alloy development and heat treatment",
-                stat: "120,000 tons/year",
-              },
-              {
-                title: "Precision Processing",
-                desc: "Cutting, bending, coating & fabrication",
-                stat: "ISO-certified lines",
-              },
-              {
-                title: "Quality Assurance",
-                desc: "100% material testing and full traceability",
-                stat: "Zero-defect policy",
-              },
-            ].map((cap, i) => (
+            {capabilities.map((cap, i) => (
               <div
                 key={i}
                 className={`bg-[#13223f] p-10 rounded-3xl border border-white/10 hover:border-[#22d3ee] transition-all duration-700 hover:-translate-y-3 ${capabilitiesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}`}
@@ -277,31 +335,15 @@ export default function Home() {
             className={`mb-16 transition-all duration-1000 ${productsVisible ? "opacity-100" : "opacity-0"}`}
           >
             <h2 className="text-5xl font-bold tracking-tighter">
-              Our Core Solutions
+              {t("ourCoreTitle" as TranslationKey)}
             </h2>
             <p className="text-xl text-zinc-400 mt-3">
-              Reliable materials. Proven performance at scale.
+              {t("ourCoreSubtitle" as TranslationKey)}
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Bulk Steel Supply",
-                desc: "Structural steel, plates, coils & profiles in all grades",
-                img: images.steelCoils,
-              },
-              {
-                title: "Specialty Alloys",
-                desc: "Corrosion-resistant, high-strength and heat-resistant materials",
-                img: images.steelCoils,
-              },
-              {
-                title: "Fabrication Services",
-                desc: "Custom cutting, welding and pre-assembly solutions",
-                img: images.fabrication,
-              },
-            ].map((product, i) => (
+            {products.map((product, i) => (
               <div
                 key={i}
                 className={`group bg-[#13223f] rounded-3xl overflow-hidden border border-white/10 hover:border-[#22d3ee] transition-all duration-700 hover:-translate-y-4 ${productsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}`}
@@ -318,9 +360,7 @@ export default function Home() {
                   <h3 className="text-2xl font-semibold mb-4 group-hover:text-[#22d3ee] transition-colors">
                     {product.title}
                   </h3>
-                  <p className="text-zinc-400 leading-relaxed">
-                    {product.desc}
-                  </p>
+                  <p className="text-zinc-400 leading-relaxed">{product.desc}</p>
                 </div>
               </div>
             ))}
@@ -335,24 +375,15 @@ export default function Home() {
             className={`text-center mb-16 transition-all ${globalReachVisible ? "opacity-100" : "opacity-0"}`}
           >
             <h2 className="text-5xl font-bold tracking-tighter">
-              Global Reach, Local Expertise
+              {t("globalReachTitle" as TranslationKey)}
             </h2>
             <p className="text-xl text-zinc-400 mt-4">
-              Supplying major projects across Europe, Middle East & Central Asia
+              {t("globalReachSubtitle" as TranslationKey)}
             </p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-6">
-            {[
-              "Azerbaijan",
-              "Turkey",
-              "Kazakhstan",
-              "Georgia",
-              "UAE",
-              "Germany",
-              "Russia",
-              "Uzbekistan",
-            ].map((country, i) => (
+            {countries.map((country, i) => (
               <div
                 key={i}
                 className={`py-8 bg-[#13223f] border border-white/10 hover:border-[#22d3ee] rounded-3xl text-center font-medium transition-all duration-700 ${globalReachVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
@@ -372,22 +403,15 @@ export default function Home() {
             className={`mb-16 transition-all ${certificationsVisible ? "opacity-100" : "opacity-0 translate-y-8"}`}
           >
             <h2 className="text-5xl font-bold tracking-tighter text-zinc-900">
-              Certified Excellence
+              {t("certifiedExcellenceTitle" as TranslationKey)}
             </h2>
             <p className="text-xl text-zinc-600 mt-4">
-              Meeting the highest international industrial standards
+              {t("certifiedExcellenceSubtitle" as TranslationKey)}
             </p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-10">
-            {[
-              "ISO 9001:2015",
-              "ISO 14001:2015",
-              "EN 1090",
-              "CE Marking",
-              "OHSAS 18001",
-              "API Certified",
-            ].map((cert, i) => (
+            {certifications.map((cert, i) => (
               <div
                 key={i}
                 className={`bg-white border border-zinc-200 px-12 py-9 rounded-3xl text-xl font-semibold shadow-sm hover:shadow-xl hover:border-[#22d3ee] transition-all ${certificationsVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
@@ -400,71 +424,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS & WHY US - Combined for better flow */}
-      <section
-        ref={testimonialsRef}
-        className="py-20 bg-zinc-100 text-zinc-900"
-      >
+      {/* TESTIMONIALS */}
+      <section ref={testimonialsRef} className="py-20 bg-zinc-100 text-zinc-900">
         <div className="max-w-7xl mx-auto px-6">
           <h2
             className={`text-5xl font-bold tracking-tighter text-center mb-16 transition-all ${testimonialsVisible ? "opacity-100" : "opacity-0"}`}
           >
-            Trusted by Industry Leaders
+            {t("trustedByLeadersTitle" as TranslationKey)}
           </h2>
 
           <div className="grid lg:grid-cols-2 gap-8 mb-20">
-            <div
-              className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-            >
-              <p className="italic text-lg">
-                "SultanovSteel consistently delivers on time with excellent
-                quality. They have become our strategic partner for all major
-                projects."
-              </p>
-              <div className="mt-8 font-semibold">
-                Michael Berger — EuroBuild Group
+            {testimonials.map((testimonial, i) => (
+              <div
+                key={i}
+                className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+              >
+                <p className="italic text-lg">"{testimonial.text}"</p>
+                <div className="mt-8 font-semibold">{testimonial.author}</div>
               </div>
-            </div>
-            <div
-              className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-            >
-              <p className="italic text-lg">
-                "SultanovSteel consistently delivers on time with excellent
-                quality. They have become our strategic partner for all major
-                projects."
-              </p>
-              <div className="mt-8 font-semibold">
-                Michael Berger — EuroBuild Group
-              </div>
-            </div>
-            <div
-              className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-            >
-              <p className="italic text-lg">
-                "SultanovSteel consistently delivers on time with excellent
-                quality. They have become our strategic partner for all major
-                projects."
-              </p>
-              <div className="mt-8 font-semibold">
-                Michael Berger — EuroBuild Group
-              </div>
-            </div>
-            <div
-              className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-            >
-              <p className="italic text-lg">
-                "SultanovSteel consistently delivers on time with excellent
-                quality. They have become our strategic partner for all major
-                projects."
-              </p>
-              <div className="mt-8 font-semibold">
-                Michael Berger — EuroBuild Group
-              </div>
-            </div>
-            {/* You can easily add more testimonial cards here */}
+            ))}
           </div>
-
-       
         </div>
       </section>
 
@@ -472,17 +451,16 @@ export default function Home() {
       <section className="py-24 bg-gradient-to-r from-orange-600 via-orange-500 to-[#22d3ee] text-center text-white">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-5xl font-bold tracking-tighter mb-6">
-            Ready to secure your next project with confidence?
+            {t("ctaMainHeading" as TranslationKey)}
           </h2>
           <p className="text-xl mb-10 opacity-90">
-            Let’s discuss how SultanovSteel can support your upcoming
-            initiatives.
+            {t("ctaSubheading" as TranslationKey)}
           </p>
           <Link
             to="/contact"
             className="inline-block px-14 py-6 bg-white text-[#0a1428] font-bold rounded-2xl text-xl hover:bg-zinc-100 transition transform hover:scale-105"
           >
-            Get in Touch with Our Team
+            {t("getInTouch" as TranslationKey)}
           </Link>
         </div>
       </section>
