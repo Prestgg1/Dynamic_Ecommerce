@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { buildDatabaseConfig } from './database/typeorm.config';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoriesModule } from './modules/categories/categories.module';
@@ -21,15 +22,8 @@ import { StatisticsModule } from './modules/statistics/statistics.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        url: configService.get<string>('DATABASE_URL'),
-        autoLoadEntities: true,
-        synchronize:
-          configService.get<string>('DB_SYNCHRONIZE') === 'true' &&
-          configService.get<string>('NODE_ENV') !== 'production',
-        dropSchema: false,
-      }),
+      useFactory: (configService: ConfigService) =>
+        buildDatabaseConfig(configService.getOrThrow<string>('DATABASE_URL')),
     }),
     UsersModule,
 

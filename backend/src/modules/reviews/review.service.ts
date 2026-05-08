@@ -32,7 +32,7 @@ export class ReviewsService {
     try {
       // Rəyi yarat və yadda saxla
       const newReview = this.reviewRepository.create({
-        userId: userId.toString(),
+        userId,
         productId,
         message,
         rating: starCount, // Sizin entity-dəki sahə adı
@@ -74,7 +74,7 @@ export class ReviewsService {
   }
 
   async remove(id: number, userId: number) {
-    const review = await this.reviewRepository.findOne({ where: { id, userId: userId.toString() } });
+    const review = await this.reviewRepository.findOne({ where: { id, userId } });
     if (!review) {
       throw new NotFoundException('Rəy tapılmadı və ya silmək icazəniz yokdur');
     }

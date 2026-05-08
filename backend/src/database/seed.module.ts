@@ -6,6 +6,7 @@ import { ProductsModule } from '../modules/products/products.module';
 import { UsersModule } from '../modules/users/users.module';
 import { OrdersModule } from '../modules/orders/orders.module';
 import { SeedService } from './seed.service';
+import { buildDatabaseConfig } from './typeorm.config';
 
 @Module({
   imports: [
@@ -13,12 +14,8 @@ import { SeedService } from './seed.service';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        url: configService.get<string>('DATABASE_URL'),
-        autoLoadEntities: true,
-        synchronize: true,
-      }),
+      useFactory: (configService: ConfigService) =>
+        buildDatabaseConfig(configService.getOrThrow<string>('DATABASE_URL')),
     }),
     CategoriesModule,
     ProductsModule,
