@@ -6,15 +6,26 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { UserRole } from '../modules/users/entities/user.entity';
+import { AuthService } from '../modules/auth/auth.service';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
+  constructor(private readonly authService: AuthService) {}
 
-    // OptionalAuthMiddleware-dən gələn user-i yoxlayırıq
-    console.log(user);
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    if (!request.user) {
+      const sid = request.cookies?.sid as string | undefined;
+
+      if (sid) {
+        const user = await this.authService.validateSession(sid);
+        if (user) {
+          request.user = user;
+        }
+      }
+    }
+
+    const user = request.user;
     if (user && user.role === UserRole.ADMIN) {
       return true;
     }
