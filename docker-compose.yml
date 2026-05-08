@@ -39,8 +39,11 @@ services:
       DB_LOGGING: "false"
     volumes:
       - backend_uploads:/app/uploads
-    expose:
+    ports:
       - "3000"
+    networks:
+      - default
+      - dokploy-network
 
   frontend:
     build:
@@ -55,9 +58,16 @@ services:
       NODE_ENV: production
       PORT: 3000
       VITE_API_BASE_URL: ${VITE_API_BASE_URL}
-    expose:
+    ports:
       - "3000"
+    networks:
+      - default
+      - dokploy-network
 
 volumes:
   mysql_data:
   backend_uploads:
+
+networks:
+  dokploy-network:
+    external: true
