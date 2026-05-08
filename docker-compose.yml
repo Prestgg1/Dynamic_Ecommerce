@@ -1,9 +1,8 @@
 services:
   db:
-    image: mysql:8.4
+    image: mysql:8.0
     restart: unless-stopped
     command:
-      - --default-authentication-plugin=mysql_native_password
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     environment:
@@ -17,11 +16,12 @@ services:
       test:
         [
           "CMD-SHELL",
-          "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent",
+          "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent",
         ]
+      start_period: 60s
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 20
 
   backend:
     build:
@@ -29,8 +29,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
       NODE_ENV: production
       PORT: 3000
