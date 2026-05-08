@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 export enum UserRole {
   ADMIN = 'ADMIN',
@@ -25,6 +26,7 @@ export class User {
   email: string;
 
   @Column()
+  @Exclude({ toPlainOnly: true })
   password: string;
 
   @Column({
@@ -42,5 +44,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
-  @OneToMany('Order', (order: Order) => order.user) orders: Order[]
+
+  @OneToMany('Order', (order: Order) => order.user)
+  orders: Order[];
 }

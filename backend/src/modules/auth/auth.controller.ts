@@ -23,8 +23,22 @@ import type { Response, Request } from 'express';
 import { RegisterDto } from '../../dtos/register.dto';
 import { LoginDto } from '../../dtos/login.dto';
 import { User } from '../users/entities/user.entity';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
+import { persistUploadedImage } from '../../shared/upload.util';
+
+const SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
+
+function getSessionCookieOptions() {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
+    maxAge: SESSION_MAX_AGE,
+    path: '/',
+  };
+}
 
 @ApiTags('auth')
 @Controller('auth')
@@ -39,12 +53,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const sessionId = await this.authService.register(dto);
-    res.cookie('sid', sessionId, {
-      httpOnly: true,
-      secure: true, //process.env.NODE_ENV === 'production'
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie('sid', sessionId, getSessionCookieOptions());
     return { success: true };
   }
 
@@ -56,12 +65,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const sessionId = await this.authService.login(dto);
-    res.cookie('sid', sessionId, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie('sid', sessionId, getSessionCookieOptions());
     return { success: true };
   }
 
@@ -70,7 +74,7 @@ export class AuthController {
     const sid = req.cookies?.sid as string | undefined;
     if (sid) {
       await this.authService.logout(sid);
-      res.clearCookie('sid');
+      res.clearCookie('sid', getSessionCookieOptions());
     }
     return { success: true };
   }
@@ -98,13 +102,7 @@ export class AuthController {
   @ApiResponse({ status: 200, type: User })
   @UseInterceptors(
     FileInterceptor('avatar', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, `avatar-${unique}${extname(file.originalname)}`);
-        },
-      }),
+      storage: memoryStorage(),
       fileFilter: (req, file, cb) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
           return cb(
@@ -132,7 +130,9 @@ export class AuthController {
       throw new UnauthorizedException('Session expired or invalid');
     }
 
-    const avatarUrl = file ? `/uploads/${file.filename}` : undefined;
+    const avatarUrl = file
+      ? await persistUploadedImage(file, { prefix: 'avatar' })
+      : undefined;
 
     return this.authService.updateProfile(user.id, {
       ...(fullName ? { fullName } : {}),

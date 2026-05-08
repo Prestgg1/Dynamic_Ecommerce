@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiConsumes, ApiResponse } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
+import { persistUploadedImage } from '../../shared/upload.util';
 
 @ApiTags('uploads')
 @Controller('uploads')
@@ -18,15 +18,9 @@ export class UploadsController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, `profile-${uniqueSuffix}${extname(file.originalname)}`);
-        },
-      }),
+      storage: memoryStorage(),
       fileFilter: (req, file, cb) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
           return cb(new BadRequestException('Only image files are allowed!'), false);
         }
         cb(null, true);
@@ -41,10 +35,8 @@ export class UploadsController {
     if (!file) {
       throw new BadRequestException('File is required');
     }
-    // Return the URL to the frontend
-    // In production, this should be the full URL (e.g. https://api.ironstore.com/uploads/...)
-    // But for local dev, it can be relative or full localhost
-    const url = `/uploads/${file.filename}`;
-    return { url };
+    return persistUploadedImage(file, { prefix: 'profile' }).then((url) => ({
+      url,
+    }));
   }
 }

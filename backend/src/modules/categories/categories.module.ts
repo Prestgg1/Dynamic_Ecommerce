@@ -22,6 +22,7 @@ export class CategoriesModule implements NestModule {
     consumer
       .apply(OptionalAuthMiddleware)
       .forRoutes(
+        { path: 'categories', method: RequestMethod.POST },
         { path: 'categories/:id', method: RequestMethod.PATCH },
         { path: 'categories/:id', method: RequestMethod.DELETE },
       );

@@ -25,7 +25,9 @@ import { StatisticsModule } from './modules/statistics/statistics.module';
         type: 'mysql',
         url: configService.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize:
+          configService.get<string>('DB_SYNCHRONIZE') === 'true' &&
+          configService.get<string>('NODE_ENV') !== 'production',
         dropSchema: false,
       }),
     }),
