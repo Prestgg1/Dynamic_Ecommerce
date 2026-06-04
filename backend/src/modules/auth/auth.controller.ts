@@ -19,7 +19,7 @@ import {
   ApiResponse,
   ApiConsumes,
 } from '@nestjs/swagger';
-import type { Response, Request } from 'express';
+import type { Response, Request, CookieOptions } from 'express';
 import { RegisterDto } from '../../dtos/register.dto';
 import { LoginDto } from '../../dtos/login.dto';
 import { User } from '../users/entities/user.entity';
@@ -28,7 +28,7 @@ import { persistUploadedImage } from '../../shared/upload.util';
 
 const SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 
-function getSessionCookieOptions() {
+function getSessionCookieOptions(): CookieOptions {
   const isProduction = process.env.NODE_ENV === 'production';
 
   return {
