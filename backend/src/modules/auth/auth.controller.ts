@@ -34,7 +34,7 @@ function getSessionCookieOptions() {
   return {
     httpOnly: true,
     secure: isProduction,
-    sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: SESSION_MAX_AGE,
     path: '/',
   };

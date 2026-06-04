@@ -13,7 +13,16 @@ export function buildDatabaseConfig(databaseUrl: string): DataSourceOptions {
   return {
     type: 'mysql',
     url: databaseUrl,
-    entities: [User, Session, Category, Product, Wishlist, Order, OrderItem, Review],
+    entities: [
+      User,
+      Session,
+      Category,
+      Product,
+      Wishlist,
+      Order,
+      OrderItem,
+      Review,
+    ],
     migrations: [join(__dirname, 'migrations/*{.ts,.js}')],
     migrationsTableName: 'typeorm_migrations',
     synchronize: false,

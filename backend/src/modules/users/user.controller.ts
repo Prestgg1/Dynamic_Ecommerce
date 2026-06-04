@@ -1,4 +1,10 @@
-import { Controller, Get, Param, NotFoundException, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  NotFoundException,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UserResponseDto } from './dtos/user.dto';
@@ -10,7 +16,7 @@ import { AuthGuard } from '../../guards/auth.guard';
 @Controller('users')
 @UseGuards(AuthGuard, AdminGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all users (Admin only)' })

@@ -7,7 +7,10 @@ import { Order } from '../orders/entities/order.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Order]), forwardRef(() => AuthModule)],
+  imports: [
+    TypeOrmModule.forFeature([User, Order]),
+    forwardRef(() => AuthModule),
+  ],
   providers: [UsersService],
   exports: [UsersService],
   controllers: [UsersController],

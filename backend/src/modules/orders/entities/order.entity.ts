@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import type { User } from '../../users/entities/user.entity';
 import type { OrderItem } from './order-item.entity';
 
@@ -22,7 +30,10 @@ export class Order {
   @Column()
   userId: number;
 
-  @OneToMany('OrderItem', (item: OrderItem) => item.order, { cascade: true, eager: true })
+  @OneToMany('OrderItem', (item: OrderItem) => item.order, {
+    cascade: true,
+    eager: true,
+  })
   items: OrderItem[];
 
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })

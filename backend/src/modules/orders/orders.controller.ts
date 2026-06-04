@@ -1,7 +1,22 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto, OrderResponseDto, UpdateOrderStatusDto } from './dtos/order.dto';
+import {
+  CreateOrderDto,
+  OrderResponseDto,
+  UpdateOrderStatusDto,
+} from './dtos/order.dto';
 import { AdminGuard } from '../../guards/admin.guard';
 import { AuthGuard } from '../../guards/auth.guard';
 import type { RequestWithUser } from '../../middleware/optional-auth-middleware';
@@ -9,7 +24,7 @@ import type { RequestWithUser } from '../../middleware/optional-auth-middleware'
 @ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) { }
+  constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create order' })

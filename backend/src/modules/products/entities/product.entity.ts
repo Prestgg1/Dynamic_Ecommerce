@@ -32,8 +32,8 @@ export class Product {
   @Column('text', { nullable: true })
   descriptionEn: string;
 
-   @OneToMany('Review', 'product')
-reviews: Review[];
+  @OneToMany('Review', 'product')
+  reviews: Review[];
 
   @Column('decimal', {
     precision: 10,

@@ -1,5 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
-
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateReviewDto {
   @ApiProperty({ example: 1, description: 'Məhsulun ID-si' })
@@ -11,7 +10,6 @@ export class CreateReviewDto {
   @ApiProperty({ example: 5, description: 'Ulduz sayı (1-5 arası)' })
   starCount: number;
 }
-
 
 class ReviewUserDto {
   @ApiProperty({ example: '7d2...' })

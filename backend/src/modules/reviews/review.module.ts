@@ -8,10 +8,7 @@ import { OptionalAuthMiddleware } from '../../middleware/optional-auth-middlewar
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Review, Product]),
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Review, Product]), AuthModule],
   controllers: [ReviewsController],
   providers: [ReviewsService],
   exports: [ReviewsService],

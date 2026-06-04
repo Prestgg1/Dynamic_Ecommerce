@@ -13,6 +13,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ReviewsModule } from './modules/reviews/review.module';
+import { AdminSeedService } from './database/admin-seed.service';
 
 import { StatisticsModule } from './modules/statistics/statistics.module';
 
@@ -40,6 +41,6 @@ import { StatisticsModule } from './modules/statistics/statistics.module';
     ReviewsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AdminSeedService],
 })
 export class AppModule {}
