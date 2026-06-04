@@ -4,17 +4,22 @@ import { Exclude, Expose } from 'class-transformer';
 @Exclude()
 export class UserResponseDto {
   @Expose()
-  @ApiProperty() id: number;
+  @ApiProperty()
+  id: number;
 
   @Expose()
-  @ApiProperty() email: string;
+  @ApiProperty()
+  email: string;
 
   @Expose()
-  @ApiProperty() name: string;
+  @ApiProperty()
+  name: string;
 
   @Expose()
-  @ApiProperty() isAdmin: boolean;
+  @ApiProperty()
+  isAdmin: boolean;
 
   @Expose()
-  @ApiProperty() createdAt: Date;
+  @ApiProperty()
+  createdAt: Date;
 }

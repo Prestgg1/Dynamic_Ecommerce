@@ -6,7 +6,7 @@ import {
   Param,
   Post,
   Req,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ReviewsService } from './review.service';
@@ -18,7 +18,7 @@ import type { RequestWithUser } from '../../middleware/optional-auth-middleware'
 @ApiTags('reviews')
 @Controller('reviews')
 export class ReviewsController {
-  constructor(private readonly reviewsService: ReviewsService) { }
+  constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
   @UseGuards(AuthGuard)

@@ -33,9 +33,7 @@ async function waitForDatabase() {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Unknown database error';
-      console.log(
-        `Waiting for database (${attempt}/${retries}): ${message}`,
-      );
+      console.log(`Waiting for database (${attempt}/${retries}): ${message}`);
 
       if (attempt === retries) {
         throw error;

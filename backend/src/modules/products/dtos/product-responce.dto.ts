@@ -11,8 +11,6 @@ class CategoryDto {
   name: string;
 }
 
-
-
 export class CreateProductDto {
   @ApiProperty({ example: 'Məhsul adı' })
   name: string;
@@ -32,10 +30,10 @@ export class CreateProductDto {
   @ApiProperty({ example: 'Product description', required: false })
   descriptionEn?: string;
 
-  @ApiProperty({ example: 15.50 })
+  @ApiProperty({ example: 15.5 })
   price: number;
 
-  @ApiProperty({ example: 20.00, required: false })
+  @ApiProperty({ example: 20.0, required: false })
   oldPrice?: number;
 
   @ApiProperty({ example: 'category-slug' })
@@ -55,9 +53,8 @@ export class CreateProductDto {
 
   @ApiProperty({ example: '10x20x30', required: false })
   dimensions?: string;
-
-
-} export class UpdateProductDto extends PartialType(CreateProductDto) { }
+}
+export class UpdateProductDto extends PartialType(CreateProductDto) {}
 
 export class ProductResponseDto {
   @Expose()

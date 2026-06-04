@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Review } from './entities/review.entity';
@@ -13,13 +17,15 @@ export class ReviewsService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly dataSource: DataSource, // Reytinqi hesablamaq və update etmək üçün
-  ) { }
+  ) {}
 
   async create(userId: number, dto: CreateReviewDto) {
     const { productId, message, starCount } = dto;
 
     // 1. Məhsulun mövcudluğunu yoxla
-    const product = await this.productRepository.findOne({ where: { id: productId } });
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
     if (!product) {
       throw new NotFoundException('Məhsul tapılmadı');
     }
@@ -56,10 +62,11 @@ export class ReviewsService {
 
       await queryRunner.commitTransaction();
       return savedReview;
-
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException('Rəy əlavə edilərkən xəta baş verdi');
+      throw new InternalServerErrorException(
+        'Rəy əlavə edilərkən xəta baş verdi',
+      );
     } finally {
       await queryRunner.release();
     }
@@ -74,7 +81,9 @@ export class ReviewsService {
   }
 
   async remove(id: number, userId: number) {
-    const review = await this.reviewRepository.findOne({ where: { id, userId } });
+    const review = await this.reviewRepository.findOne({
+      where: { id, userId },
+    });
     if (!review) {
       throw new NotFoundException('Rəy tapılmadı və ya silmək icazəniz yokdur');
     }
