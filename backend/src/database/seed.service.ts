@@ -86,7 +86,9 @@ export class SeedService {
         continue;
       }
 
-      const existingBySlug = await this.categoriesService.findOneBySlug(cat.slug);
+      const existingBySlug = await this.categoriesService.findOneBySlug(
+        cat.slug,
+      );
       if (existingBySlug) {
         categoryIdMap.set(cat.id, existingBySlug.id);
         this.logger.log(
