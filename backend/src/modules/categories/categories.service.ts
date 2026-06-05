@@ -19,6 +19,10 @@ export class CategoriesService {
     return this.categoriesRepository.findOne({ where: { id } });
   }
 
+  async findOneBySlug(slug: string): Promise<Category | null> {
+    return this.categoriesRepository.findOne({ where: { slug } });
+  }
+
   async create(dto: CreateCategoryDto): Promise<Category> {
     if (!dto.slug) {
       dto.slug = dto.labelEn
