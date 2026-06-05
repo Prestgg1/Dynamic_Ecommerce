@@ -49,7 +49,8 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
       return;
     }
 
-    const payload = { ...form, price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined, rating: form.rating ? Number(form.rating) : undefined };
+    const { category, imagePreview, ...rest } = form;
+    const payload = { ...rest, categoryId: category, price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined, rating: form.rating ? Number(form.rating) : undefined };
     const action = isNew ? create : update;
     const config = isNew
       ? { body: payload, onSuccess: () => { toast.success("Product created"); onSuccess(); } }

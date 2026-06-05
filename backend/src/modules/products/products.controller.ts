@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Post,
   Put,
   Query,
   Req,
@@ -15,6 +16,7 @@ import { ProductsService } from './products.service';
 import { Product } from './entities/product.entity';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import {
+  CreateProductDto,
   ProductResponseDto,
   UpdateProductDto,
 } from './dtos/product-responce.dto';
@@ -45,6 +47,15 @@ export class ProductsController {
   @ApiResponse({ status: 200, type: [ProductResponseDto] })
   findFeatured(): Promise<ProductResponseDto[]> {
     return this.productsService.findFeatured();
+  }
+
+  @Post()
+  @UseGuards(AdminGuard)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create product (Admin only)' })
+  @ApiResponse({ status: 201, type: Product })
+  create(@Body() createProductDto: CreateProductDto): Promise<Product> {
+    return this.productsService.create(createProductDto);
   }
 
   @Get(':id')
