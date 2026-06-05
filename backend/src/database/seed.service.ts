@@ -78,12 +78,26 @@ export class SeedService {
       },
     ];
 
+    const categoryIdMap = new Map<string, string>();
     for (const cat of categoriesData) {
-      const existing = await this.categoriesService.findOne(cat.id);
-      if (!existing) {
-        await this.categoriesService.create(cat);
-        this.logger.log(`Created category: ${cat.id}`);
+      const existingById = await this.categoriesService.findOne(cat.id);
+      if (existingById) {
+        categoryIdMap.set(cat.id, existingById.id);
+        continue;
       }
+
+      const existingBySlug = await this.categoriesService.findOneBySlug(cat.slug);
+      if (existingBySlug) {
+        categoryIdMap.set(cat.id, existingBySlug.id);
+        this.logger.log(
+          `Category slug already exists, reusing id '${existingBySlug.id}' for seed key '${cat.id}'`,
+        );
+        continue;
+      }
+
+      const createdCategory = await this.categoriesService.create(cat);
+      categoryIdMap.set(cat.id, createdCategory.id);
+      this.logger.log(`Created category: ${cat.id}`);
     }
 
     // Products
@@ -380,7 +394,13 @@ export class SeedService {
     for (const prod of productsData) {
       const existing = await this.productsService.findOne(prod.id);
       if (!existing) {
-        await this.productsService.create(prod);
+        const resolvedCategoryId =
+          categoryIdMap.get(prod.categoryId) ?? prod.categoryId;
+
+        await this.productsService.create({
+          ...prod,
+          categoryId: resolvedCategoryId,
+        });
         this.logger.log(`Created product: ${prod.nameEn}`);
       }
     }
