@@ -1,3 +1,4 @@
+# docker-compose.dev.yml
 services:
   db:
     image: mysql:8.4
@@ -31,43 +32,33 @@ services:
     depends_on:
       - db
     environment:
-      NODE_ENV: production
-      PORT: 3000
+      NODE_ENV: development
+      PORT: 3001
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}
       CORS_ORIGINS: ${CORS_ORIGINS}
-      ENABLE_SWAGGER: "false"
-      DB_LOGGING: "false"
+      ENABLE_SWAGGER: "true"
+      DB_LOGGING: "true"
     volumes:
+      - ./backend:/app # ← Kod dəyişiklikləri anında görünür
+      - /app/node_modules # ← node_modules-u override etmə
       - backend_uploads:/app/uploads
     ports:
-      - "3000"
-    networks:
-      - default
-      - dokploy-network
+      - "3001:3001"
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+      dockerfile: Dockerfile.dev # ← Ayrı dev Dockerfile
     restart: unless-stopped
     depends_on:
       - backend
     environment:
-      NODE_ENV: production
-      PORT: 3000
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+      NODE_ENV: development
+    volumes:
+      - ./frontend:/app # ← Kod dəyişiklikləri anında görünür
     ports:
-      - "3000:3000"
-    networks:
-      - default
-      - dokploy-network
+      - "5173:5173"
 
 volumes:
   mysql_data:
   backend_uploads:
-
-networks:
-  dokploy-network:
-    external: true

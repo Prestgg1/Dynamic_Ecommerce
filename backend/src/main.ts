@@ -11,19 +11,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const reflector = app.get(Reflector);
   const isProduction = process.env.NODE_ENV === 'production';
-  const allowedOrigins = (process.env.CORS_ORIGINS ?? '')
+  const corsOrigins = (process.env.CORS_ORIGINS ?? '')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
-  const corsOrigins = allowedOrigins.length
-    ? allowedOrigins
-    : [
-        'https://sultanovsteel.netlify.app',
-        'http://localhost:3000',
-        'http://localhost:5173',
-      ];
 
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
+  app.enableCors({
+    origin: corsOrigins,
+    credentials: true,
+  });
   app.use(
     helmet({
       contentSecurityPolicy: false,
@@ -52,10 +49,6 @@ async function bootstrap() {
   );
 
   app.use(cookieParser());
-  app.enableCors({
-    origin: corsOrigins,
-    credentials: true,
-  });
 
   if (!isProduction || process.env.ENABLE_SWAGGER === 'true') {
     const config = new DocumentBuilder()
@@ -77,6 +70,6 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();

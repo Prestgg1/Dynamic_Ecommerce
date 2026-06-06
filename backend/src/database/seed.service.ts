@@ -1,9 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CategoriesService } from '../modules/categories/categories.service';
 import { ProductsService } from '../modules/products/products.service';
-import { UsersService } from '../modules/users/users.service';
-import { UserRole } from '../modules/users/entities/user.entity';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class SeedService {
@@ -12,7 +9,6 @@ export class SeedService {
   constructor(
     private readonly categoriesService: CategoriesService,
     private readonly productsService: ProductsService,
-    private readonly usersService: UsersService,
   ) {}
 
   async seed() {
@@ -406,23 +402,6 @@ export class SeedService {
         this.logger.log(`Created product: ${prod.nameEn}`);
       }
     }
-
-    // Users
-    const testEmail = 'admin@demirmart.az';
-    const existingUser = await this.usersService.findByEmail(testEmail);
-    if (!existingUser) {
-      const hashedPassword = await bcrypt.hash('password123', 10);
-      await this.usersService.create({
-        fullName: 'Admin',
-        email: testEmail,
-        password: hashedPassword,
-        role: UserRole.ADMIN,
-        avatarUrl:
-          'https://ui-avatars.com/api/?background=f97316&color=fff&name=Test+User',
-      });
-      this.logger.log(`Created test user: ${testEmail}`);
-    }
-
     this.logger.log('Seeding completed.');
   }
 }

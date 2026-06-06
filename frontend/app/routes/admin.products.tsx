@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { trpc } from "~/lib/trpc";
+import { trpc, BACKEND_URL } from "~/lib/trpc";
 import toast from "react-hot-toast";
 import { ProductForm } from "~/components/admin/ProductForm";
 import { DeleteConfirmModal } from "~/components/admin/DeleteConfirmModal";
@@ -62,7 +62,7 @@ export default function ProductsPage() {
   const getImageUrl = (image: string) => {
     if (!image) return "https://via.placeholder.com/48?text=No+Image";
     if (image.includes("unsplash")) return image;
-    return `http://localhost:4000${image}`;
+    return `${BACKEND_URL}${image}`;
   };
 
   return (

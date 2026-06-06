@@ -2,7 +2,7 @@ import type { Route } from "./+types/products.$id";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLanguage } from "~/context/LanguageContext";
-import { trpc } from "~/lib/trpc";
+import { trpc, BACKEND_URL } from "~/lib/trpc";
 import { useDebounce } from "~/hooks/useDebounce";
 import ProductCard from "~/components/ProductCard";
 import toast from "react-hot-toast";
@@ -74,7 +74,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
     );
   }
 
-  const currentImage = selectedImage ?? (product.image.includes('unsplash') ? product.image : `http://localhost:4000${product.image}`);
+  const currentImage = selectedImage ?? (product.image.includes('unsplash') ? product.image : `${BACKEND_URL}${product.image}`);
   
   const name =
     language === "az" ? product.name : language === "ru" ? product.nameRu : product.nameEn;
@@ -147,7 +147,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
               {product.images && product.images.length > 0 && (
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                   {[product.image, ...product.images].map((img, i) => {
-                    const mappedImg = img.includes('unsplash') ? img : `http://localhost:4000${img}`;
+                    const mappedImg = img.includes('unsplash') ? img : `${BACKEND_URL}${img}`;
                     return (
                       <button
                         key={i}
