@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CategoriesModule } from '../modules/categories/categories.module';
 import { ProductsModule } from '../modules/products/products.module';
-import { UsersModule } from '../modules/users/users.module';
 import { OrdersModule } from '../modules/orders/orders.module';
 import { SeedService } from './seed.service';
 import { buildDatabaseConfig } from './typeorm.config';
@@ -19,7 +18,6 @@ import { buildDatabaseConfig } from './typeorm.config';
     }),
     CategoriesModule,
     ProductsModule,
-    UsersModule,
     OrdersModule,
   ],
   providers: [SeedService],

@@ -20,5 +20,5 @@ COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/dist /app/dist
 WORKDIR /app
 RUN mkdir -p /app/uploads
-EXPOSE 3000
+EXPOSE 3001
 CMD ["npm", "run", "start:prod:migrated"]

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation, NavLink, Form } from "react-router";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
-import { trpc } from "~/lib/trpc";
+import { trpc, BACKEND_URL } from "~/lib/trpc";
 import { useAuthStore } from "~/store/auth.store";
 import { useCartStore } from "~/store/cart.store";
 
@@ -220,7 +220,7 @@ export default function Header() {
                           src={
                             user.avatarUrl.startsWith("http")
                               ? user.avatarUrl
-                              : `http://localhost:4000${user.avatarUrl}`
+                              : `${BACKEND_URL}${user.avatarUrl}`
                           }
                           alt={user?.fullName || "User"}
                           className="w-full h-full object-cover"
@@ -500,7 +500,7 @@ export default function Header() {
                     src={
                       user.avatarUrl.startsWith("http")
                         ? user.avatarUrl
-                        : `http://localhost:4000${user.avatarUrl}`
+                        : `${BACKEND_URL}${user.avatarUrl}`
                     }
                     alt={user?.fullName || "User"}
                     className="w-full h-full object-cover"

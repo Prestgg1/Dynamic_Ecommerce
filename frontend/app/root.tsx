@@ -21,7 +21,11 @@ import InitialLayout from "./components/InitialLayout";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
@@ -31,9 +35,6 @@ export const links: Route.LinksFunction = () => [
 // ─── QueryClient ─────────────────────────────────────────────────────────────
 
 const queryClient = new QueryClient();
-
-
-
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 
@@ -49,14 +50,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <QueryClientProvider client={queryClient}>
           <LanguageProvider>
-            <InitialLayout >
-
+            <InitialLayout>
               <Header />
               {children}
               <Footer />
               <Toaster position="top-right" />
-
-
             </InitialLayout>
           </LanguageProvider>
         </QueryClientProvider>

@@ -5,10 +5,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as zod from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import toast from "react-hot-toast";
-import { trpc } from "~/lib/trpc";
+import { trpc, BACKEND_URL } from "~/lib/trpc";
 import { useAuthStore } from "~/store/auth.store";
-
-const BACKEND_URL = "http://localhost:4000";
 
 const profileSchema = zod.object({
   fullName: zod
