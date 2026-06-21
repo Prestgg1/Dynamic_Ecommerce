@@ -197,7 +197,25 @@ export default function Header() {
               </button>
             </div>
 
-            <div className="ml-auto flex flex-shrink-0 items-center gap-1 lg:gap-4">
+            <nav className="ml-auto hidden items-center gap-6 xl:flex">
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `text-sm font-bold transition-all ${
+                      isActive
+                        ? "text-orange-500"
+                        : "text-gray-400 hover:text-orange-500"
+                    }`
+                  }
+                >
+                  {t(link.key)}
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="flex flex-shrink-0 items-center gap-1 lg:gap-4">
               <div ref={langRef} className="relative hidden lg:block">
                 <button
                   onClick={() => setLangDropdownOpen(!langDropdownOpen)}
@@ -369,31 +387,16 @@ export default function Header() {
             </div>
           </div>
 
-          <nav className="hidden items-center gap-8 border-t border-white/5 py-3 lg:flex">
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                className={({ isActive }) =>
-                  `relative text-sm font-bold transition-all after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-orange-500 after:transition-all ${
-                    isActive
-                      ? "text-orange-500 after:w-full"
-                      : "text-gray-400 hover:text-orange-500 after:w-0 hover:after:w-full"
-                  }`
-                }
-              >
-                {t(link.key)}
-              </NavLink>
-            ))}
+          <div className="flex justify-end border-t border-white/5 py-3">
             {!user && (
               <Link
                 to="/auth/register"
-                className="ml-auto rounded-xl bg-orange-500 px-5 py-2 text-xs font-black tracking-tight text-white shadow-lg shadow-orange-500/20 transition-all active:scale-95 hover:bg-orange-600"
+                className="rounded-xl bg-orange-500 px-5 py-2 text-xs font-black tracking-tight text-white shadow-lg shadow-orange-500/20 transition-all active:scale-95 hover:bg-orange-600"
               >
                 {t("register")}
               </Link>
             )}
-          </nav>
+          </div>
         </div>
 
         <div
