@@ -14,7 +14,6 @@ export const translations = {
     categories: "Kateqoriyalar",
     allCategories: "Bütün Kateqoriyalar",
     products: "Məhsullar",
-    services: "Xidmətlər",
     contactUs: "Bizimlə əlaqə",
     profile: "Hesabım",
     account: "Hesab",
@@ -114,38 +113,6 @@ export const translations = {
     cat_welding: "Qaynaq",
     cat_safety: "Təhlükəsizlik",
     cat_all: "Hamısı",
-
-    // Services Page
-    howCanWeHelp: "Necə kömək edə bilərik?",
-    fullServicePackage:
-      "Sadəcə məhsul satmırıq — başdan sona tam xidmət paketi təqdim edirik.",
-    deliveryService: "Çatdırılma Xidməti",
-    deliveryServiceDesc:
-      "Sifarişləriniz 24-48 saat ərzində ünvanınıza çatdırılır. Bakı daxilindəki sifarişlər üçün pulsuz çatdırılma mövcuddur.",
-    freeDeliveryBaku: "Pulsuz (Bakı daxili)",
-    metalCutting: "Metal Kəsmə",
-    metalCuttingDesc:
-      "Sifarişinizə uyğun ölçüdə dəmir, polad və alüminium materialların dəqiq kəsilməsi. Sifariş minimumu yoxdur.",
-    byOrder: "Sifarişlə",
-    certification: "Sertifikasiya",
-    certificationDesc:
-      "Bütün məhsullarımız beynəlxalq sertifikatlara malikdir. Sertifikat sənədlərini istənilən vaxt ala bilərsiniz.",
-    iso9001: "ISO 9001",
-    corporateSales: "Korporativ Satış",
-    corporateSalesDesc:
-      "Böyük həcmli sifarişlər üçün xüsusi endirimlər və fərdi şərtlər. B2B müştərilərimiz üçün ayrıca hesab açılır.",
-    b2b: "B2B",
-    technicalSupport: "Texniki Dəstək",
-    technicalSupportDesc:
-      "Məhsul seçimi, quraşdırma məsləhəti və texniki suallar üçün mütəxəssislərimiz həmişə sizinlədir.",
-    support24_7: "7/24",
-    returns: "Geri Qaytarma",
-    returnsDesc:
-      "30 gün ərzində heç bir problem olmadan məhsulunuzu geri qaytara bilərsiniz. Pul qaytarılması zaminatlıdır.",
-    days30: "30 gün",
-    haveQuestions: "Sualınız var mı?",
-    contactForMoreInfo:
-      "Hər hansı bir xidmətimizlə bağlı ətraflı məlumat üçün bizimlə əlaqə saxlayın.",
 
     // Contact Page
     getInTouch: "Bizimlə əlaqə saxlayın",
@@ -256,7 +223,6 @@ export const translations = {
     categories: "Категории",
     allCategories: "Все категории",
     products: "Товары",
-    services: "Услуги",
     contactUs: "Свяжитесь с нами",
     profile: "Профиль",
     account: "Аккаунт",
@@ -356,38 +322,6 @@ export const translations = {
     cat_welding: "Сварка",
     cat_safety: "Безопасность",
     cat_all: "Все",
-
-    // Services Page
-    howCanWeHelp: "Чем мы можем вам помочь?",
-    fullServicePackage:
-      "Мы не просто продаём товары — предлагаем полный пакет услуг от начала до конца.",
-    deliveryService: "Служба доставки",
-    deliveryServiceDesc:
-      "Ваши заказы доставляются по адресу в течение 24-48 часов. Бесплатная доста��ка доступна в пределах Баку.",
-    freeDeliveryBaku: "Бесплатно (в пределах Баку)",
-    metalCutting: "Резка металла",
-    metalCuttingDesc:
-      "Точная резка железа, стали и алюминия в соответствии с вашим заказом. Нет минимального заказа.",
-    byOrder: "По заказу",
-    certification: "Сертификация",
-    certificationDesc:
-      "Все наши продукты имеют международные сертификаты. Вы можете получить документы сертификата в любое время.",
-    iso9001: "ISO 9001",
-    corporateSales: "Корпоративные продажи",
-    corporateSalesDesc:
-      "Специальные скидки и индивидуальные условия для крупных заказов. Отдельные счета открываются для клиентов B2B.",
-    b2b: "B2B",
-    technicalSupport: "Техническая поддержка",
-    technicalSupportDesc:
-      "Для выбора продукта, советов по установке и технических вопросов наши специалисты всегда готовы вам помочь.",
-    support24_7: "24/7",
-    returns: "Возврат товара",
-    returnsDesc:
-      "Вы можете вернуть товар без проблем в течение 30 дней. Возврат денег гарантирован.",
-    days30: "30 дней",
-    haveQuestions: "У вас есть вопросы?",
-    contactForMoreInfo:
-      "Свяжитесь с нами для получения подробной информации о любой из наших услуг.",
 
     // Contact Page
     getInTouch: "Свяжитесь с нами",
@@ -497,7 +431,6 @@ export const translations = {
     categories: "Categories",
     allCategories: "All Categories",
     products: "Products",
-    services: "Services",
     contactUs: "Contact Us",
     profile: "My Profile",
     account: "Account",
@@ -597,38 +530,6 @@ export const translations = {
     cat_welding: "Welding",
     cat_safety: "Safety",
     cat_all: "All",
-
-    // Services Page
-    howCanWeHelp: "How can we help?",
-    fullServicePackage:
-      "We don't just sell products — we provide a complete service package from start to finish.",
-    deliveryService: "Delivery Service",
-    deliveryServiceDesc:
-      "Your orders are delivered to your address within 24-48 hours. Free delivery is available within Baku.",
-    freeDeliveryBaku: "Free (Within Baku)",
-    metalCutting: "Metal Cutting",
-    metalCuttingDesc:
-      "Precise cutting of iron, steel and aluminum materials to your specifications. No minimum order.",
-    byOrder: "By Order",
-    certification: "Certification",
-    certificationDesc:
-      "All our products have international certifications. You can obtain certification documents at any time.",
-    iso9001: "ISO 9001",
-    corporateSales: "Corporate Sales",
-    corporateSalesDesc:
-      "Special discounts and individual terms for large orders. Separate accounts are opened for B2B customers.",
-    b2b: "B2B",
-    technicalSupport: "Technical Support",
-    technicalSupportDesc:
-      "For product selection, installation advice and technical questions, our specialists are always ready to help.",
-    support24_7: "24/7",
-    returns: "Returns",
-    returnsDesc:
-      "You can return your product without any issues within 30 days. Money-back guarantee is assured.",
-    days30: "30 days",
-    haveQuestions: "Have any questions?",
-    contactForMoreInfo:
-      "Contact us for more detailed information about any of our services.",
 
     // Contact Page
     getInTouch: "Get in Touch",

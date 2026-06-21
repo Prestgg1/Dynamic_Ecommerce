@@ -24,11 +24,21 @@ export default function Home() {
     if (slides.length <= 1) return;
     const timer = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % slides.length);
-    }, 5000);
+    }, 2000);
     return () => window.clearInterval(timer);
   }, [slides.length]);
 
-  const currentSlide = slides[activeSlide] ?? {
+  useEffect(() => {
+    if (!slides.length) {
+      setActiveSlide(0);
+      return;
+    }
+
+    setActiveSlide((current) => current % slides.length);
+  }, [slides.length]);
+
+  const currentSlideIndex = slides.length ? activeSlide % slides.length : 0;
+  const currentSlide = slides[currentSlideIndex] ?? {
     title: t("heroMainTitle" as TranslationKey),
     subtitle: t("heroMainSubtitle" as TranslationKey),
     description: t("heroDescription" as TranslationKey),
@@ -41,6 +51,10 @@ export default function Home() {
   const aboutHighlights = home?.aboutHighlights ?? [];
 
   const slideDots = useMemo(() => slides.map((_, i) => i), [slides]);
+  const goToSlide = (nextIndex: number) => {
+    if (!slides.length) return;
+    setActiveSlide(((nextIndex % slides.length) + slides.length) % slides.length);
+  };
 
   return (
     <main className="overflow-hidden bg-[#0a1428] text-white">
@@ -107,6 +121,30 @@ export default function Home() {
                 alt={currentSlide.title}
                 className="h-[36rem] w-full object-cover"
               />
+              {!!slides.length && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => goToSlide(currentSlideIndex - 1)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/35 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-black/55"
+                    aria-label="Previous slide"
+                  >
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => goToSlide(currentSlideIndex + 1)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/35 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-black/55"
+                    aria-label="Next slide"
+                  >
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </>
+              )}
               <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/10 bg-black/35 p-5 backdrop-blur-md">
                 <p className="text-xs uppercase tracking-[0.3em] text-gray-300">
                   {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
@@ -198,15 +236,27 @@ export default function Home() {
               {capabilities.map((cap, i) => (
                 <div
                   key={i}
-                  className="rounded-3xl border border-white/10 bg-[#13223f] p-8 shadow-xl transition-transform hover:-translate-y-1"
+                  className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#13223f] shadow-xl transition-transform hover:-translate-y-1"
                 >
-                  <div className="mb-4 text-4xl font-black text-orange-400">
-                    {cap.stat ?? `0${i + 1}`}
+                  <div className="flex h-28 items-end justify-between border-b border-white/10 bg-gradient-to-br from-white/10 to-transparent px-6 py-5">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.25em] text-orange-300">
+                        {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
+                      </p>
+                      <div className="mt-2 text-4xl font-black text-orange-400">
+                        {cap.stat ?? `0${i + 1}`}
+                      </div>
+                    </div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-xl text-white transition-transform group-hover:scale-110">
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold">{cap.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-300">
-                    {cap.desc}
-                  </p>
+                  <div className="space-y-3 p-7">
+                    <h3 className="text-2xl font-bold">{cap.title}</h3>
+                    <p className="text-sm leading-relaxed text-zinc-300">
+                      {cap.desc}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>

@@ -23,11 +23,13 @@ function FilterSidebar({
   onCategoryChange,
   filters,
   onFilterChange,
+  discountCounts,
 }: {
   selectedCategory: string;
   onCategoryChange: (id: string) => void;
   filters: FilterState;
   onFilterChange: (key: keyof FilterState, value: string) => void;
+  discountCounts: Record<string, number>;
 }) {
   const { t } = useLanguage();
 
@@ -46,11 +48,22 @@ function FilterSidebar({
                 className={`w-full text-left px-5 py-4 rounded-2xl text-sm transition-all duration-300 relative overflow-hidden group ${
                   selectedCategory === cat.id
                     ? "bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30"
-                    : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                  : "text-zinc-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <span className="relative z-10">
-                  {t(cat.labelKey as TranslationKey)}
+                <span className="relative z-10 flex items-center justify-between gap-3">
+                  <span>{t(cat.labelKey as TranslationKey)}</span>
+                  {discountCounts[cat.id] > 0 && (
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
+                        selectedCategory === cat.id
+                          ? "bg-white/20 text-white"
+                          : "bg-orange-500/10 text-orange-300"
+                      }`}
+                    >
+                      {discountCounts[cat.id]} endirim
+                    </span>
+                  )}
                 </span>
               </button>
             ))}
@@ -183,6 +196,27 @@ function SearchContent() {
       });
   }, [productsData, filters]);
 
+  const discountCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: 0 };
+
+    for (const product of productsData ?? []) {
+      const hasDiscount =
+        product.oldPrice != null &&
+        Number(product.oldPrice) > Number(product.price);
+
+      if (!hasDiscount) continue;
+
+      counts.all += 1;
+      const categoryId =
+        product.categoryId || product.category?.slug || product.category?.id;
+      if (categoryId) {
+        counts[categoryId] = (counts[categoryId] ?? 0) + 1;
+      }
+    }
+
+    return counts;
+  }, [productsData]);
+
   return (
     <main className="min-h-screen bg-[#0a1428] text-white pt-24 pb-20 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
@@ -192,11 +226,10 @@ function SearchContent() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#22d3ee]/5 rounded-full blur-3xl -mr-40 -mt-40" />
 
           <div className="relative z-10">
-            <h1 className="mb-6 flex items-center gap-4 text-3xl font-bold tracking-tighter md:text-4xl">
+            <div className="mb-4 flex items-center gap-3 text-xs font-black uppercase tracking-[0.25em] text-orange-300">
               <span>{t("searchName" as TranslationKey)}</span>
-              <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
-            </h1>
-
+              <div className="h-2 w-2 rounded-full bg-orange-500" />
+            </div>
             <div className="relative group">
               <div className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#22d3ee] transition-colors">
                 <svg
@@ -236,6 +269,7 @@ function SearchContent() {
             onCategoryChange={handleCategoryChange}
             filters={filters}
             onFilterChange={handleFilterChange}
+            discountCounts={discountCounts}
           />
 
           {/* Results Area */}
@@ -244,7 +278,7 @@ function SearchContent() {
             <header className="sticky top-24 z-30 mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-[#13223f]/80 p-4 backdrop-blur-lg md:p-6">
               <div className="flex items-center gap-4 pl-2">
                 <span className="text-xs font-black text-zinc-400 uppercase tracking-widest">
-                  {t("searchResults" as TranslationKey)}
+                  Nəticələr
                 </span>
                 <div className="h-5 w-px bg-white/10" />
                 <span className="text-2xl font-bold text-white">

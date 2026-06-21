@@ -1,10 +1,11 @@
 import type { Route } from "./+types/products.$id";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { useLanguage } from "~/context/LanguageContext";
 import { trpc } from "~/lib/trpc";
 import toast from "react-hot-toast";
 import { useCartStore } from "~/store/cart.store";
+import { apiUrl } from "~/lib/site-settings";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -24,6 +25,28 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
   });
 
   const addItem = useCartStore((s) => s.addItem);
+
+  const images = useMemo(() => {
+    if (!product) return [];
+    const ordered = [product.image, ...(product.images || [])].filter(Boolean);
+    return Array.from(new Set(ordered));
+  }, [product]);
+
+  const resolvedImages = useMemo(
+    () => images.map((img) => (img.startsWith("http") ? img : apiUrl(img))),
+    [images],
+  );
+
+  useEffect(() => {
+    if (!resolvedImages.length) {
+      setSelectedImage(null);
+      return;
+    }
+
+    setSelectedImage((current) =>
+      current && resolvedImages.includes(current) ? current : resolvedImages[0],
+    );
+  }, [resolvedImages]);
 
   if (productLoading) {
     return (
@@ -53,25 +76,16 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
       ? product.descriptionRu
       : product.descriptionEn;
 
-  const images = useMemo(() => {
-    const ordered = [product.image, ...(product.images || [])].filter(Boolean);
-    return Array.from(new Set(ordered));
-  }, [product.image, product.images]);
-
   const currentImage =
     selectedImage ??
-    (product.image.includes("unsplash")
-      ? product.image
-      : `http://localhost:4000${product.image}`);
+    (product.image.startsWith("http") ? product.image : apiUrl(product.image));
 
   const handleAddToCart = () => {
     addItem(product as any, quantity);
     toast.success(t("addToCart") + ": " + name);
   };
 
-  const mappedImages = images.map((img) =>
-    img.includes("unsplash") ? img : `http://localhost:4000${img}`,
-  );
+  const mappedImages = resolvedImages;
 
   return (
     <main className="min-h-screen bg-gray-50 pb-12 pt-32">
@@ -83,7 +97,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
             </Link>
             <span>›</span>
             <Link
-              to={`/search?category=${product.category?.name}`}
+              to={`/search?category=${product.categoryId || product.category?.slug || ""}`}
               className="font-semibold capitalize transition-colors hover:text-orange-500"
             >
               {product.category?.name || "Kategoriya"}

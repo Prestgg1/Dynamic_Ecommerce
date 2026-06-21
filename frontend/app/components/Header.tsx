@@ -86,7 +86,6 @@ export default function Header() {
     { to: "/", key: "home" as TranslationKey },
     { to: "/search", key: "products" as TranslationKey },
     { to: "/about", key: "about" as TranslationKey },
-    { to: "/services", key: "services" as TranslationKey },
     { to: "/contact", key: "contactUs" as TranslationKey },
   ];
 
