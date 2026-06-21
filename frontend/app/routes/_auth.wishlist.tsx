@@ -5,6 +5,7 @@ import { useDebounce } from "~/hooks/useDebounce";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import type { components } from "~/lib/types";
+import { apiUrl } from "~/lib/site-settings";
 
 type Product = components["schemas"]["Product"];
 type WishlistItem = components["schemas"]["Wishlist"];
@@ -102,6 +103,11 @@ export default function WishlistPage() {
               const discount = product.oldPrice
                 ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
                 : null;
+              const imageSrc = product.image
+                ? product.image.startsWith("http")
+                  ? product.image
+                  : apiUrl(product.image)
+                : "";
 
               return (
                 <div
@@ -112,7 +118,7 @@ export default function WishlistPage() {
                   <div className="relative aspect-square overflow-hidden bg-[#0a1428]">
                     <Link to={`/products/${product.id}`}>
                       <img
-                        src={product.image || "https://picsum.photos/id/1015/600/600"}
+                        src={imageSrc || "https://picsum.photos/id/1015/600/600"}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={(e) => {

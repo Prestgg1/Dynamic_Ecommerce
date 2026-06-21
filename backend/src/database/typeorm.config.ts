@@ -6,6 +6,8 @@ import { OrderItem } from '../modules/orders/entities/order-item.entity';
 import { Order } from '../modules/orders/entities/order.entity';
 import { Product } from '../modules/products/entities/product.entity';
 import { Review } from '../modules/reviews/entities/review.entity';
+import { SiteSetting } from '../modules/site-content/entities/site-setting.entity';
+import { ContactMessage } from '../modules/contact-messages/entities/contact-message.entity';
 import { User } from '../modules/users/entities/user.entity';
 import { Wishlist } from '../modules/wishlist/entities/wishlist.entity';
 
@@ -22,6 +24,8 @@ export function buildDatabaseConfig(databaseUrl: string): DataSourceOptions {
       Order,
       OrderItem,
       Review,
+      SiteSetting,
+      ContactMessage,
     ],
     migrations: [join(__dirname, 'migrations/*{.ts,.js}')],
     migrationsTableName: 'typeorm_migrations',

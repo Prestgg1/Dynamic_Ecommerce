@@ -1,466 +1,280 @@
 "use client";
+
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
-
-const useScrollReveal = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.15, rootMargin: "-60px 0px" },
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  return [ref, isVisible] as const;
-};
+import { fetchSiteSettings, type SiteSettings } from "~/lib/site-settings";
 
 export default function Home() {
-  const [heroRef, heroVisible] = useScrollReveal();
-  const [aboutRef, aboutVisible] = useScrollReveal();
-  const [capabilitiesRef, capabilitiesVisible] = useScrollReveal();
-  const [productsRef, productsVisible] = useScrollReveal();
-  const [globalReachRef, globalReachVisible] = useScrollReveal();
-  const [certificationsRef, certificationsVisible] = useScrollReveal();
-  const [testimonialsRef, testimonialsVisible] = useScrollReveal();
-
-  const [scrollY, setScrollY] = useState(0);
   const { t } = useLanguage();
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth";
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.documentElement.style.scrollBehavior = "auto";
-    };
+    fetchSiteSettings()
+      .then(setSiteSettings)
+      .catch(() => undefined);
   }, []);
 
-  // Easy-to-swap industrial steel images
-  const images = {
-    hero: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
-    about: "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg",
-    steelCoils:
-      "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg",
-    fabrication:
-      "https://images.pexels.com/photos/27102103/pexels-photo-27102103.jpeg",
+  const home = siteSettings?.data.home;
+  const slides = home?.heroSlides?.length ? home.heroSlides : [];
+
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % slides.length);
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [slides.length]);
+
+  const currentSlide = slides[activeSlide] ?? {
+    title: t("heroMainTitle" as TranslationKey),
+    subtitle: t("heroMainSubtitle" as TranslationKey),
+    description: t("heroDescription" as TranslationKey),
+    image: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
   };
 
-  // Country list for global reach section
-  const countries = [
-    "Azerbaijan",
-    "Turkey",
-    "Kazakhstan",
-    "Georgia",
-    "UAE",
-    "Germany",
-    "Russia",
-    "Uzbekistan",
-  ];
+  const capabilities = home?.capabilities ?? [];
+  const products = home?.products ?? [];
+  const stats = home?.heroStats ?? [];
+  const aboutHighlights = home?.aboutHighlights ?? [];
 
-  // Certifications list
-  const certifications = [
-    "ISO 9001:2015",
-    "ISO 14001:2015",
-    "EN 1090",
-    "CE Marking",
-    "OHSAS 18001",
-    "API Certified",
-  ];
-
-  // Stats for hero section
-  const stats = [
-    { num: "15+", label: t("yearsExperience" as TranslationKey) },
-    { num: "5,000+", label: t("enterpriseClients" as TranslationKey) },
-    { num: "99.8%", label: t("deliveryReliability" as TranslationKey) },
-  ];
-
-  // Capabilities cards
-  const capabilities = [
-    {
-      title: t("advancedMetallurgyTitle" as TranslationKey),
-      desc: t("advancedMetallurgyDesc" as TranslationKey),
-      stat: t("advancedMetallurgyStat" as TranslationKey),
-    },
-    {
-      title: t("precisionProcessingTitle" as TranslationKey),
-      desc: t("precisionProcessingDesc" as TranslationKey),
-      stat: t("precisionProcessingStat" as TranslationKey),
-    },
-    {
-      title: t("qualityAssuranceTitle" as TranslationKey),
-      desc: t("qualityAssuranceDesc" as TranslationKey),
-      stat: t("qualityAssuranceStat" as TranslationKey),
-    },
-  ];
-
-  // Products cards
-  const products = [
-    {
-      title: t("bulkSteelTitle" as TranslationKey),
-      desc: t("bulkSteelDesc" as TranslationKey),
-      img: images.steelCoils,
-    },
-    {
-      title: t("specialtyAlloysTitle" as TranslationKey),
-      desc: t("specialtyAlloysDesc" as TranslationKey),
-      img: images.steelCoils,
-    },
-    {
-      title: t("fabricationTitle" as TranslationKey),
-      desc: t("fabricationDesc" as TranslationKey),
-      img: images.fabrication,
-    },
-  ];
-
-  // Testimonials
-  const testimonials = [
-    {
-      text: t("testimonialText" as TranslationKey),
-      author: t("testimonialAuthor" as TranslationKey),
-    },
-    {
-      text: t("testimonialText" as TranslationKey),
-      author: t("testimonialAuthor" as TranslationKey),
-    },
-    {
-      text: t("testimonialText" as TranslationKey),
-      author: t("testimonialAuthor" as TranslationKey),
-    },
-    {
-      text: t("testimonialText" as TranslationKey),
-      author: t("testimonialAuthor" as TranslationKey),
-    },
-  ];
+  const slideDots = useMemo(() => slides.map((_, i) => i), [slides]);
 
   return (
-    <main className="bg-[#0a1428] text-white overflow-hidden">
-      {/* HERO - Deep Blue with Strong Parallax */}
-      <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+    <main className="overflow-hidden bg-[#0a1428] text-white">
+      <section className="relative min-h-screen overflow-hidden pt-16">
         <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${images.hero}')`,
-            transform: `translateY(${scrollY * 0.4}px)`,
-          }}
+          className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
+          style={{ backgroundImage: `url('${currentSlide.image}')` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1428]/90 via-[#0a1428]/75 to-[#13223f]/80" />
-
-        {/* Subtle grid pattern overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1428]/90 via-[#0a1428]/70 to-[#13223f]/70" />
         <div className="absolute inset-0 bg-[linear-gradient(#ffffff08_1px,transparent_1px),linear-gradient(90deg,#ffffff08_1px,transparent_1px)] bg-[size:60px_60px]" />
 
-        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center z-10">
-          <div ref={heroRef} className="space-y-10">
-            <div
-              className={`inline-flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-full text-sm tracking-[2px] transition-all duration-1000 ${
-                heroVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
-              }`}
-            >
-              ⚒️ {t("heroEstablished" as TranslationKey)}
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 lg:min-h-screen lg:grid-cols-2">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm tracking-[2px] backdrop-blur">
+              ⚒️ {home?.heroEstablished ?? "TƏSIS EDILDI 2010 • BAKI, AZƏRBAYCAN"}
             </div>
 
-            <h1
-              className={`text-6xl lg:text-7xl font-bold tracking-tighter leading-none transition-all duration-1000 delay-100 ${
-                heroVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-16"
-              }`}
-            >
-              {t("heroMainTitle" as TranslationKey)}
-              <br />
-              <span className="text-[#22d3ee]">
-                {t("heroMainSubtitle" as TranslationKey)}
-              </span>
-            </h1>
+            <div className="space-y-4">
+              <h1 className="text-5xl font-bold leading-none tracking-tighter md:text-7xl">
+                {currentSlide.title}
+                <br />
+                <span className="text-[#22d3ee]">{currentSlide.subtitle}</span>
+              </h1>
+              <p className="max-w-xl text-lg leading-relaxed text-zinc-300 md:text-xl">
+                {currentSlide.description}
+              </p>
+            </div>
 
-            <p
-              className={`text-xl lg:text-2xl text-zinc-300 max-w-lg transition-all duration-1000 delay-300 ${
-                heroVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-16"
-              }`}
-            >
-              {t("heroDescription" as TranslationKey)}
-            </p>
-
-            <div
-              className={`flex flex-wrap gap-5 transition-all duration-1000 delay-500 ${
-                heroVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-16"
-              }`}
-            >
+            <div className="flex flex-wrap gap-4">
               <Link
                 to="/contact"
-                className="px-10 py-5 bg-orange-500 hover:bg-orange-600 font-semibold rounded-2xl text-lg transition-all active:scale-95 shadow-lg"
+                className="rounded-2xl bg-orange-500 px-8 py-4 text-lg font-semibold transition-all active:scale-95 hover:bg-orange-600"
               >
                 {t("requestQuote" as TranslationKey)}
               </Link>
               <Link
-                to="/products"
-                className="px-10 py-5 border-2 border-[#22d3ee] text-[#22d3ee] hover:bg-[#22d3ee]/10 font-semibold rounded-2xl text-lg transition-all"
+                to="/search"
+                className="rounded-2xl border-2 border-[#22d3ee] px-8 py-4 text-lg font-semibold text-[#22d3ee] transition-all hover:bg-[#22d3ee]/10"
               >
                 {t("viewCatalog" as TranslationKey)}
               </Link>
             </div>
 
-            <div
-              className={`grid grid-cols-3 gap-8 pt-12 border-t border-white/10 transition-all duration-1000 delay-700 ${
-                heroVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-16"
-              }`}
-            >
-              {stats.map((stat, i) => (
-                <div key={i}>
-                  <div className="text-4xl font-bold text-[#22d3ee]">
-                    {stat.num}
+            {!!stats.length && (
+              <div className="grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
+                {stats.map((stat, i) => (
+                  <div key={i}>
+                    <div className="text-3xl font-bold text-[#22d3ee] md:text-4xl">
+                      {stat.value}
+                    </div>
+                    <div className="mt-1 text-sm tracking-wide text-zinc-400">
+                      {stat.label}
+                    </div>
                   </div>
-                  <div className="text-sm text-zinc-400 mt-1 tracking-wide">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div
-            className={`hidden lg:block relative transition-all duration-1000 delay-300 ${
-              heroVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
-            }`}
-          >
+          <div className="relative">
+            <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl">
+              <img
+                src={currentSlide.image}
+                alt={currentSlide.title}
+                className="h-[36rem] w-full object-cover"
+              />
+              <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/10 bg-black/35 p-5 backdrop-blur-md">
+                <p className="text-xs uppercase tracking-[0.3em] text-gray-300">
+                  {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
+                </p>
+                <p className="mt-2 text-xl font-bold">
+                  {currentSlide.title}
+                </p>
+                <p className="mt-1 text-sm text-zinc-300">
+                  {currentSlide.description}
+                </p>
+              </div>
+            </div>
+
+            {!!slideDots.length && (
+              <div className="mt-4 flex items-center justify-center gap-2">
+                {slideDots.map((dot) => (
+                  <button
+                    key={dot}
+                    onClick={() => setActiveSlide(dot)}
+                    className={`h-2.5 rounded-full transition-all ${
+                      dot === activeSlide ? "w-10 bg-orange-500" : "w-2.5 bg-white/30"
+                    }`}
+                    aria-label={`Slide ${dot + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-24">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <div>
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-orange-400">
+              {home?.aboutTitle ?? t("aboutUs" as TranslationKey)}
+            </p>
+            <h2 className="text-4xl font-bold tracking-tighter md:text-5xl">
+              {home?.aboutTitle ?? t("aboutUs" as TranslationKey)}
+            </h2>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-300">
+              {home?.aboutDescription ??
+                t("aboutDescription" as TranslationKey)}
+            </p>
+
+            {!!aboutHighlights.length && (
+              <div className="mt-8 space-y-4">
+                {aboutHighlights.map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/10 text-orange-400">
+                      ✓
+                    </div>
+                    <span className="text-zinc-200">{item}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <Link
+              to="/about"
+              className="mt-8 inline-flex rounded-2xl border border-white/10 bg-white/5 px-6 py-3 font-semibold transition-all hover:border-orange-500/50 hover:text-orange-400"
+            >
+              {t("learnMoreAboutUs" as TranslationKey)}
+            </Link>
+          </div>
+
+          <div className="overflow-hidden rounded-[2rem] border border-white/10">
             <img
-              src={images.steelCoils}
-              alt="Industrial Steel Facility"
-              className="rounded-3xl shadow-2xl border border-white/10"
+              src={home?.aboutImage ?? "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg"}
+              alt={home?.aboutTitle ?? "Haqqımızda"}
+              className="h-full w-full object-cover"
             />
           </div>
         </div>
       </section>
 
-      {/* ABOUT SECTION - Cool Blue Gradient */}
-      <section
-        ref={aboutRef}
-        className="py-28 bg-gradient-to-br from-[#0f253f] to-[#1a324f] relative overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(#22d3ee12_1px,transparent_1px)] bg-[size:50px_50px] opacity-40" />
-
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div
-              className={`transition-all duration-1000 ${aboutVisible ? "opacity-100 -translate-x-4" : "opacity-0 -translate-x-20"}`}
-            >
-              <img
-                src={images.about}
-                alt="Manufacturing Excellence"
-                className="rounded-3xl shadow-2xl"
-              />
-            </div>
-
-            <div
-              className={`space-y-8 transition-all duration-1000 delay-200 ${aboutVisible ? "opacity-100 translate-x-4" : "opacity-0 translate-x-20"}`}
-            >
-              <h2 className="text-5xl font-bold tracking-tighter leading-tight">
-                {t("aboutSectionTitle" as TranslationKey)}
+      {!!capabilities.length && (
+        <section className="bg-[#0f1a33] py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="mb-12 text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-400">
+                {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
+              </p>
+              <h2 className="mt-4 text-4xl font-bold tracking-tighter md:text-5xl">
+                {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
               </h2>
-              <div className="space-y-6 text-lg text-zinc-300">
-                <p>{t("aboutParagraph1" as TranslationKey)}</p>
-                <p>{t("aboutParagraph2" as TranslationKey)}</p>
-              </div>
-              <Link
-                to="/about"
-                className="inline-flex items-center gap-3 text-[#22d3ee] font-semibold hover:gap-5 transition-all"
-              >
-                {t("learnMoreAboutUs" as TranslationKey)}
-              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {capabilities.map((cap, i) => (
+                <div
+                  key={i}
+                  className="rounded-3xl border border-white/10 bg-[#13223f] p-8 shadow-xl transition-transform hover:-translate-y-1"
+                >
+                  <div className="mb-4 text-4xl font-black text-orange-400">
+                    {cap.stat ?? `0${i + 1}`}
+                  </div>
+                  <h3 className="text-2xl font-bold">{cap.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-300">
+                    {cap.desc}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* CAPABILITIES - Dark Navy with Pattern */}
-      <section ref={capabilitiesRef} className="py-28 bg-[#0a1428] relative">
-        <div className="absolute inset-0 bg-[linear-gradient(#ffffff08_1px,transparent_1px)] bg-[size:40px_40px]" />
-
-        <div className="max-w-7xl mx-auto px-6">
-          <div
-            className={`text-center mb-16 transition-all duration-1000 ${capabilitiesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-          >
-            <h2 className="text-5xl font-bold tracking-tighter">
-              {t("capabilitiesTitle" as TranslationKey)}
-            </h2>
-            <p className="text-xl text-zinc-400 mt-4 max-w-2xl mx-auto">
-              {t("capabilitiesSubtitle" as TranslationKey)}
-            </p>
+      {!!products.length && (
+        <section className="mx-auto max-w-7xl px-6 py-24">
+          <div className="mb-12 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-400">
+                {home?.productsTitle ?? "Əsas məhsullar"}
+              </p>
+              <h2 className="mt-3 text-4xl font-bold tracking-tighter md:text-5xl">
+                {home?.productsTitle ?? "Əsas məhsullar"}
+              </h2>
+            </div>
+            <Link
+              to="/search"
+              className="hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:border-orange-500/50 hover:text-orange-400 md:inline-flex"
+            >
+              {t("viewCatalog" as TranslationKey)}
+            </Link>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {capabilities.map((cap, i) => (
-              <div
-                key={i}
-                className={`bg-[#13223f] p-10 rounded-3xl border border-white/10 hover:border-[#22d3ee] transition-all duration-700 hover:-translate-y-3 ${capabilitiesVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}`}
-                style={{ transitionDelay: `${i * 150}ms` }}
-              >
-                <div className="text-[#22d3ee] text-4xl font-bold mb-6">
-                  {cap.stat}
-                </div>
-                <h3 className="text-2xl font-semibold mb-4">{cap.title}</h3>
-                <p className="text-zinc-400">{cap.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PRODUCTS SECTION - Clean with Light Blue Tint */}
-      <section
-        ref={productsRef}
-        className="py-28 bg-gradient-to-b from-[#0f253f] to-[#0a1428]"
-      >
-        <div className="max-w-7xl mx-auto px-6">
-          <div
-            className={`mb-16 transition-all duration-1000 ${productsVisible ? "opacity-100" : "opacity-0"}`}
-          >
-            <h2 className="text-5xl font-bold tracking-tighter">
-              {t("ourCoreTitle" as TranslationKey)}
-            </h2>
-            <p className="text-xl text-zinc-400 mt-3">
-              {t("ourCoreSubtitle" as TranslationKey)}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {products.map((product, i) => (
-              <div
+              <article
                 key={i}
-                className={`group bg-[#13223f] rounded-3xl overflow-hidden border border-white/10 hover:border-[#22d3ee] transition-all duration-700 hover:-translate-y-4 ${productsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}`}
-                style={{ transitionDelay: `${i * 100}ms` }}
+                className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#13223f] shadow-xl"
               >
-                <div className="h-72 overflow-hidden">
-                  <img
-                    src={product.img}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    alt={product.title}
-                  />
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="h-64 w-full object-cover"
+                />
+                <div className="p-7">
+                  <h3 className="text-2xl font-bold">{product.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-300">
+                    {product.desc}
+                  </p>
                 </div>
-                <div className="p-9">
-                  <h3 className="text-2xl font-semibold mb-4 group-hover:text-[#22d3ee] transition-colors">
-                    {product.title}
-                  </h3>
-                  <p className="text-zinc-400 leading-relaxed">{product.desc}</p>
-                </div>
-              </div>
+              </article>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* GLOBAL REACH - Dark with Teal Accents */}
-      <section ref={globalReachRef} className="py-28 bg-[#0a1428]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div
-            className={`text-center mb-16 transition-all ${globalReachVisible ? "opacity-100" : "opacity-0"}`}
-          >
-            <h2 className="text-5xl font-bold tracking-tighter">
-              {t("globalReachTitle" as TranslationKey)}
-            </h2>
-            <p className="text-xl text-zinc-400 mt-4">
-              {t("globalReachSubtitle" as TranslationKey)}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-4 gap-6">
-            {countries.map((country, i) => (
-              <div
-                key={i}
-                className={`py-8 bg-[#13223f] border border-white/10 hover:border-[#22d3ee] rounded-3xl text-center font-medium transition-all duration-700 ${globalReachVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-                style={{ transitionDelay: `${i * 80}ms` }}
-              >
-                {country}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CERTIFICATIONS */}
-      <section ref={certificationsRef} className="py-28 bg-white text-zinc-900">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div
-            className={`mb-16 transition-all ${certificationsVisible ? "opacity-100" : "opacity-0 translate-y-8"}`}
-          >
-            <h2 className="text-5xl font-bold tracking-tighter text-zinc-900">
-              {t("certifiedExcellenceTitle" as TranslationKey)}
-            </h2>
-            <p className="text-xl text-zinc-600 mt-4">
-              {t("certifiedExcellenceSubtitle" as TranslationKey)}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-10">
-            {certifications.map((cert, i) => (
-              <div
-                key={i}
-                className={`bg-white border border-zinc-200 px-12 py-9 rounded-3xl text-xl font-semibold shadow-sm hover:shadow-xl hover:border-[#22d3ee] transition-all ${certificationsVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
-                style={{ transitionDelay: `${i * 100}ms` }}
-              >
-                {cert}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
-      <section ref={testimonialsRef} className="py-20 bg-zinc-100 text-zinc-900">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2
-            className={`text-5xl font-bold tracking-tighter text-center mb-16 transition-all ${testimonialsVisible ? "opacity-100" : "opacity-0"}`}
-          >
-            {t("trustedByLeadersTitle" as TranslationKey)}
-          </h2>
-
-          <div className="grid lg:grid-cols-2 gap-8 mb-20">
-            {testimonials.map((testimonial, i) => (
-              <div
-                key={i}
-                className={`bg-white p-10 rounded-3xl shadow ${testimonialsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-              >
-                <p className="italic text-lg">"{testimonial.text}"</p>
-                <div className="mt-8 font-semibold">{testimonial.author}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL CTA - Strong Orange + Teal Gradient */}
-      <section className="py-24 bg-gradient-to-r from-orange-600 via-orange-500 to-[#22d3ee] text-center text-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-5xl font-bold tracking-tighter mb-6">
-            {t("ctaMainHeading" as TranslationKey)}
-          </h2>
-          <p className="text-xl mb-10 opacity-90">
-            {t("ctaSubheading" as TranslationKey)}
+      <section
+        className="relative overflow-hidden bg-cover bg-center py-24"
+        style={{
+          backgroundImage: `url('${home?.contactBackgroundImage ?? "https://images.pexels.com/photos/8728388/pexels-photo-8728388.jpeg"}')`,
+        }}
+      >
+        <div className="absolute inset-0 bg-[#0a1428]/80" />
+        <div className="relative mx-auto max-w-4xl px-6 text-center">
+          <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-300">
+            {home?.contactTitle ?? "BİZİMLƏ ƏLAQƏ"}
           </p>
+          <h2 className="mt-4 text-4xl font-bold tracking-tighter md:text-5xl">
+            {home?.contactTitle ?? "BİZİMLƏ ƏLAQƏ"}
+          </h2>
           <Link
             to="/contact"
-            className="inline-block px-14 py-6 bg-white text-[#0a1428] font-bold rounded-2xl text-xl hover:bg-zinc-100 transition transform hover:scale-105"
+            className="mt-8 inline-flex rounded-2xl bg-orange-500 px-8 py-4 text-lg font-semibold transition-all hover:bg-orange-600"
           >
-            {t("getInTouch" as TranslationKey)}
+            {home?.contactButtonLabel ?? "Bizimlə əlaqə saxlayın"}
           </Link>
         </div>
       </section>

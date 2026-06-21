@@ -4,6 +4,7 @@ import { useLanguage } from "~/context/LanguageContext";
 import { useWishlist } from "~/hooks/useWishlist";
 import { useCartStore } from "~/store/cart.store";
 import toast from "react-hot-toast";
+import { apiUrl } from "~/lib/site-settings";
 
 interface ProductCardProps {
   product: Product;
@@ -24,6 +25,11 @@ export default function ProductCard({ product }: ProductCardProps) {
   const discount = product.oldPrice
     ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
     : null;
+  const imageSrc = product.image
+    ? product.image.startsWith("http")
+      ? product.image
+      : apiUrl(product.image)
+    : "";
 
   // TODO: Backend inteqrasiyasından sonra doldurul
   const handleAddToCart = () => {
@@ -37,18 +43,17 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="relative overflow-hidden bg-gray-50 aspect-square">
         <Link to={`/products/${product.id}`}>
           <img
-            src={product.image}
+            src={imageSrc}
             alt={name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={(e) => {
               if (!e.currentTarget.src.includes("unsplash")) {
-                e.currentTarget.src = product.image;
+                e.currentTarget.src = imageSrc;
               }
             }}
           />
         </Link>
 
-        {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {discount && (
             <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
@@ -58,11 +63,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.badge && (
             <span className="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
               {product.badge}
-            </span>
-          )}
-          {!product.inStock && (
-            <span className="bg-gray-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-              {t("outOfStock")}
             </span>
           )}
         </div>
@@ -104,27 +104,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             {name}
           </h3>
         </Link>
-
-        {/* Rating */}
-        <div className="flex items-center gap-1 mb-2">
-          <div className="flex">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <svg
-                key={star}
-                className={`w-3 h-3 ${
-                  star <= Math.round(product.rating || 0)
-                    ? "text-yellow-400 fill-yellow-400"
-                    : "text-gray-200 fill-gray-200"
-                }`}
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            ))}
-          </div>
-          <span className="text-xs text-gray-500">({product.reviewCount || 0})</span>
-        </div>
 
         {/* Price + Cart */}
         <div className="mt-auto">

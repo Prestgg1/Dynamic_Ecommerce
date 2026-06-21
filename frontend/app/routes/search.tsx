@@ -9,7 +9,7 @@ import type { TranslationKey } from "~/lib/translations";
 import { useDebounce } from "~/hooks/useDebounce";
 
 // --- Types ---
-type SortOption = "default" | "price-asc" | "price-desc" | "rating" | "new";
+type SortOption = "default" | "price-asc" | "price-desc" | "new";
 
 interface FilterState {
   minPrice: string;
@@ -175,8 +175,6 @@ function SearchContent() {
             return aPrice - bPrice;
           case "price-desc":
             return bPrice - aPrice;
-          case "rating":
-            return (Number(b.rating) || 0) - (Number(a.rating) || 0);
           case "new":
             return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
           default:
@@ -187,14 +185,14 @@ function SearchContent() {
 
   return (
     <main className="min-h-screen bg-[#0a1428] text-white pt-24 pb-20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Search Bar Area - Premium Blue Style */}
-        <section className="relative bg-[#13223f] border border-white/10 rounded-3xl shadow-2xl p-10 mb-16 overflow-hidden">
+        <section className="relative mb-12 overflow-hidden rounded-3xl border border-white/10 bg-[#13223f] p-6 md:p-8 shadow-2xl">
           {/* Background accent */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#22d3ee]/5 rounded-full blur-3xl -mr-40 -mt-40" />
 
           <div className="relative z-10">
-            <h1 className="text-4xl font-bold tracking-tighter mb-10 flex items-center gap-4">
+            <h1 className="mb-6 flex items-center gap-4 text-3xl font-bold tracking-tighter md:text-4xl">
               <span>{t("searchName" as TranslationKey)}</span>
               <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
             </h1>
@@ -220,7 +218,7 @@ function SearchContent() {
                 value={localQuery}
                 onChange={(e) => handleQueryChange(e.target.value)}
                 placeholder={t("searchPlaceholder" as TranslationKey)}
-                className="w-full pl-20 pr-8 py-6 bg-[#0a1428] border border-white/10 rounded-3xl text-xl font-medium placeholder:text-zinc-500 focus:outline-none focus:border-[#22d3ee] transition-all"
+                className="w-full rounded-2xl border border-white/10 bg-[#0a1428] py-4 pl-14 pr-6 text-base font-medium placeholder:text-zinc-500 transition-all focus:border-[#22d3ee] focus:outline-none md:text-lg"
               />
               {isLoading && (
                 <div className="absolute right-8 top-1/2 -translate-y-1/2">
@@ -231,7 +229,7 @@ function SearchContent() {
           </div>
         </section>
 
-        <div className="flex flex-col md:flex-row gap-12">
+        <div className="flex flex-col gap-8 md:flex-row md:gap-10">
           {/* Filters Sidebar */}
           <FilterSidebar
             selectedCategory={categoryParam}
@@ -243,7 +241,7 @@ function SearchContent() {
           {/* Results Area */}
           <div className="flex-1">
             {/* Toolbar */}
-            <header className="flex flex-wrap items-center justify-between gap-6 mb-10 bg-[#13223f]/80 backdrop-blur-lg border border-white/10 p-6 rounded-3xl sticky top-24 z-30">
+            <header className="sticky top-24 z-30 mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-[#13223f]/80 p-4 backdrop-blur-lg md:p-6">
               <div className="flex items-center gap-4 pl-2">
                 <span className="text-xs font-black text-zinc-400 uppercase tracking-widest">
                   {t("searchResults" as TranslationKey)}
@@ -270,9 +268,6 @@ function SearchContent() {
                   </option>
                   <option value="price-desc">
                     {t("sortByPrice" as TranslationKey)} ↓
-                  </option>
-                  <option value="rating">
-                    {t("sortByRating" as TranslationKey)}
                   </option>
                   <option value="new">
                     {t("sortByNew" as TranslationKey)}

@@ -28,6 +28,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
     category: product?.categoryId || product?.category?.id || "",
     image: product?.image || "",
     imagePreview: product?.image ? (product.image.includes("unsplash") ? product.image : `http://localhost:4000${product.image}`) : null,
+    galleryImages: Array.isArray(product?.images) ? product.images.join("\n") : "",
     inStock: product?.inStock !== false,
   });
 
@@ -49,8 +50,19 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
       return;
     }
 
-    const { category, imagePreview, ...rest } = form;
-    const payload = { ...rest, categoryId: category, price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined, rating: form.rating ? Number(form.rating) : undefined };
+    const { category, imagePreview, galleryImages, ...rest } = form;
+    const orderedImages = galleryImages
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+    const payload = {
+      ...rest,
+      categoryId: category,
+      price: Number(form.price),
+      oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined,
+      rating: form.rating ? Number(form.rating) : undefined,
+      images: orderedImages,
+    };
     const action = isNew ? create : update;
     const config = isNew
       ? { body: payload, onSuccess: () => { toast.success("Product created"); onSuccess(); } }
@@ -98,6 +110,17 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           <textarea placeholder="Description (AZ)" rows={2} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
           <textarea placeholder="Description (RU)" rows={2} value={form.descriptionRu} onChange={e => setForm({ ...form, descriptionRu: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
           <textarea placeholder="Description (EN)" rows={2} value={form.descriptionEn} onChange={e => setForm({ ...form, descriptionEn: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Gallery images, one per line, in display order</label>
+            <textarea
+              rows={5}
+              value={form.galleryImages}
+              onChange={(e) => setForm({ ...form, galleryImages: e.target.value })}
+              className="w-full px-3 py-2 border rounded-lg"
+              placeholder="https://...\n/uploads/..."
+            />
+          </div>
 
           {/* Checkbox */}
           <label className="flex items-center gap-2">

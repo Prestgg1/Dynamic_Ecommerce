@@ -198,7 +198,7 @@ export const translations = {
 
     // Home Page - About
     aboutSectionTitle: "Mükəmməllik Vasitəsilə Etimad Mühəndisliyi",
-    aboutParagraph1: "15+ il ərzində SultanovSteel böyük miqyaslı sənaye layihələri üçün etibarlı tərəfdaş olmuşdur. Biz qabaqcıl metalloturgiyanı ciddi keyfiyyət nəzarəti ilə birləşdiririk.",
+    aboutParagraph1: "DəmirMart uzun illərdir sənaye layihələri üçün etibarlı tərəfdaş kimi fəaliyyət göstərir. Biz qabaqcıl metalloturgiyanı ciddi keyfiyyət nəzarəti ilə birləşdiririk.",
     aboutParagraph2: "Şəffaflıq, ardıcıllıq və uzunmüddətli əlaqələrimizə olan öhdəliyimiz bizi ən yaxşısını tələb edən müəssisələr üçün üstün təchizatçısı edir.",
     learnMoreAboutUs: "Haqqımızda daha çox öyrən →",
 
@@ -235,12 +235,12 @@ export const translations = {
 
     // Home Page - Testimonials
     trustedByLeadersTitle: "Sənaye Liderləri tərəfindən Güvənilir",
-    testimonialText: "SultanovSteel ardıcıl olaraq vaxtında və əla keyfiyyətlə çatdırır. Onlar bütün böyük layihələr üçün strategiya tərəfdaşı olmuşdur.",
+    testimonialText: "DəmirMart ardıcıl olaraq vaxtında və əla keyfiyyətlə çatdırır. Onlar bütün böyük layihələr üçün etibarlı tərəfdaş olmuşdur.",
     testimonialAuthor: "Mihail Berqer — EuroBuild Qrupu",
 
     // Home Page - Final CTA
     ctaMainHeading: "Sonrakı layihəni inamlı şəkildə təmin etməyə hazırsınız?",
-    ctaSubheading: "Gəlin SultanovSteelin gələcək təşəbbüslərinizi necə dəstəkləyə biləcəyini müzakirə edək.",
+    ctaSubheading: "Gəlin DəmirMartın gələcək təşəbbüslərinizi necə dəstəkləyə biləcəyini müzakirə edək.",
   },
 
   ru: {
@@ -439,7 +439,7 @@ export const translations = {
 
     // Home Page - About
     aboutSectionTitle: "Инженерное доверие через совершенство",
-    aboutParagraph1: "На протяжении более 15 лет SultanovSteel является надёжным партнёром для крупномасштабных промышленных проектов. Мы объединяем передовую металлургию со строгим контролем качества.",
+    aboutParagraph1: "На протяжении многих лет DəmirMart является надёжным партнёром для крупномасштабных промышленных проектов. Мы объединяем передовую металлургию со строгим контролем качества.",
     aboutParagraph2: "Наша приверженность прозрачности, консистентности и долгосрочным отношениям делает нас предпочтительным поставщиком для предприятий, требующих лучшего.",
     learnMoreAboutUs: "Узнайте больше о нас →",
 
@@ -476,12 +476,12 @@ export const translations = {
 
     // Home Page - Testimonials
     trustedByLeadersTitle: "Доверие лидеров отрасли",
-    testimonialText: "SultanovSteel последовательно доставляет товары вовремя с отличным качеством. Они стали нашим стратегическим партнёром для всех крупных проектов.",
+    testimonialText: "DəmirMart последовательно доставляет товары вовремя с отличным качеством. Они стали нашим стратегическим партнёром для всех крупных проектов.",
     testimonialAuthor: "Майкл Бергер — Группа EuroBuild",
 
     // Home Page - Final CTA
     ctaMainHeading: "Готовы реализовать свой следующий проект с уверенностью?",
-    ctaSubheading: "Давайте обсудим, как SultanovSteel может поддержать ваши грядущие инициативы.",
+    ctaSubheading: "Давайте обсудим, как DəmirMart может поддержать ваши грядущие инициативы.",
   },
 
   en: {
@@ -681,7 +681,7 @@ export const translations = {
 
     // Home Page - About
     aboutSectionTitle: "Engineering Trust Through Excellence",
-    aboutParagraph1: "For over 15 years, SultanovSteel has been a reliable partner for large-scale industrial projects. We combine advanced metallurgy with strict quality control.",
+    aboutParagraph1: "For many years, DəmirMart has been a reliable partner for large-scale industrial projects. We combine advanced metallurgy with strict quality control.",
     aboutParagraph2: "Our commitment to transparency, consistency, and long-term relationships makes us the preferred supplier for enterprises that demand the best.",
     learnMoreAboutUs: "Learn more about us →",
 
@@ -718,12 +718,12 @@ export const translations = {
 
     // Home Page - Testimonials
     trustedByLeadersTitle: "Trusted by Industry Leaders",
-    testimonialText: "SultanovSteel consistently delivers on time with excellent quality. They have become our strategic partner for all major projects.",
+    testimonialText: "DəmirMart consistently delivers on time with excellent quality. They have become our strategic partner for all major projects.",
     testimonialAuthor: "Michael Berger — EuroBuild Group",
 
     // Home Page - Final CTA
     ctaMainHeading: "Ready to secure your next project with confidence?",
-    ctaSubheading: "Let's discuss how SultanovSteel can support your upcoming initiatives.",
+    ctaSubheading: "Let's discuss how DəmirMart can support your upcoming initiatives.",
   },
 };
 

@@ -16,9 +16,9 @@ async function bootstrap() {
     .map((origin) => origin.trim())
     .filter(Boolean);
   const corsOrigins = allowedOrigins.length
-    ? allowedOrigins
-    : [
-        'https://sultanovsteel.netlify.app',
+      ? allowedOrigins
+      : [
+        'https://demirmart.netlify.app',
         'http://localhost:3000',
         'http://localhost:5173',
       ];
@@ -59,10 +59,10 @@ async function bootstrap() {
 
   if (!isProduction || process.env.ENABLE_SWAGGER === 'true') {
     const config = new DocumentBuilder()
-      .setTitle('Ironstore API')
-      .setDescription('Ironstore API description')
+      .setTitle('DəmirMart API')
+      .setDescription('DəmirMart API description')
       .setVersion('1.0')
-      .addTag('ironstore')
+      .addTag('demirmart')
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document);

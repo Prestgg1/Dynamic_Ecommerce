@@ -3,6 +3,7 @@ import { CategoriesService } from '../modules/categories/categories.service';
 import { ProductsService } from '../modules/products/products.service';
 import { UsersService } from '../modules/users/users.service';
 import { UserRole } from '../modules/users/entities/user.entity';
+import { SiteContentService } from '../modules/site-content/site-content.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class SeedService {
     private readonly categoriesService: CategoriesService,
     private readonly productsService: ProductsService,
     private readonly usersService: UsersService,
+    private readonly siteContentService: SiteContentService,
   ) {}
 
   async seed() {
@@ -101,6 +103,8 @@ export class SeedService {
       categoryIdMap.set(cat.id, createdCategory.id);
       this.logger.log(`Created category: ${cat.id}`);
     }
+
+    await this.siteContentService.getMain();
 
     // Products
     const UNSPLASH_TOOLS = [

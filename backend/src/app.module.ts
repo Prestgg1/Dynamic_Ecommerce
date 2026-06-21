@@ -14,6 +14,8 @@ import { join } from 'path';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ReviewsModule } from './modules/reviews/review.module';
 import { AdminSeedService } from './database/admin-seed.service';
+import { SiteContentModule } from './modules/site-content/site-content.module';
+import { ContactMessagesModule } from './modules/contact-messages/contact-messages.module';
 
 import { StatisticsModule } from './modules/statistics/statistics.module';
 
@@ -34,6 +36,8 @@ import { StatisticsModule } from './modules/statistics/statistics.module';
     ProductsModule,
     WishlistModule,
     StatisticsModule,
+    SiteContentModule,
+    ContactMessagesModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',

@@ -4,7 +4,9 @@ import toast from "react-hot-toast";
 import { useCartStore } from "~/store/cart.store";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
-import { BUSINESS_CONTACT } from "~/lib/constants";
+import { fetchSiteSettings } from "~/lib/site-settings";
+import { apiUrl } from "~/lib/site-settings";
+import { useEffect, useState } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -51,13 +53,26 @@ const generateWhatsAppMessage = (
 
 export default function CartPage() {
   const { language, t } = useLanguage();
+  const [whatsappNumber, setWhatsappNumber] = useState("994501234567");
 
   const { items, updateQuantity, removeItem, clearCart, getTotalPrice } =
     useCartStore();
 
+  useEffect(() => {
+    fetchSiteSettings()
+      .then((settings) => {
+        if (settings.data.whatsappNumber) {
+          setWhatsappNumber(settings.data.whatsappNumber);
+        }
+      })
+      .catch(() => undefined);
+  }, []);
+
   const subtotal = getTotalPrice();
   const shipping = subtotal > 500 || subtotal === 0 ? 0 : 10;
   const total = subtotal + shipping;
+  const resolveImage = (src: string) =>
+    src ? (src.startsWith("http") ? src : apiUrl(src)) : "";
 
   /**
    * Handle WhatsApp checkout
@@ -67,7 +82,7 @@ export default function CartPage() {
 
     const message = generateWhatsAppMessage(items, total, language);
     const encoded = encodeURIComponent(message);
-    const url = `https://wa.me/${BUSINESS_CONTACT.whatsappNumber}?text=${encoded}`;
+    const url = `https://wa.me/${whatsappNumber}?text=${encoded}`;
 
     window.open(url, "_blank");
 
@@ -140,7 +155,7 @@ export default function CartPage() {
               >
                 {/* Product Image */}
                 <img
-                  src={item.image}
+                  src={resolveImage(item.image)}
                   alt={item.name}
                   className="h-32 w-32 rounded-2xl object-cover"
                 />
