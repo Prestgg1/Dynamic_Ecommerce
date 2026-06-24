@@ -10,9 +10,9 @@ export default function Home() {
   const { t } = useLanguage();
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [visibleSlideIndex, setVisibleSlideIndex] = useState(0);
-  const [incomingSlideIndex, setIncomingSlideIndex] = useState<number | null>(null);
-  const [animateIncoming, setAnimateIncoming] = useState(false);
+  const [displaySlideIndex, setDisplaySlideIndex] = useState(0);
+  const [transitionSlideIndex, setTransitionSlideIndex] = useState<number | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     fetchSiteSettings()
@@ -27,16 +27,16 @@ export default function Home() {
     if (slides.length <= 1) return;
     const timer = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % slides.length);
-    }, 2000);
+    }, 3000);
     return () => window.clearInterval(timer);
   }, [slides.length]);
 
   useEffect(() => {
     if (!slides.length) {
       setActiveSlide(0);
-      setVisibleSlideIndex(0);
-      setIncomingSlideIndex(null);
-      setAnimateIncoming(false);
+      setDisplaySlideIndex(0);
+      setTransitionSlideIndex(null);
+      setIsTransitioning(false);
       return;
     }
 
@@ -45,36 +45,29 @@ export default function Home() {
 
   useEffect(() => {
     if (!slides.length) return;
-    if (activeSlide === visibleSlideIndex && incomingSlideIndex === null) {
+    if (activeSlide === displaySlideIndex || isTransitioning) {
       return;
     }
 
-    setIncomingSlideIndex(activeSlide);
-    setAnimateIncoming(false);
-
-    const frame = window.requestAnimationFrame(() => {
-      setAnimateIncoming(true);
-    });
+    setTransitionSlideIndex(activeSlide);
+    setIsTransitioning(true);
 
     const timer = window.setTimeout(() => {
-      setVisibleSlideIndex(activeSlide);
-      setIncomingSlideIndex(null);
-      setAnimateIncoming(false);
+      setDisplaySlideIndex(activeSlide);
+      setTransitionSlideIndex(null);
+      setIsTransitioning(false);
     }, 700);
 
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.clearTimeout(timer);
-    };
-  }, [activeSlide, incomingSlideIndex, slides.length, visibleSlideIndex]);
+    return () => window.clearTimeout(timer);
+  }, [activeSlide, displaySlideIndex, isTransitioning, slides.length]);
 
-  const currentSlide = slides[visibleSlideIndex] ?? {
+  const currentSlide = slides[displaySlideIndex] ?? {
     title: t("heroMainTitle" as TranslationKey),
     subtitle: t("heroMainSubtitle" as TranslationKey),
     description: t("heroDescription" as TranslationKey),
     image: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
   };
-  const nextSlide = incomingSlideIndex != null ? slides[incomingSlideIndex] : null;
+  const nextSlide = transitionSlideIndex != null ? slides[transitionSlideIndex] : null;
 
   const capabilities = home?.capabilities ?? [];
   const products = home?.products ?? [];
@@ -89,7 +82,7 @@ export default function Home() {
             src={currentSlide.image}
             alt={currentSlide.title}
             className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out motion-reduce:transition-none ${
-              animateIncoming ? "opacity-0 scale-105" : "opacity-100 scale-100"
+              isTransitioning ? "opacity-0 scale-105" : "opacity-100 scale-100"
             }`}
           />
           {nextSlide && (
@@ -97,7 +90,7 @@ export default function Home() {
               src={nextSlide.image}
               alt={nextSlide.title}
               className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out motion-reduce:transition-none ${
-                animateIncoming ? "opacity-100 scale-100" : "opacity-0 scale-105"
+                isTransitioning ? "opacity-100 scale-100" : "opacity-0 scale-105"
               }`}
             />
           )}
@@ -111,15 +104,38 @@ export default function Home() {
               ⚒️ {home?.heroEstablished ?? "TƏSIS EDILDI 2010 • BAKI, AZƏRBAYCAN"}
             </div>
 
-            <div className="space-y-4">
-              <h1 className="text-5xl font-bold leading-none tracking-tighter md:text-7xl">
-                {currentSlide.title}
-                <br />
-                <span className="text-[#22d3ee]">{currentSlide.subtitle}</span>
-              </h1>
-              <p className="max-w-xl text-lg leading-relaxed text-zinc-300 md:text-xl">
-                {currentSlide.description}
-              </p>
+            <div className="relative min-h-[13rem]">
+              <div
+                className={`space-y-4 transition-all duration-700 ease-out motion-reduce:transition-none ${
+                  isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+                }`}
+              >
+                <h1 className="text-5xl font-bold leading-none tracking-tighter md:text-7xl">
+                  {currentSlide.title}
+                  <br />
+                  <span className="text-[#22d3ee]">{currentSlide.subtitle}</span>
+                </h1>
+                <p className="max-w-xl text-lg leading-relaxed text-zinc-300 md:text-xl">
+                  {currentSlide.description}
+                </p>
+              </div>
+              {nextSlide && (
+                <div
+                  className={`pointer-events-none absolute inset-0 space-y-4 transition-all duration-700 ease-out motion-reduce:transition-none ${
+                    isTransitioning ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                  }`}
+                  aria-hidden="true"
+                >
+                  <h1 className="text-5xl font-bold leading-none tracking-tighter md:text-7xl">
+                    {nextSlide.title}
+                    <br />
+                    <span className="text-[#22d3ee]">{nextSlide.subtitle}</span>
+                  </h1>
+                  <p className="max-w-xl text-lg leading-relaxed text-zinc-300 md:text-xl">
+                    {nextSlide.description}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-wrap gap-4">
@@ -159,12 +175,42 @@ export default function Home() {
                 <p className="text-xs uppercase tracking-[0.3em] text-gray-300">
                   {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
                 </p>
-                <p className="mt-2 text-xl font-bold transition-all duration-700 ease-out motion-reduce:transition-none">
-                  {currentSlide.title}
-                </p>
-                <p className="mt-1 text-sm text-zinc-300 transition-all duration-700 ease-out motion-reduce:transition-none">
-                  {currentSlide.description}
-                </p>
+                <div className="relative mt-2 min-h-16">
+                  <p
+                    className={`absolute inset-0 text-xl font-bold transition-all duration-700 ease-out motion-reduce:transition-none ${
+                      isTransitioning ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+                    }`}
+                  >
+                    {currentSlide.title}
+                  </p>
+                  {nextSlide && (
+                    <p
+                      className={`absolute inset-0 text-xl font-bold transition-all duration-700 ease-out motion-reduce:transition-none ${
+                        isTransitioning ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+                      }`}
+                    >
+                      {nextSlide.title}
+                    </p>
+                  )}
+                </div>
+                <div className="relative mt-1 min-h-10">
+                  <p
+                    className={`absolute inset-0 text-sm text-zinc-300 transition-all duration-700 ease-out motion-reduce:transition-none ${
+                      isTransitioning ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+                    }`}
+                  >
+                    {currentSlide.description}
+                  </p>
+                  {nextSlide && (
+                    <p
+                      className={`absolute inset-0 text-sm text-zinc-300 transition-all duration-700 ease-out motion-reduce:transition-none ${
+                        isTransitioning ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+                      }`}
+                    >
+                      {nextSlide.description}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
