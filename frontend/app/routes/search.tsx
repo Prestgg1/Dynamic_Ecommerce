@@ -41,6 +41,29 @@ function FilterSidebar({
             {t("filterByCategory" as TranslationKey)}
           </h3>
           <div className="space-y-2">
+            <button
+              onClick={() => onCategoryChange("discount")}
+              className={`w-full text-left px-5 py-4 rounded-2xl text-sm transition-all duration-300 relative overflow-hidden group ${
+                selectedCategory === "discount"
+                  ? "bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30"
+                  : "text-zinc-400 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              <span className="relative z-10 flex items-center justify-between gap-3">
+                <span>Endirimlər</span>
+                {(discountCounts.discount ?? 0) > 0 && (
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
+                      selectedCategory === "discount"
+                        ? "bg-white/20 text-white"
+                        : "bg-orange-500/10 text-orange-300"
+                    }`}
+                  >
+                    {discountCounts.discount} məhsul
+                  </span>
+                )}
+              </span>
+            </button>
             {staticCategories.map((cat) => (
               <button
                 key={cat.id}
@@ -162,7 +185,9 @@ function SearchContent() {
     params: {
       query: {
         categoryId:
-          categoryParam === "all" ? undefined : (categoryParam as any),
+          categoryParam === "all" || categoryParam === "discount"
+            ? undefined
+            : (categoryParam as any),
         q: queryParam || undefined,
       },
     },
@@ -173,6 +198,12 @@ function SearchContent() {
     if (!productsData) return [];
 
     return [...productsData]
+      .filter((p) => {
+        if (categoryParam !== "discount") return true;
+        return (
+          p.oldPrice != null && Number(p.oldPrice) > Number(p.price)
+        );
+      })
       .filter((p) => {
         const price = Number(p.price);
         if (filters.minPrice && price < Number(filters.minPrice)) return false;
@@ -194,10 +225,10 @@ function SearchContent() {
             return 0;
         }
       });
-  }, [productsData, filters]);
+  }, [categoryParam, filters, productsData]);
 
   const discountCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: 0 };
+    const counts: Record<string, number> = { all: 0, discount: 0 };
 
     for (const product of productsData ?? []) {
       const hasDiscount =
@@ -207,6 +238,7 @@ function SearchContent() {
       if (!hasDiscount) continue;
 
       counts.all += 1;
+      counts.discount += 1;
       const categoryId =
         product.categoryId || product.category?.slug || product.category?.id;
       if (categoryId) {
