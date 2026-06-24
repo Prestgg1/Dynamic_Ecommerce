@@ -40,14 +40,26 @@ export default function Footer() {
               {t("followUs" as TranslationKey)}
             </p>
             <div className="mt-2 flex gap-3">
-              <a href={social.instagram || "#"} className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 transition-colors hover:bg-pink-600">
-                IG
+              <a
+                href={social.instagram || "#"}
+                aria-label="Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 transition-colors hover:bg-pink-600"
+              >
+                <InstagramIcon />
               </a>
-              <a href={social.tiktok || "#"} className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 transition-colors hover:bg-black">
-                TT
+              <a
+                href={social.tiktok || "#"}
+                aria-label="TikTok"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 transition-colors hover:bg-black"
+              >
+                <TikTokIcon />
               </a>
-              <a href={social.whatsapp || "#"} className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 transition-colors hover:bg-green-600">
-                WA
+              <a
+                href={social.whatsapp || "#"}
+                aria-label="WhatsApp"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-800 transition-colors hover:bg-green-600"
+              >
+                <WhatsAppIcon />
               </a>
             </div>
           </div>
@@ -113,5 +125,42 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <rect x="3" y="3" width="18" height="18" rx="5" strokeWidth={2} />
+      <circle cx="12" cy="12" r="4" strokeWidth={2} />
+      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function TikTokIcon() {
+  return (
+    <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M14.5 3c.3 2.4 1.8 4 4 4.2v2.8c-1.5.1-2.8-.3-4-1v5.8c0 3.1-2.5 5.2-5.3 5.2-3 0-5.5-2.4-5.5-5.4s2.4-5.4 5.5-5.4c.4 0 .8.1 1.1.1v2.9c-.3-.1-.7-.2-1.1-.2-1.4 0-2.6 1.1-2.6 2.6 0 1.4 1.1 2.6 2.6 2.6 1.5 0 2.8-1.1 2.8-3.1V3h2.5Z" />
+    </svg>
+  );
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M20.5 11.9a8.5 8.5 0 0 1-12.4 7.5L4 20l.6-4.1A8.5 8.5 0 1 1 20.5 11.9Z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9.2 9.5c.2-.4.4-.4.7-.4h.6c.2 0 .5-.1.7.3l.8 1.6c.1.3 0 .5-.1.7l-.4.5c-.1.2-.2.4 0 .7.3.6.8 1.4 1.8 2.2.2.2.4.2.6.1l.7-.4c.2-.1.5-.1.7 0l1.5.7c.3.1.4.4.4.7 0 .7-.2 1.2-.7 1.5-.5.3-1 .4-1.7.2-1.4-.4-2.8-1.2-4.1-2.5s-2.1-2.7-2.5-4.1c-.2-.7-.1-1.2.2-1.7Z"
+      />
+    </svg>
   );
 }

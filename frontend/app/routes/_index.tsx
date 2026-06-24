@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
@@ -10,7 +10,9 @@ export default function Home() {
   const { t } = useLanguage();
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [slideVisible, setSlideVisible] = useState(true);
+  const [visibleSlideIndex, setVisibleSlideIndex] = useState(0);
+  const [incomingSlideIndex, setIncomingSlideIndex] = useState<number | null>(null);
+  const [animateIncoming, setAnimateIncoming] = useState(false);
 
   useEffect(() => {
     fetchSiteSettings()
@@ -32,6 +34,9 @@ export default function Home() {
   useEffect(() => {
     if (!slides.length) {
       setActiveSlide(0);
+      setVisibleSlideIndex(0);
+      setIncomingSlideIndex(null);
+      setAnimateIncoming(false);
       return;
     }
 
@@ -39,49 +44,69 @@ export default function Home() {
   }, [slides.length]);
 
   useEffect(() => {
-    setSlideVisible(false);
+    if (!slides.length) return;
+    if (activeSlide === visibleSlideIndex && incomingSlideIndex === null) {
+      return;
+    }
+
+    setIncomingSlideIndex(activeSlide);
+    setAnimateIncoming(false);
+
     const frame = window.requestAnimationFrame(() => {
-      setSlideVisible(true);
+      setAnimateIncoming(true);
     });
 
-    return () => window.cancelAnimationFrame(frame);
-  }, [activeSlide]);
+    const timer = window.setTimeout(() => {
+      setVisibleSlideIndex(activeSlide);
+      setIncomingSlideIndex(null);
+      setAnimateIncoming(false);
+    }, 700);
 
-  const currentSlideIndex = slides.length ? activeSlide % slides.length : 0;
-  const currentSlide = slides[currentSlideIndex] ?? {
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [activeSlide, incomingSlideIndex, slides.length, visibleSlideIndex]);
+
+  const currentSlide = slides[visibleSlideIndex] ?? {
     title: t("heroMainTitle" as TranslationKey),
     subtitle: t("heroMainSubtitle" as TranslationKey),
     description: t("heroDescription" as TranslationKey),
     image: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
   };
+  const nextSlide = incomingSlideIndex != null ? slides[incomingSlideIndex] : null;
 
   const capabilities = home?.capabilities ?? [];
   const products = home?.products ?? [];
   const stats = home?.heroStats ?? [];
   const aboutHighlights = home?.aboutHighlights ?? [];
 
-  const slideDots = useMemo(() => slides.map((_, i) => i), [slides]);
-  const goToSlide = (nextIndex: number) => {
-    if (!slides.length) return;
-    setActiveSlide(((nextIndex % slides.length) + slides.length) % slides.length);
-  };
-
   return (
     <main className="overflow-hidden bg-[#0a1428] text-white">
       <section className="relative min-h-screen overflow-hidden pt-16">
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
-          style={{ backgroundImage: `url('${currentSlide.image}')` }}
-        />
+        <div className="absolute inset-0">
+          <img
+            src={currentSlide.image}
+            alt={currentSlide.title}
+            className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out motion-reduce:transition-none ${
+              animateIncoming ? "opacity-0 scale-105" : "opacity-100 scale-100"
+            }`}
+          />
+          {nextSlide && (
+            <img
+              src={nextSlide.image}
+              alt={nextSlide.title}
+              className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out motion-reduce:transition-none ${
+                animateIncoming ? "opacity-100 scale-100" : "opacity-0 scale-105"
+              }`}
+            />
+          )}
+        </div>
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a1428]/90 via-[#0a1428]/70 to-[#13223f]/70" />
         <div className="absolute inset-0 bg-[linear-gradient(#ffffff08_1px,transparent_1px),linear-gradient(90deg,#ffffff08_1px,transparent_1px)] bg-[size:60px_60px]" />
 
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 lg:min-h-screen lg:grid-cols-2">
-          <div
-            className={`space-y-8 transition-all duration-700 ease-out motion-reduce:transition-none ${
-              slideVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-            }`}
-          >
+          <div className="space-y-8 transition-all duration-700 ease-out motion-reduce:transition-none">
             <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm tracking-[2px] backdrop-blur">
               ⚒️ {home?.heroEstablished ?? "TƏSIS EDILDI 2010 • BAKI, AZƏRBAYCAN"}
             </div>
@@ -128,44 +153,9 @@ export default function Home() {
             )}
           </div>
 
-          <div
-            className={`relative transition-all duration-700 ease-out motion-reduce:transition-none ${
-              slideVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-            }`}
-          >
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl">
-              <img
-                src={currentSlide.image}
-                alt={currentSlide.title}
-                className={`h-[36rem] w-full object-cover transition-all duration-700 ease-out motion-reduce:transition-none ${
-                  slideVisible ? "scale-100" : "scale-105"
-                }`}
-              />
-              {!!slides.length && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => goToSlide(currentSlideIndex - 1)}
-                    className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/15 bg-black/35 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-black/55 lg:-left-6"
-                    aria-label="Previous slide"
-                  >
-                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => goToSlide(currentSlideIndex + 1)}
-                    className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/15 bg-black/35 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-black/55 lg:-right-6"
-                    aria-label="Next slide"
-                  >
-                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </>
-              )}
-              <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/10 bg-black/35 p-5 backdrop-blur-md">
+          <div className="relative">
+            <div className="relative h-[36rem] overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl">
+              <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/10 bg-black/35 p-5 backdrop-blur-md transition-opacity duration-700 ease-out motion-reduce:transition-none">
                 <p className="text-xs uppercase tracking-[0.3em] text-gray-300">
                   {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
                 </p>
@@ -177,21 +167,6 @@ export default function Home() {
                 </p>
               </div>
             </div>
-
-            {!!slideDots.length && (
-              <div className="mt-4 flex items-center justify-center gap-2">
-                {slideDots.map((dot) => (
-                  <button
-                    key={dot}
-                    onClick={() => setActiveSlide(dot)}
-                    className={`h-2.5 rounded-full transition-all ${
-                      dot === activeSlide ? "w-10 bg-orange-500" : "w-2.5 bg-white/30"
-                    }`}
-                    aria-label={`Slide ${dot + 1}`}
-                  />
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </section>

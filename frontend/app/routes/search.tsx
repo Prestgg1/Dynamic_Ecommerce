@@ -218,7 +218,7 @@ function SearchContent() {
   }, [productsData]);
 
   return (
-    <main className="min-h-screen bg-[#0a1428] text-white pt-24 pb-20 overflow-hidden">
+    <main className="min-h-screen overflow-hidden bg-[#0a1428] pt-16 pb-16 text-white md:pt-20 md:pb-20">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col gap-8 md:flex-row md:gap-10">
           {/* Filters Sidebar */}
@@ -233,7 +233,7 @@ function SearchContent() {
           {/* Results Area */}
           <div className="flex-1">
             {/* Toolbar */}
-            <header className="sticky top-24 z-30 mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-[#13223f]/80 p-4 backdrop-blur-lg md:p-6">
+            <header className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-[#13223f]/80 p-4 backdrop-blur-lg md:mb-8 md:flex-nowrap md:p-6">
               <div className="relative min-w-0 flex-1">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors focus-within:text-[#22d3ee]">
                   <svg
