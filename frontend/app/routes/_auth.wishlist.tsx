@@ -12,7 +12,7 @@ type WishlistItem = components["schemas"]["Wishlist"];
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Sevilənlər - DəmirMart" },
+    { title: "Sevilənlər - MetaLoft" },
     { name: "description", content: "Sevilənlər siyahınız" },
   ];
 }

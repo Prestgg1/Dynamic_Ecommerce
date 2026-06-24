@@ -1,4 +1,4 @@
-# DəmirMart — Yenilənmiş Backend + Fullstack Plan
+# MetaLoft — Yenilənmiş Backend + Fullstack Plan
 
 **Backend Stack:** NestJS + MySQL + TypeORM  
 **Frontend Stack:** React Router v7 (Vite) + Tailwind CSS  

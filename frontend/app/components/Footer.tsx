@@ -30,7 +30,7 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="text-xl font-bold text-orange-400">
-                {data?.logoText ?? "DəmirMart"}
+                {data?.logoText ?? "MetaLoft"}
               </span>
             </div>
             <p className="mb-4 text-sm text-gray-400">
@@ -108,7 +108,7 @@ export default function Footer() {
 
       <div className="border-t border-gray-800 px-4 py-4">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 text-xs text-gray-500 sm:flex-row">
-          <p>© 2026 {data?.logoText ?? "DəmirMart"}. {t("allRightsReserved" as TranslationKey)}.</p>
+          <p>© 2026 {data?.logoText ?? "MetaLoft"}. {t("allRightsReserved" as TranslationKey)}.</p>
           <p>{data?.footerPreparedBy ?? "Devit Group tərəfindən hazırlanıb"}</p>
         </div>
       </div>

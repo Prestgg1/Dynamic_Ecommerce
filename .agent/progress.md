@@ -1,4 +1,4 @@
-# DəmirMart — Progress Tracker (Yenilənmiş)
+# MetaLoft — Progress Tracker (Yenilənmiş)
 
 **Son yeniləmə:** 2026-04-05  
 **Qalan vaxt:** 6 gün  

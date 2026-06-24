@@ -1,8 +1,8 @@
 export const DEFAULT_SITE_SETTINGS = {
   key: 'main',
   data: {
-    brandName: 'DəmirMart',
-    logoText: 'DəmirMart',
+    brandName: 'MetaLoft',
+    logoText: 'MetaLoft',
     logoSlogan: 'Metal məhsullar',
     bannerText: 'Sifarişləriniz üçün sürətli cavab və etibarlı çatdırılma',
     whatsappNumber: '994501234567',
@@ -49,16 +49,22 @@ export const DEFAULT_SITE_SETTINGS = {
         {
           title: 'Möhkəm materiallar',
           desc: 'Layihələr üçün uyğun polad və metal məhsulların geniş seçimi.',
+          image:
+            'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&q=80',
           stat: '01',
         },
         {
           title: 'Dəqiq kəsim',
           desc: 'İstehsal və fərdi sifarişlər üçün sürətli emal xidməti.',
+          image:
+            'https://images.unsplash.com/photo-1581090700227-1e8e0e9f2d8b?w=900&q=80',
           stat: '02',
         },
         {
           title: 'Keyfiyyət nəzarəti',
           desc: 'Hər məhsul çatdırılmadan əvvəl yoxlanılır və təsdiqlənir.',
+          image:
+            'https://images.pexels.com/photos/162568/steel-mill-industrial-iron-metal-162568.jpeg',
           stat: '03',
         },
       ],
@@ -85,7 +91,7 @@ export const DEFAULT_SITE_SETTINGS = {
       ],
       aboutTitle: 'Haqqımızda',
       aboutDescription:
-        'DəmirMart müştərilərə etibarlı metal məhsulları, peşəkar xidmət və çevik həllər təqdim edir. Haqqımızda bölməsi və ana səhifə eyni məzmundan qidalanır.',
+        'MetaLoft müştərilərə etibarlı metal məhsulları, peşəkar xidmət və çevik həllər təqdim edir. Haqqımızda bölməsi və ana səhifə eyni məzmundan qidalanır.',
       aboutImage:
         'https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg',
       aboutHighlights: [

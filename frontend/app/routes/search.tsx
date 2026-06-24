@@ -220,48 +220,6 @@ function SearchContent() {
   return (
     <main className="min-h-screen bg-[#0a1428] text-white pt-24 pb-20 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* Search Bar Area - Premium Blue Style */}
-        <section className="relative mb-12 overflow-hidden rounded-3xl border border-white/10 bg-[#13223f] p-6 md:p-8 shadow-2xl">
-          {/* Background accent */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#22d3ee]/5 rounded-full blur-3xl -mr-40 -mt-40" />
-
-          <div className="relative z-10">
-            <div className="mb-4 flex items-center gap-3 text-xs font-black uppercase tracking-[0.25em] text-orange-300">
-              <span>{t("searchName" as TranslationKey)}</span>
-              <div className="h-2 w-2 rounded-full bg-orange-500" />
-            </div>
-            <div className="relative group">
-              <div className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#22d3ee] transition-colors">
-                <svg
-                  className="w-7 h-7"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-              <input
-                type="text"
-                value={localQuery}
-                onChange={(e) => handleQueryChange(e.target.value)}
-                placeholder={t("searchPlaceholder" as TranslationKey)}
-                className="w-full rounded-2xl border border-white/10 bg-[#0a1428] py-4 pl-14 pr-6 text-base font-medium placeholder:text-zinc-500 transition-all focus:border-[#22d3ee] focus:outline-none md:text-lg"
-              />
-              {isLoading && (
-                <div className="absolute right-8 top-1/2 -translate-y-1/2">
-                  <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-
         <div className="flex flex-col gap-8 md:flex-row md:gap-10">
           {/* Filters Sidebar */}
           <FilterSidebar
@@ -276,14 +234,34 @@ function SearchContent() {
           <div className="flex-1">
             {/* Toolbar */}
             <header className="sticky top-24 z-30 mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-[#13223f]/80 p-4 backdrop-blur-lg md:p-6">
-              <div className="flex items-center gap-4 pl-2">
-                <span className="text-xs font-black text-zinc-400 uppercase tracking-widest">
-                  Nəticələr
-                </span>
-                <div className="h-5 w-px bg-white/10" />
-                <span className="text-2xl font-bold text-white">
-                  {results.length}
-                </span>
+              <div className="relative min-w-0 flex-1">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors focus-within:text-[#22d3ee]">
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  value={localQuery}
+                  onChange={(e) => handleQueryChange(e.target.value)}
+                  placeholder={t("searchPlaceholder" as TranslationKey)}
+                  className="w-full rounded-2xl border border-white/10 bg-[#0a1428] py-4 pl-12 pr-4 text-sm font-medium placeholder:text-zinc-500 transition-all focus:border-[#22d3ee] focus:outline-none md:text-base"
+                />
+                {isLoading && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+                  </div>
+                )}
               </div>
 
               <div className="relative">

@@ -11,8 +11,8 @@ import type { TranslationKey } from "~/lib/translations";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Qeydiyyat - DəmirMart" },
-    { name: "description", content: "DəmirMart-a qeydiyyatdan keçin" },
+    { title: "Qeydiyyat - MetaLoft" },
+    { name: "description", content: "MetaLoft-a qeydiyyatdan keçin" },
   ];
 }
 
@@ -103,7 +103,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <div className="text-4xl font-bold tracking-tighter text-white">
-                  DəmirMart
+                  MetaLoft
                 </div>
                 <div className="text-orange-400 text-sm font-bold tracking-[3px] uppercase">
                   PREMIUM TOOLS & STEEL
@@ -115,12 +115,12 @@ export default function RegisterPage() {
               Yeni hesab yaradın
             </h2>
             <p className="text-zinc-400 text-lg leading-relaxed">
-              DəmirMart ailəsinə qoşulun və keyfiyyətli polad və alətlərə
+              MetaLoft ailəsinə qoşulun və keyfiyyətli polad və alətlərə
               birbaşa çıxış əldə edin.
             </p>
 
             <div className="mt-16 text-sm text-zinc-500">
-              © 2010–2026 DəmirMart. Bütün hüquqlar qorunur.
+              © 2010–2026 MetaLoft. Bütün hüquqlar qorunur.
             </div>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function RegisterPage() {
                   </svg>
                 </div>
                 <div className="text-3xl font-bold tracking-tight">
-                  DəmirMart
+                  MetaLoft
                 </div>
               </div>
             </div>

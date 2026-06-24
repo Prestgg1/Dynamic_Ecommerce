@@ -1,4 +1,4 @@
-# DəmirMart Admin Panel: UI/UX Planı
+# MetaLoft Admin Panel: UI/UX Planı
 
 ## 1. Ümumi Analiz və Vibe (Layihə Konteksti)
 Mövcud layihə vizual olaraq **"Premium E-commerce"** aurasına malikdir.

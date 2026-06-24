@@ -9,8 +9,8 @@ import { apiUrl } from "~/lib/site-settings";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Məhsul Detalları - DəmirMart" },
-    { name: "description", content: "DəmirMart məhsulları" },
+    { title: "Məhsul Detalları - MetaLoft" },
+    { name: "description", content: "MetaLoft məhsulları" },
   ];
 }
 

@@ -78,7 +78,7 @@ export default function Header() {
       en: "Free shipping on orders over 50 AZN!",
     } as const)[language];
 
-  const brandName = siteSettings?.data.logoText ?? "DəmirMart";
+  const brandName = siteSettings?.data.logoText ?? "MetaLoft";
   const brandSlogan = siteSettings?.data.logoSlogan ?? "Metal məhsullar";
   const whatsappNumber = siteSettings?.data.whatsappNumber ?? "994501234567";
 

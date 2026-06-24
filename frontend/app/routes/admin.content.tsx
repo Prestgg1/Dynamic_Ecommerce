@@ -17,6 +17,7 @@ type StatItem = {
 type CapabilityItem = {
   title: string;
   desc: string;
+  image: string;
   stat: string;
 };
 
@@ -74,6 +75,7 @@ const emptyStat = (): StatItem => ({
 const emptyCapability = (): CapabilityItem => ({
   title: "",
   desc: "",
+  image: "",
   stat: "",
 });
 
@@ -162,7 +164,12 @@ export default function AdminContentPage() {
           whatsapp: data.socialLinks?.whatsapp ?? "",
           heroSlides: (home.heroSlides ?? []) as SlideItem[],
           heroStats: (home.heroStats ?? []) as StatItem[],
-          capabilities: (home.capabilities ?? []) as CapabilityItem[],
+          capabilities: (home.capabilities ?? []).map((item: any) => ({
+            title: item.title ?? "",
+            desc: item.desc ?? "",
+            image: item.image ?? "",
+            stat: item.stat ?? "",
+          })),
           products: (home.products ?? []) as ProductItem[],
           aboutHighlights: home.aboutHighlights ?? [],
         });
@@ -448,7 +455,7 @@ export default function AdminContentPage() {
       <div className="grid gap-6 xl:grid-cols-2">
         <ListEditor
           title="Hero Slaydları"
-          description="Ana səhifədə görünən bannerləri buradan kart kimi idarə edin."
+          description="Ana səhifədə görünən bannerlərin başlıq, alt başlıq, təsvir və şəkillərini buradan idarə edin."
           actionLabel="Yeni slayd"
           onAdd={() =>
             setForm((prev) => ({
@@ -604,6 +611,11 @@ export default function AdminContentPage() {
                 label="Başlıq"
                 value={item.title}
                 onChange={(v) => updateCapability(index, "title", v)}
+              />
+              <Field
+                label="Şəkil linki"
+                value={item.image}
+                onChange={(v) => updateCapability(index, "image", v)}
               />
               <TextArea
                 label="Təsvir"

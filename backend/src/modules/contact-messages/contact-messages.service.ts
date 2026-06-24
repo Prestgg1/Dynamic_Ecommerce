@@ -53,7 +53,7 @@ export class ContactMessagesService {
   private async notifyByEmail(message: ContactMessage) {
     const apiKey = process.env.RESEND_API_KEY;
     const to = process.env.CONTACT_NOTIFY_EMAIL;
-    const from = process.env.MAIL_FROM ?? 'DəmirMart <onboarding@resend.dev>';
+    const from = process.env.MAIL_FROM ?? 'MetaLoft <onboarding@resend.dev>';
 
     if (!apiKey || !to) {
       this.logger.log(

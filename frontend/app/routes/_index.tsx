@@ -10,6 +10,7 @@ export default function Home() {
   const { t } = useLanguage();
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [slideVisible, setSlideVisible] = useState(true);
 
   useEffect(() => {
     fetchSiteSettings()
@@ -36,6 +37,15 @@ export default function Home() {
 
     setActiveSlide((current) => current % slides.length);
   }, [slides.length]);
+
+  useEffect(() => {
+    setSlideVisible(false);
+    const frame = window.requestAnimationFrame(() => {
+      setSlideVisible(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeSlide]);
 
   const currentSlideIndex = slides.length ? activeSlide % slides.length : 0;
   const currentSlide = slides[currentSlideIndex] ?? {
@@ -67,7 +77,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-[linear-gradient(#ffffff08_1px,transparent_1px),linear-gradient(90deg,#ffffff08_1px,transparent_1px)] bg-[size:60px_60px]" />
 
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 lg:min-h-screen lg:grid-cols-2">
-          <div className="space-y-8">
+          <div
+            className={`space-y-8 transition-all duration-700 ease-out motion-reduce:transition-none ${
+              slideVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+          >
             <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm tracking-[2px] backdrop-blur">
               ⚒️ {home?.heroEstablished ?? "TƏSIS EDILDI 2010 • BAKI, AZƏRBAYCAN"}
             </div>
@@ -114,19 +128,25 @@ export default function Home() {
             )}
           </div>
 
-          <div className="relative">
-            <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl">
+          <div
+            className={`relative transition-all duration-700 ease-out motion-reduce:transition-none ${
+              slideVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+          >
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl">
               <img
                 src={currentSlide.image}
                 alt={currentSlide.title}
-                className="h-[36rem] w-full object-cover"
+                className={`h-[36rem] w-full object-cover transition-all duration-700 ease-out motion-reduce:transition-none ${
+                  slideVisible ? "scale-100" : "scale-105"
+                }`}
               />
               {!!slides.length && (
                 <>
                   <button
                     type="button"
                     onClick={() => goToSlide(currentSlideIndex - 1)}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/35 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-black/55"
+                    className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/15 bg-black/35 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-black/55 lg:-left-6"
                     aria-label="Previous slide"
                   >
                     <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,7 +156,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => goToSlide(currentSlideIndex + 1)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/35 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-black/55"
+                    className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/15 bg-black/35 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-black/55 lg:-right-6"
                     aria-label="Next slide"
                   >
                     <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,10 +169,10 @@ export default function Home() {
                 <p className="text-xs uppercase tracking-[0.3em] text-gray-300">
                   {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
                 </p>
-                <p className="mt-2 text-xl font-bold">
+                <p className="mt-2 text-xl font-bold transition-all duration-700 ease-out motion-reduce:transition-none">
                   {currentSlide.title}
                 </p>
-                <p className="mt-1 text-sm text-zinc-300">
+                <p className="mt-1 text-sm text-zinc-300 transition-all duration-700 ease-out motion-reduce:transition-none">
                   {currentSlide.description}
                 </p>
               </div>
@@ -224,31 +244,39 @@ export default function Home() {
       {!!capabilities.length && (
         <section className="bg-[#0f1a33] py-24">
           <div className="mx-auto max-w-7xl px-6">
-            <div className="mb-12 text-center">
-              <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-400">
-                {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
-              </p>
-              <h2 className="mt-4 text-4xl font-bold tracking-tighter md:text-5xl">
-                {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
-              </h2>
+            <div className="mb-12 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-400">
+                  {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
+                </p>
+                <h2 className="mt-4 text-4xl font-bold tracking-tighter md:text-5xl">
+                  {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
+                </h2>
+              </div>
+              <Link
+                to="/search"
+                className="hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:border-orange-500/50 hover:text-orange-400 md:inline-flex"
+              >
+                {t("viewCatalog" as TranslationKey)}
+              </Link>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {capabilities.map((cap, i) => (
                 <div
                   key={i}
-                  className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#13223f] shadow-xl transition-transform hover:-translate-y-1"
+                  className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#13223f] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
                 >
-                  <div className="flex h-28 items-end justify-between border-b border-white/10 bg-gradient-to-br from-white/10 to-transparent px-6 py-5">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.25em] text-orange-300">
-                        {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
-                      </p>
-                      <div className="mt-2 text-4xl font-black text-orange-400">
-                        {cap.stat ?? `0${i + 1}`}
-                      </div>
-                    </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-xl text-white transition-transform group-hover:scale-110">
-                      {String(i + 1).padStart(2, "0")}
+                  <div className="relative overflow-hidden bg-gray-50">
+                    <img
+                      src={
+                        cap.image ??
+                        "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&q=80"
+                      }
+                      alt={cap.title}
+                      className="h-64 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-white backdrop-blur-md">
+                      {cap.stat ?? `0${i + 1}`}
                     </div>
                   </div>
                   <div className="space-y-3 p-7">
@@ -256,6 +284,11 @@ export default function Home() {
                     <p className="text-sm leading-relaxed text-zinc-300">
                       {cap.desc}
                     </p>
+                    <div className="pt-2">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-300">
+                        {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}

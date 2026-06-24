@@ -31,7 +31,7 @@ export type SiteSettings = {
       heroSlides?: HeroSlide[];
       heroStats?: { value: string; label: string }[];
       capabilitiesTitle?: string;
-      capabilities?: { title: string; desc: string; stat?: string }[];
+      capabilities?: { title: string; desc: string; image?: string; stat?: string }[];
       productsTitle?: string;
       products?: { title: string; desc: string; image: string }[];
       aboutTitle?: string;

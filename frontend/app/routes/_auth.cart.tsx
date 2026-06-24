@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Səbət - DəmirMart" },
+    { title: "Səbət - MetaLoft" },
     { name: "description", content: "Sizin alış-veriş səbətiniz" },
   ];
 }

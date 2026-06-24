@@ -11,8 +11,8 @@ import type { TranslationKey } from "~/lib/translations";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Daxil ol - DəmirMart" },
-    { name: "description", content: "DəmirMart-a daxil olun" },
+    { title: "Daxil ol - MetaLoft" },
+    { name: "description", content: "MetaLoft-a daxil olun" },
   ];
 }
 
@@ -84,7 +84,7 @@ export default function LoginPage() {
               </div>
               <div>
                 <div className="text-4xl font-bold tracking-tighter text-white">
-                  DəmirMart
+                  MetaLoft
                 </div>
                 <div className="text-orange-400 text-sm font-bold tracking-[3px] uppercase">
                   PREMIUM TOOLS & STEEL
@@ -101,7 +101,7 @@ export default function LoginPage() {
             </p>
 
             <div className="mt-16 text-sm text-zinc-500">
-              © 2010–2026 DəmirMart. Bütün hüquqlar qorunur.
+              © 2010–2026 MetaLoft. Bütün hüquqlar qorunur.
             </div>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function LoginPage() {
                   </svg>
                 </div>
                 <div className="text-3xl font-bold tracking-tight">
-                  DəmirMart
+                  MetaLoft
                 </div>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function LoginPage() {
               Daxil ol
             </h1>
             <p className="text-center lg:text-left text-gray-500 mb-10">
-              DəmirMart hesabınıza daxil olun
+              MetaLoft hesabınıza daxil olun
             </p>
 
             <form onSubmit={formik.handleSubmit} className="space-y-6">

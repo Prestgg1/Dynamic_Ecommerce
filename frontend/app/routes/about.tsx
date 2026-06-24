@@ -6,10 +6,10 @@ import { fetchSiteSettings, type SiteSettings } from "~/lib/site-settings";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Haqqımızda - DəmirMart" },
+    { title: "Haqqımızda - MetaLoft" },
     {
       name: "description",
-      content: "DəmirMart haqqında məlumatlar ana səhifə ilə eyni məzmundan gəlir.",
+      content: "MetaLoft haqqında məlumatlar ana səhifə ilə eyni məzmundan gəlir.",
     },
   ];
 }

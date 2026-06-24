@@ -11,11 +11,11 @@ import {
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Əlaqə - DəmirMart" },
+    { title: "Əlaqə - MetaLoft" },
     {
       name: "description",
       content:
-        "DəmirMart ilə əlaqə saxlayın — telefon, email və ya əlaqə forması vasitəsilə.",
+        "MetaLoft ilə əlaqə saxlayın — telefon, email və ya əlaqə forması vasitəsilə.",
     },
   ];
 }
