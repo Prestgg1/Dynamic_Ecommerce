@@ -25,18 +25,18 @@ export type CategoryIconKey = keyof typeof CATEGORY_ICONS;
 
 export const getGradient = (key: CategoryIconKey): string => {
   const gradients: Record<CategoryIconKey, string> = {
-    tools: "from-blue-400 to-blue-600", hardware: "from-purple-400 to-purple-600",
-    pipes: "from-cyan-400 to-cyan-600", fasteners: "from-amber-400 to-amber-600",
-    electrical: "from-yellow-400 to-yellow-600", welding: "from-orange-400 to-orange-600",
-    safety: "from-red-400 to-red-600", wrench: "from-slate-400 to-slate-600",
-    hammer: "from-rose-400 to-rose-600", screwdriver: "from-lime-400 to-lime-600",
-    drill: "from-indigo-400 to-indigo-600", cable: "from-teal-400 to-teal-600",
-    paint: "from-pink-400 to-pink-600", gloves: "from-green-400 to-green-600",
-    helmet: "from-fuchsia-400 to-fuchsia-600", nut: "from-violet-400 to-violet-600",
-    bolt: "from-sky-400 to-sky-600", laser: "from-red-400 to-pink-600",
-    gauge: "from-emerald-400 to-emerald-600",
+    tools: "from-[#0080e8] to-[#001446]", hardware: "from-[#0080e8] to-[#041d23]",
+    pipes: "from-[#001446] to-[#0080e8]", fasteners: "from-[#041d23] to-[#0080e8]",
+    electrical: "from-[#0080e8] to-[#001446]", welding: "from-[#0080e8] to-[#041d23]",
+    safety: "from-[#001446] to-[#041d23]", wrench: "from-[#041d23] to-[#001446]",
+    hammer: "from-[#0080e8] to-[#001446]", screwdriver: "from-[#0080e8] to-[#041d23]",
+    drill: "from-[#001446] to-[#0080e8]", cable: "from-[#041d23] to-[#0080e8]",
+    paint: "from-[#0080e8] to-[#001446]", gloves: "from-[#0080e8] to-[#041d23]",
+    helmet: "from-[#001446] to-[#0080e8]", nut: "from-[#041d23] to-[#0080e8]",
+    bolt: "from-[#0080e8] to-[#001446]", laser: "from-[#0080e8] to-[#041d23]",
+    gauge: "from-[#001446] to-[#0080e8]",
   };
-  return gradients[key] || "from-gray-400 to-gray-600";
+  return gradients[key] || "from-[#041d23] to-[#0080e8]";
 };
 
 export const IconDisplay = ({ icon, size = "md" }: { icon: CategoryIconKey; size?: "sm" | "md" | "lg" }) => {

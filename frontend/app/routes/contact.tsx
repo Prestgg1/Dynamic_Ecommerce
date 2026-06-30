@@ -11,11 +11,11 @@ import {
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Əlaqə - MetaLoft" },
+    { title: "Əlaqə - MetalX" },
     {
       name: "description",
       content:
-        "MetaLoft ilə əlaqə saxlayın — telefon, email və ya əlaqə forması vasitəsilə.",
+        "MetalX ilə əlaqə saxlayın — telefon, email və ya əlaqə forması vasitəsilə.",
     },
   ];
 }
@@ -70,9 +70,9 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-r from-gray-900 to-gray-800 py-24 pt-36 text-white">
+      <section className="bg-gradient-to-r from-[#041d23] to-[#001446] py-24 pt-36 text-white">
         <div className="mx-auto max-w-5xl px-4 text-center">
-          <span className="mb-4 inline-block rounded-full border border-orange-500/30 bg-orange-500/20 px-4 py-1.5 text-sm font-bold uppercase tracking-widest text-orange-400">
+          <span className="mb-4 inline-block rounded-full border border-[#0080e8]/30 bg-[#0080e8]/20 px-4 py-1.5 text-sm font-bold uppercase tracking-widest text-[#0080e8]">
             {t("contactUs" as TranslationKey)}
           </span>
           <h1 className="mb-4 text-5xl font-black tracking-tight md:text-6xl">
@@ -92,7 +92,7 @@ export default function ContactPage() {
                 key={i}
                 className="flex items-start gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-500 text-white">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0080e8] text-white">
                   {i === 0 ? "⌁" : i === 1 ? "☎" : i === 2 ? "✉" : "◷"}
                 </div>
                 <div>
@@ -137,7 +137,7 @@ export default function ContactPage() {
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 font-medium text-gray-900 placeholder:text-gray-400 transition-all focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/10"
+                  className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 font-medium text-gray-900 placeholder:text-gray-400 transition-all focus:border-[#0080e8] focus:outline-none focus:ring-4 focus:ring-[#0080e8]/10"
                   placeholder={t("nameExample" as TranslationKey)}
                 />
                 <input
@@ -145,7 +145,7 @@ export default function ContactPage() {
                   required
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 font-medium text-gray-900 placeholder:text-gray-400 transition-all focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/10"
+                  className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 font-medium text-gray-900 placeholder:text-gray-400 transition-all focus:border-[#0080e8] focus:outline-none focus:ring-4 focus:ring-[#0080e8]/10"
                   placeholder={t("emailExample" as TranslationKey)}
                 />
               </div>
@@ -154,7 +154,7 @@ export default function ContactPage() {
                 type="tel"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 font-medium text-gray-900 placeholder:text-gray-400 transition-all focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/10"
+                className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 font-medium text-gray-900 placeholder:text-gray-400 transition-all focus:border-[#0080e8] focus:outline-none focus:ring-4 focus:ring-[#0080e8]/10"
                 placeholder={t("phoneExample" as TranslationKey)}
               />
 
@@ -163,14 +163,14 @@ export default function ContactPage() {
                 rows={6}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 font-medium text-gray-900 placeholder:text-gray-400 transition-all focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/10"
+                className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3.5 font-medium text-gray-900 placeholder:text-gray-400 transition-all focus:border-[#0080e8] focus:outline-none focus:ring-4 focus:ring-[#0080e8]/10"
                 placeholder={t("messagePlaceholder" as TranslationKey)}
               />
 
               <button
                 type="submit"
                 disabled={isSending}
-                className="inline-flex items-center gap-2 rounded-2xl bg-orange-500 px-6 py-3.5 font-black text-white transition-all hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-2xl bg-[#0080e8] px-6 py-3.5 font-black text-white transition-all hover:bg-[#0080e8]/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSending ? "Göndərilir..." : t("send" as TranslationKey)}
               </button>

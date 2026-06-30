@@ -13,7 +13,7 @@ export function IconSelector({ selected, onSelect, onClose }: { selected: Catego
         </div>
         <div className="p-4 grid grid-cols-4 md:grid-cols-6 gap-3 max-h-[60vh] overflow-auto">
           {icons.map(icon => (
-            <button key={icon} onClick={() => onSelect(icon)} className={`p-3 rounded-lg border-2 transition-all ${selected === icon ? "border-orange-500 bg-orange-50" : "border-gray-200 hover:border-orange-300"}`}>
+            <button key={icon} onClick={() => onSelect(icon)} className={`p-3 rounded-lg border-2 transition-all ${selected === icon ? "border-[#0080e8] bg-[#0080e8]/10" : "border-gray-200 hover:border-[#0080e8]/45"}`}>
               <div className={`w-12 h-12 mx-auto rounded-lg bg-gradient-to-br ${getGradient(icon)} flex items-center justify-center text-white`}>
                 <div className="w-6 h-6">{CATEGORY_ICONS[icon]}</div>
               </div>

@@ -131,7 +131,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
 
         <div className="p-5 border-t bg-gray-50 flex justify-end gap-3 sticky bottom-0">
           <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
-          <button onClick={handleSubmit} className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+          <button onClick={handleSubmit} className="px-4 py-2 bg-[#0080e8] text-white rounded-lg hover:bg-[#0080e8]/90">
             {isNew ? "Create" : "Update"}
           </button>
         </div>

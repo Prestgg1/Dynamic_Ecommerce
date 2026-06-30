@@ -9,8 +9,8 @@ import { apiUrl } from "~/lib/site-settings";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Məhsul Detalları - MetaLoft" },
-    { name: "description", content: "MetaLoft məhsulları" },
+    { title: "Məhsul Detalları - MetalX" },
+    { name: "description", content: "MetalX məhsulları" },
   ];
 }
 
@@ -51,7 +51,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
   if (productLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 pt-36">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-500 border-t-transparent" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#0080e8] border-t-transparent" />
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 pt-36">
         <h2 className="text-2xl font-bold text-gray-800">Məhsul tapılmadı</h2>
-        <Link to="/" className="mt-4 font-bold text-orange-500 hover:underline">
+        <Link to="/" className="mt-4 font-bold text-[#0080e8] hover:underline">
           Ana səhifəyə qayıt
         </Link>
       </div>
@@ -92,13 +92,13 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
       <div className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-3">
           <nav className="flex items-center gap-2 text-sm text-gray-500">
-            <Link to="/" className="font-semibold transition-colors hover:text-orange-500">
+            <Link to="/" className="font-semibold transition-colors hover:text-[#0080e8]">
               {t("home")}
             </Link>
             <span>›</span>
             <Link
               to={`/search?category=${product.categoryId || product.category?.slug || ""}`}
-              className="font-semibold capitalize transition-colors hover:text-orange-500"
+              className="font-semibold capitalize transition-colors hover:text-[#0080e8]"
             >
               {product.category?.name || "Kategoriya"}
             </Link>
@@ -127,7 +127,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
                     onClick={() => setSelectedImage(img)}
                     className={`overflow-hidden rounded-xl border-2 bg-gray-50 p-2 transition-all ${
                       currentImage === img
-                        ? "border-orange-500 shadow-md shadow-orange-500/20"
+                        ? "border-[#0080e8] shadow-md shadow-[#0080e8]/20"
                         : "border-transparent hover:border-gray-200"
                     }`}
                   >
@@ -139,7 +139,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
 
             <div className="flex flex-col justify-center p-8 md:p-10">
               {product.badge && (
-                <span className="mb-4 inline-block w-max rounded-lg bg-orange-100 px-3 py-1 text-xs font-black uppercase tracking-widest text-orange-600">
+                <span className="mb-4 inline-block w-max rounded-lg bg-[#0080e8]/15 px-3 py-1 text-xs font-black uppercase tracking-widest text-[#0080e8]">
                   {product.badge}
                 </span>
               )}
@@ -154,7 +154,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
                       {Number(product.oldPrice).toFixed(2)} AZN
                     </span>
                   )}
-                  <span className="text-4xl font-black tracking-tight text-orange-600">
+                  <span className="text-4xl font-black tracking-tight text-[#0080e8]">
                     {Number(product.price).toFixed(2)} AZN
                   </span>
                 </div>
@@ -164,7 +164,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
                 <div className="flex items-center justify-between overflow-hidden rounded-2xl border-2 border-gray-100 bg-white p-1 sm:w-40">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="flex h-12 w-12 items-center justify-center rounded-xl text-xl font-black text-gray-500 transition-colors hover:bg-orange-50 hover:text-orange-500"
+                    className="flex h-12 w-12 items-center justify-center rounded-xl text-xl font-black text-gray-500 transition-colors hover:bg-[#0080e8]/10 hover:text-[#0080e8]"
                   >
                     −
                   </button>
@@ -173,7 +173,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
                   </span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="flex h-12 w-12 items-center justify-center rounded-xl text-xl font-black text-gray-500 transition-colors hover:bg-orange-50 hover:text-orange-500"
+                    className="flex h-12 w-12 items-center justify-center rounded-xl text-xl font-black text-gray-500 transition-colors hover:bg-[#0080e8]/10 hover:text-[#0080e8]"
                   >
                     +
                   </button>
@@ -181,7 +181,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
 
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 rounded-2xl bg-orange-500 py-4 text-lg font-black text-white shadow-xl shadow-orange-500/30 transition-all hover:bg-orange-600 active:scale-[0.98]"
+                  className="flex-1 rounded-2xl bg-[#0080e8] py-4 text-lg font-black text-white shadow-xl shadow-[#0080e8]/30 transition-all hover:bg-[#0080e8]/90 active:scale-[0.98]"
                 >
                   {t("addToCart")}
                 </button>
@@ -201,7 +201,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
 
         <div className="rounded-3xl border border-gray-100 bg-white shadow-sm">
           <div className="border-b border-gray-100 px-4 pt-4">
-            <div className="inline-flex border-b-2 border-orange-500 px-6 py-4 text-sm font-black uppercase tracking-widest text-orange-600">
+            <div className="inline-flex border-b-2 border-[#0080e8] px-6 py-4 text-sm font-black uppercase tracking-widest text-[#0080e8]">
               {t("description")}
             </div>
           </div>

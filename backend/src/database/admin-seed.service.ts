@@ -33,7 +33,7 @@ export class AdminSeedService implements OnApplicationBootstrap {
       password: hashedPassword,
       role: UserRole.ADMIN,
       avatarUrl:
-        'https://ui-avatars.com/api/?background=f97316&color=fff&name=Admin',
+        'https://ui-avatars.com/api/?background=0080e8&color=fff&name=Admin',
     });
 
     this.logger.log(`Seeded default admin user: ${email}`);

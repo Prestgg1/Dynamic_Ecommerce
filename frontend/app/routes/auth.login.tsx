@@ -11,8 +11,8 @@ import type { TranslationKey } from "~/lib/translations";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Daxil ol - MetaLoft" },
-    { name: "description", content: "MetaLoft-a daxil olun" },
+    { title: "Daxil ol - MetalX" },
+    { name: "description", content: "MetalX-a daxil olun" },
   ];
 }
 
@@ -53,42 +53,21 @@ export default function LoginPage() {
   });
 
   return (
-    <main className="min-h-screen bg-[#0a1428] flex items-center justify-center overflow-hidden">
+    <main className="min-h-screen bg-[#001446] flex items-center justify-center overflow-hidden">
       <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-2 min-h-screen">
         {/* Left Side - Branding / Visual */}
-        <div className="hidden lg:flex flex-col justify-center px-16 bg-gradient-to-br from-[#13223f] to-[#0a1428] relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(#22d3ee15_1px,transparent_1px)] bg-[size:40px_40px]" />
+        <div className="hidden lg:flex flex-col justify-center px-16 bg-gradient-to-br from-[#041d23] to-[#001446] relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(#0080e815_1px,transparent_1px)] bg-[size:40px_40px]" />
 
           <div className="relative z-10 max-w-md">
-            <div className="flex items-center gap-4 mb-12">
-              <div className="bg-orange-500 p-4 rounded-2xl">
-                <svg
-                  className="w-10 h-10 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div className="text-4xl font-bold tracking-tighter text-white">
-                  MetaLoft
-                </div>
-                <div className="text-orange-400 text-sm font-bold tracking-[3px] uppercase">
-                  PREMIUM TOOLS & STEEL
-                </div>
+            <div className="mb-12">
+              <img
+                src="/metalxlogo.svg"
+                alt="MetalX"
+                className="h-14 w-auto max-w-[260px]"
+              />
+              <div className="mt-4 text-sm font-bold uppercase tracking-[3px] text-[#0080e8]">
+                PREMIUM TOOLS & STEEL
               </div>
             </div>
 
@@ -101,7 +80,7 @@ export default function LoginPage() {
             </p>
 
             <div className="mt-16 text-sm text-zinc-500">
-              © 2010–2026 MetaLoft. Bütün hüquqlar qorunur.
+              © 2010–2026 MetalX. Bütün hüquqlar qorunur.
             </div>
           </div>
         </div>
@@ -109,34 +88,19 @@ export default function LoginPage() {
         {/* Right Side - Login Form */}
         <div className="flex items-center justify-center p-6 lg:p-12 bg-white">
           <div className="w-full max-w-md">
-            <div className="lg:hidden flex justify-center mb-10">
-              <div className="flex items-center gap-3">
-                <div className="bg-orange-500 p-3 rounded-2xl">
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0..."
-                    />
-                  </svg>
-                </div>
-                <div className="text-3xl font-bold tracking-tight">
-                  MetaLoft
-                </div>
-              </div>
+            <div className="mb-10 flex justify-center lg:hidden">
+              <img
+                src="/metalxlogo.svg"
+                alt="MetalX"
+                className="h-12 w-auto max-w-[220px]"
+              />
             </div>
 
             <h1 className="text-3xl font-bold text-center lg:text-left mb-2 text-gray-900">
               Daxil ol
             </h1>
             <p className="text-center lg:text-left text-gray-500 mb-10">
-              MetaLoft hesabınıza daxil olun
+              MetalX hesabınıza daxil olun
             </p>
 
             <form onSubmit={formik.handleSubmit} className="space-y-6">
@@ -171,7 +135,7 @@ export default function LoginPage() {
                     className={`w-full pl-12 py-4 border rounded-2xl text-base focus:outline-none transition-all ${
                       formik.touched.email && formik.errors.email
                         ? "border-red-400 focus:border-red-400"
-                        : "border-gray-200 focus:border-[#22d3ee]"
+                        : "border-gray-200 focus:border-[#0080e8]"
                     }`}
                   />
                 </div>
@@ -213,7 +177,7 @@ export default function LoginPage() {
                     className={`w-full pl-12 pr-12 py-4 border rounded-2xl text-base focus:outline-none transition-all ${
                       formik.touched.password && formik.errors.password
                         ? "border-red-400 focus:border-red-400"
-                        : "border-gray-200 focus:border-[#22d3ee]"
+                        : "border-gray-200 focus:border-[#0080e8]"
                     }`}
                   />
                   <button
@@ -233,7 +197,7 @@ export default function LoginPage() {
                 <div className="flex justify-end mt-2">
                   <Link
                     to="/auth/forgot-password"
-                    className="text-sm text-orange-500 hover:text-orange-600"
+                    className="text-sm text-[#0080e8] hover:text-[#0080e8]"
                   >
                     Şifrəni unutdunuz?
                   </Link>
@@ -244,7 +208,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white py-4 rounded-2xl font-semibold text-lg transition-all active:scale-[0.985] shadow-lg shadow-orange-500/30 mt-4"
+                className="w-full bg-[#0080e8] hover:bg-[#0080e8]/90 disabled:bg-[#0080e8]/70 text-white py-4 rounded-2xl font-semibold text-lg transition-all active:scale-[0.985] shadow-lg shadow-[#0080e8]/30 mt-4"
               >
                 {isPending ? "Daxil olunur..." : "Daxil ol"}
               </button>
@@ -256,7 +220,7 @@ export default function LoginPage() {
                 Hesabınız yoxdur?{" "}
                 <Link
                   to="/auth/register"
-                  className="text-orange-500 font-semibold hover:text-orange-600"
+                  className="text-[#0080e8] font-semibold hover:text-[#0080e8]"
                 >
                   Qeydiyyatdan keçin
                 </Link>

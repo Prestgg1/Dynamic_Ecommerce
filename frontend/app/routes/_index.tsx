@@ -75,7 +75,7 @@ export default function Home() {
   const aboutHighlights = home?.aboutHighlights ?? [];
 
   return (
-    <main className="overflow-hidden bg-[#0a1428] text-white">
+    <main className="overflow-hidden bg-[#001446] text-white">
       <section className="relative min-h-screen overflow-hidden pt-16">
         <div className="absolute inset-0">
           <img
@@ -95,7 +95,7 @@ export default function Home() {
             />
           )}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1428]/90 via-[#0a1428]/70 to-[#13223f]/70" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#001446]/90 via-[#001446]/70 to-[#041d23]/70" />
         <div className="absolute inset-0 bg-[linear-gradient(#ffffff08_1px,transparent_1px),linear-gradient(90deg,#ffffff08_1px,transparent_1px)] bg-[size:60px_60px]" />
 
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 lg:min-h-screen lg:grid-cols-2">
@@ -113,7 +113,7 @@ export default function Home() {
                 <h1 className="text-5xl font-bold leading-none tracking-tighter md:text-7xl">
                   {currentSlide.title}
                   <br />
-                  <span className="text-[#22d3ee]">{currentSlide.subtitle}</span>
+                  <span className="text-[#0080e8]">{currentSlide.subtitle}</span>
                 </h1>
                 <p className="max-w-xl text-lg leading-relaxed text-zinc-300 md:text-xl">
                   {currentSlide.description}
@@ -129,7 +129,7 @@ export default function Home() {
                   <h1 className="text-5xl font-bold leading-none tracking-tighter md:text-7xl">
                     {nextSlide.title}
                     <br />
-                    <span className="text-[#22d3ee]">{nextSlide.subtitle}</span>
+                    <span className="text-[#0080e8]">{nextSlide.subtitle}</span>
                   </h1>
                   <p className="max-w-xl text-lg leading-relaxed text-zinc-300 md:text-xl">
                     {nextSlide.description}
@@ -141,13 +141,13 @@ export default function Home() {
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/contact"
-                className="rounded-2xl bg-orange-500 px-8 py-4 text-lg font-semibold transition-all active:scale-95 hover:bg-orange-600"
+                className="rounded-2xl bg-[#0080e8] px-8 py-4 text-lg font-semibold transition-all active:scale-95 hover:bg-[#0080e8]/90"
               >
                 {t("requestQuote" as TranslationKey)}
               </Link>
               <Link
                 to="/search"
-                className="rounded-2xl border-2 border-[#22d3ee] px-8 py-4 text-lg font-semibold text-[#22d3ee] transition-all hover:bg-[#22d3ee]/10"
+                className="rounded-2xl border-2 border-[#0080e8] px-8 py-4 text-lg font-semibold text-[#0080e8] transition-all hover:bg-[#0080e8]/10"
               >
                 {t("viewCatalog" as TranslationKey)}
               </Link>
@@ -157,7 +157,7 @@ export default function Home() {
               <div className="grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
                 {stats.map((stat, i) => (
                   <div key={i}>
-                    <div className="text-3xl font-bold text-[#22d3ee] md:text-4xl">
+                    <div className="text-3xl font-bold text-[#0080e8] md:text-4xl">
                       {stat.value}
                     </div>
                     <div className="mt-1 text-sm tracking-wide text-zinc-400">
@@ -220,7 +220,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-6 py-24">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div>
-            <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-orange-400">
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.2em] text-[#0080e8]">
               {home?.aboutTitle ?? t("aboutUs" as TranslationKey)}
             </p>
             <h2 className="text-4xl font-bold tracking-tighter md:text-5xl">
@@ -235,7 +235,7 @@ export default function Home() {
               <div className="mt-8 space-y-4">
                 {aboutHighlights.map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/10 text-orange-400">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0080e8]/10 text-[#0080e8]">
                       ✓
                     </div>
                     <span className="text-zinc-200">{item}</span>
@@ -246,7 +246,7 @@ export default function Home() {
 
             <Link
               to="/about"
-              className="mt-8 inline-flex rounded-2xl border border-white/10 bg-white/5 px-6 py-3 font-semibold transition-all hover:border-orange-500/50 hover:text-orange-400"
+              className="mt-8 inline-flex rounded-2xl border border-white/10 bg-white/5 px-6 py-3 font-semibold transition-all hover:border-[#0080e8]/50 hover:text-[#0080e8]"
             >
               {t("learnMoreAboutUs" as TranslationKey)}
             </Link>
@@ -263,11 +263,11 @@ export default function Home() {
       </section>
 
       {!!capabilities.length && (
-        <section className="bg-[#0f1a33] py-24">
+        <section className="bg-[#041d23] py-24">
           <div className="mx-auto max-w-7xl px-6">
             <div className="mb-12 flex items-end justify-between gap-4">
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-400">
+                <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#0080e8]">
                   {home?.capabilitiesTitle ?? "Bizim imkanlarımız"}
                 </p>
                 <h2 className="mt-4 text-4xl font-bold tracking-tighter md:text-5xl">
@@ -276,7 +276,7 @@ export default function Home() {
               </div>
               <Link
                 to="/search"
-                className="hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:border-orange-500/50 hover:text-orange-400 md:inline-flex"
+                className="hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:border-[#0080e8]/50 hover:text-[#0080e8] md:inline-flex"
               >
                 {t("viewCatalog" as TranslationKey)}
               </Link>
@@ -285,7 +285,7 @@ export default function Home() {
               {capabilities.map((cap, i) => (
                 <div
                   key={i}
-                  className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#13223f] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                  className="group overflow-hidden rounded-[2rem] border border-white/10 bg-[#041d23] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
                 >
                   <div className="relative overflow-hidden bg-gray-50">
                     <img
@@ -322,7 +322,7 @@ export default function Home() {
         <section className="mx-auto max-w-7xl px-6 py-24">
           <div className="mb-12 flex items-end justify-between gap-4">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-400">
+              <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#0080e8]">
                 {home?.productsTitle ?? "Əsas məhsullar"}
               </p>
               <h2 className="mt-3 text-4xl font-bold tracking-tighter md:text-5xl">
@@ -331,7 +331,7 @@ export default function Home() {
             </div>
             <Link
               to="/search"
-              className="hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:border-orange-500/50 hover:text-orange-400 md:inline-flex"
+              className="hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:border-[#0080e8]/50 hover:text-[#0080e8] md:inline-flex"
             >
               {t("viewCatalog" as TranslationKey)}
             </Link>
@@ -341,7 +341,7 @@ export default function Home() {
             {products.map((product, i) => (
               <article
                 key={i}
-                className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#13223f] shadow-xl"
+                className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#041d23] shadow-xl"
               >
                 <img
                   src={product.image}
@@ -366,9 +366,9 @@ export default function Home() {
           backgroundImage: `url('${home?.contactBackgroundImage ?? "https://images.pexels.com/photos/8728388/pexels-photo-8728388.jpeg"}')`,
         }}
       >
-        <div className="absolute inset-0 bg-[#0a1428]/80" />
+        <div className="absolute inset-0 bg-[#001446]/80" />
         <div className="relative mx-auto max-w-4xl px-6 text-center">
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-300">
+          <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#0080e8]">
             {home?.contactTitle ?? "BİZİMLƏ ƏLAQƏ"}
           </p>
           <h2 className="mt-4 text-4xl font-bold tracking-tighter md:text-5xl">
@@ -376,7 +376,7 @@ export default function Home() {
           </h2>
           <Link
             to="/contact"
-            className="mt-8 inline-flex rounded-2xl bg-orange-500 px-8 py-4 text-lg font-semibold transition-all hover:bg-orange-600"
+            className="mt-8 inline-flex rounded-2xl bg-[#0080e8] px-8 py-4 text-lg font-semibold transition-all hover:bg-[#0080e8]/90"
           >
             {home?.contactButtonLabel ?? "Bizimlə əlaqə saxlayın"}
           </Link>

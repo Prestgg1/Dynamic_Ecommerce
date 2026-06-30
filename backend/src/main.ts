@@ -59,8 +59,8 @@ async function bootstrap() {
 
   if (!isProduction || process.env.ENABLE_SWAGGER === 'true') {
     const config = new DocumentBuilder()
-      .setTitle('MetaLoft API')
-      .setDescription('MetaLoft API description')
+      .setTitle('MetalX API')
+      .setDescription('MetalX API description')
       .setVersion('1.0')
       .addTag('demirmart')
       .build();

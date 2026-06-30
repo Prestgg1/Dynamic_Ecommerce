@@ -70,7 +70,7 @@ export default function AdminMessagesPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="text-lg font-bold text-gray-900">{message.fullName}</h3>
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${message.status === "NEW" ? "bg-orange-100 text-orange-700" : "bg-green-100 text-green-700"}`}>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${message.status === "NEW" ? "bg-[#0080e8]/15 text-[#0080e8]" : "bg-green-100 text-green-700"}`}>
                     {message.status}
                   </span>
                 </div>
@@ -80,7 +80,7 @@ export default function AdminMessagesPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => markRead(message.id)}
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:border-orange-500 hover:text-orange-600"
+                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:border-[#0080e8] hover:text-[#0080e8]"
                 >
                   Read
                 </button>

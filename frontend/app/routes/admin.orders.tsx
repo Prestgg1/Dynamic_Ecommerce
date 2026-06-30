@@ -71,7 +71,7 @@ export default function AdminOrdersPage() {
                       ))}
                     </ul>
                   </td>
-                  <td className="px-6 py-4 text-sm font-semibold text-orange-600">
+                  <td className="px-6 py-4 text-sm font-semibold text-[#0080e8]">
                     ${parseFloat(order.totalPrice || "0").toFixed(2)}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
@@ -107,5 +107,5 @@ export default function AdminOrdersPage() {
 }
 
 function Spinner() {
-  return <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto" />;
+  return <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0080e8] mx-auto" />;
 }

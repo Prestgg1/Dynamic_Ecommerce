@@ -7,7 +7,7 @@ import type { TranslationKey } from "~/lib/translations";
 import { trpc } from "~/lib/trpc";
 import { useAuthStore } from "~/store/auth.store";
 import { useCartStore } from "~/store/cart.store";
-import { fetchSiteSettings, type SiteSettings } from "~/lib/site-settings";
+import { apiUrl, fetchSiteSettings, type SiteSettings } from "~/lib/site-settings";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ export default function Header() {
       en: "Free shipping on orders over 50 AZN!",
     } as const)[language];
 
-  const brandName = siteSettings?.data.logoText ?? "MetaLoft";
+  const brandName = siteSettings?.data.logoText ?? "MetalX";
   const brandSlogan = siteSettings?.data.logoSlogan ?? "Metal məhsullar";
   const whatsappNumber = siteSettings?.data.whatsappNumber ?? "994501234567";
 
@@ -98,35 +98,33 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-gray-900 text-white shadow-lg">
-        <div className="bg-orange-600 px-4 py-1.5 text-center text-xs font-medium hidden sm:block">
+      <header className="sticky top-0 z-50 bg-[#041d23] text-white shadow-lg">
+        <div className="bg-[#0080e8]/90 px-4 py-1.5 text-center text-xs font-medium hidden sm:block">
           {bannerText}
         </div>
 
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex items-center gap-2 py-4 lg:gap-4">
-            <Link to="/" className="flex items-center gap-2.5 group flex-shrink-0">
-              <div className="rounded-xl bg-orange-500 p-2 shadow-lg shadow-orange-500/20 transition-transform duration-300 group-hover:scale-110">
-                <img src="../logo.png" alt={brandName} className="h-10 w-10" />
-              </div>
-              <div className="hidden sm:block">
-                <span className="text-lg font-extrabold tracking-tighter text-white lg:text-2xl">
-                  {brandName}
-                </span>
-                <p className="mt-0.5 text-xs font-bold uppercase tracking-widest text-orange-500 lg:text-sm">
-                  {brandSlogan}
-                </p>
-              </div>
+            <Link
+              to="/"
+              className="group flex flex-shrink-0 items-center"
+              aria-label={`${brandName} - ${brandSlogan}`}
+            >
+              <img
+                src="/metalxlogo.svg"
+                alt={brandName}
+                className="h-9 w-auto max-w-[150px] transition-transform duration-300 group-hover:scale-105 sm:h-10 lg:max-w-[190px]"
+              />
             </Link>
 
             <div ref={searchRef} className="relative ml-2">
               <button
                 type="button"
                 onClick={() => setSearchPopupOpen((prev) => !prev)}
-                className="hidden md:inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-bold text-gray-200 transition-all duration-300 hover:border-orange-500/50"
+                className="hidden md:inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-bold text-gray-200 transition-all duration-300 hover:border-[#0080e8]/50"
               >
                 <svg
-                  className="h-5 w-5 text-orange-400"
+                  className="h-5 w-5 text-[#0080e8]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -142,7 +140,7 @@ export default function Header() {
               </button>
 
               {searchPopupOpen && (
-                <div className="absolute left-0 top-full z-50 mt-3 w-[min(92vw,32rem)] overflow-hidden rounded-3xl border border-white/10 bg-[#0f172a] shadow-2xl">
+                <div className="absolute left-0 top-full z-50 mt-3 w-[min(92vw,32rem)] overflow-hidden rounded-3xl border border-white/10 bg-[#041d23] shadow-2xl">
                   <form onSubmit={handleSearchSubmit} className="p-4">
                     <label className="mb-2 block text-xs uppercase tracking-[0.25em] text-gray-400">
                       {t("searchPlaceholder" as TranslationKey)}
@@ -160,7 +158,7 @@ export default function Header() {
                       />
                       <button
                         type="submit"
-                        className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-orange-600"
+                        className="rounded-xl bg-[#0080e8] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[#0080e8]/90"
                       >
                         OK
                       </button>
@@ -175,7 +173,7 @@ export default function Header() {
                             setSearchPopupOpen(false);
                             navigate(`/search?category=${category}`);
                           }}
-                          className="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-gray-300 transition-colors hover:border-orange-500 hover:text-orange-400"
+                          className="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-gray-300 transition-colors hover:border-[#0080e8] hover:text-[#0080e8]"
                         >
                           {category}
                         </button>
@@ -187,7 +185,7 @@ export default function Header() {
 
               <button
                 onClick={() => setSearchPopupOpen((prev) => !prev)}
-                className="mt-0 rounded-xl border border-white/10 bg-white/5 p-2.5 transition-all hover:border-orange-500/50 md:hidden"
+                className="mt-0 rounded-xl border border-white/10 bg-white/5 p-2.5 transition-all hover:border-[#0080e8]/50 md:hidden"
                 aria-label="Search"
               >
                 <svg className="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,8 +202,8 @@ export default function Header() {
                   className={({ isActive }) =>
                     `text-sm font-bold transition-all ${
                       isActive
-                        ? "text-orange-500"
-                        : "text-gray-400 hover:text-orange-500"
+                        ? "text-[#0080e8]"
+                        : "text-gray-400 hover:text-[#0080e8]"
                     }`
                   }
                 >
@@ -226,7 +224,7 @@ export default function Header() {
                   </span>
                 </button>
                 {langDropdownOpen && (
-                  <div className="absolute right-0 top-full z-50 mt-2 min-w-max overflow-hidden rounded-xl border border-white/10 bg-gray-800 shadow-2xl backdrop-blur-xl">
+                  <div className="absolute right-0 top-full z-50 mt-2 min-w-max overflow-hidden rounded-xl border border-white/10 bg-[#041d23]/85 shadow-2xl backdrop-blur-xl">
                     {(["az", "ru", "en"] as const).map((lang) => (
                       <button
                         key={lang}
@@ -236,8 +234,8 @@ export default function Header() {
                         }}
                         className={`flex w-full items-center gap-3 px-5 py-2.5 text-sm transition-all ${
                           language === lang
-                            ? "bg-orange-500 font-bold text-white"
-                            : "text-gray-300 hover:bg-white/5 hover:text-orange-400"
+                            ? "bg-[#0080e8] font-bold text-white"
+                            : "text-gray-300 hover:bg-white/5 hover:text-[#0080e8]"
                         }`}
                       >
                         <span className="text-lg">{langFlags[lang]}</span>
@@ -253,7 +251,7 @@ export default function Header() {
                 className="hidden rounded-xl p-2.5 transition-all hover:bg-white/5 lg:inline-flex"
               >
                 <svg
-                  className="h-5 w-5 text-gray-400 transition-colors group-hover:text-orange-500"
+                  className="h-5 w-5 text-gray-400 transition-colors group-hover:text-[#0080e8]"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -278,7 +276,7 @@ export default function Header() {
                   />
                 </svg>
                 {cartCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[9px] font-black text-white shadow-lg shadow-orange-500/40">
+                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#0080e8] text-[9px] font-black text-white shadow-lg shadow-[#0080e8]/40">
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
@@ -289,9 +287,9 @@ export default function Header() {
                   <>
                     <button
                       onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                      className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 p-1.5 pr-3 transition-all duration-300 hover:border-orange-500/50"
+                      className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 p-1.5 pr-3 transition-all duration-300 hover:border-[#0080e8]/50"
                     >
-                      <div className="h-8 w-8 overflow-hidden rounded-full border-2 border-orange-500 shadow-lg shadow-orange-500/20">
+                      <div className="h-8 w-8 overflow-hidden rounded-full border-2 border-[#0080e8] shadow-lg shadow-[#0080e8]/20">
                         {user.avatarUrl ? (
                           <img
                             src={
@@ -303,7 +301,7 @@ export default function Header() {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-orange-500 text-xs font-black text-white">
+                          <div className="flex h-full w-full items-center justify-center bg-[#0080e8] text-xs font-black text-white">
                             {user.fullName?.charAt(0) || "?"}
                           </div>
                         )}
@@ -319,7 +317,7 @@ export default function Header() {
                     </button>
 
                     {profileDropdownOpen && (
-                      <div className="absolute right-0 top-full mt-3 w-64 overflow-hidden rounded-2xl border border-white/10 bg-gray-800 shadow-2xl backdrop-blur-xl">
+                      <div className="absolute right-0 top-full mt-3 w-64 overflow-hidden rounded-2xl border border-white/10 bg-[#041d23]/85 shadow-2xl backdrop-blur-xl">
                         <div className="border-b border-white/10 bg-gradient-to-br from-white/5 to-transparent p-5">
                           <p className="text-sm font-black text-white">
                             {user.fullName || "User"}
@@ -332,7 +330,7 @@ export default function Header() {
                           <Link
                             to="/profile"
                             onClick={() => setProfileDropdownOpen(false)}
-                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-gray-300 transition-all hover:bg-white/5 hover:text-orange-400"
+                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-gray-300 transition-all hover:bg-white/5 hover:text-[#0080e8]"
                           >
                             <span>👤</span>
                             <span>{t("profile")}</span>
@@ -340,7 +338,7 @@ export default function Header() {
                           <Link
                             to="/wishlist"
                             onClick={() => setProfileDropdownOpen(false)}
-                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-gray-300 transition-all hover:bg-white/5 hover:text-orange-400"
+                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-gray-300 transition-all hover:bg-white/5 hover:text-[#0080e8]"
                           >
                             <span>♡</span>
                             <span>{t("wishlist")}</span>
@@ -348,7 +346,7 @@ export default function Header() {
                           <button
                             onClick={() => {
                               logout();
-                              logoutServer();
+                              logoutServer({});
                               setProfileDropdownOpen(false);
                             }}
                             className="mt-1 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm text-red-400 transition-all hover:bg-red-500/10"
@@ -363,7 +361,7 @@ export default function Header() {
                 ) : (
                   <Link
                     to="/auth/login"
-                    className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-gray-300 transition-all hover:border-orange-500/50 hover:bg-white/10 hover:text-orange-500"
+                    className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-gray-300 transition-all hover:border-[#0080e8]/50 hover:bg-white/10 hover:text-[#0080e8]"
                   >
                     <span>👤</span>
                     <span className="hidden xl:inline">{t("login")}</span>
@@ -373,7 +371,7 @@ export default function Header() {
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="rounded-xl border border-white/10 bg-white/5 p-2.5 transition-all hover:border-orange-500/50 lg:hidden"
+                className="rounded-xl border border-white/10 bg-white/5 p-2.5 transition-all hover:border-[#0080e8]/50 lg:hidden"
               >
                 <svg className="h-6 w-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {mobileMenuOpen ? (
@@ -390,7 +388,7 @@ export default function Header() {
             {!user && (
               <Link
                 to="/auth/register"
-                className="rounded-xl bg-orange-500 px-5 py-2 text-xs font-black tracking-tight text-white shadow-lg shadow-orange-500/20 transition-all active:scale-95 hover:bg-orange-600"
+                className="rounded-xl bg-[#0080e8] px-5 py-2 text-xs font-black tracking-tight text-white shadow-lg shadow-[#0080e8]/20 transition-all active:scale-95 hover:bg-[#0080e8]/90"
               >
                 {t("register")}
               </Link>
@@ -399,7 +397,7 @@ export default function Header() {
         </div>
 
         <div
-          className={`fixed inset-0 z-40 bg-gray-950/80 backdrop-blur-sm transition-all duration-300 lg:hidden ${
+          className={`fixed inset-0 z-40 bg-[#041d23]/80 backdrop-blur-sm transition-all duration-300 lg:hidden ${
             mobileMenuOpen
               ? "visible opacity-100"
               : "pointer-events-none invisible opacity-0"
@@ -408,12 +406,12 @@ export default function Header() {
         />
 
         <div
-          className={`fixed bottom-0 right-0 top-0 z-50 w-[85%] max-w-sm overflow-y-auto bg-gray-900 shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
+          className={`fixed bottom-0 right-0 top-0 z-50 w-[85%] max-w-sm overflow-y-auto bg-[#041d23] shadow-2xl transition-transform duration-300 ease-out lg:hidden ${
             mobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <div className="sticky top-0 flex items-center justify-between border-b border-white/5 bg-gray-900 p-6">
-            <span className="text-lg font-extrabold text-orange-500">
+          <div className="sticky top-0 flex items-center justify-between border-b border-white/5 bg-[#041d23] p-6">
+            <span className="text-lg font-extrabold text-[#0080e8]">
               {t("menu")}
             </span>
             <button
@@ -429,7 +427,7 @@ export default function Header() {
           <div className="space-y-6 p-6">
             {user && (
               <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[2%] p-4">
-                <div className="h-12 w-12 overflow-hidden rounded-full border-2 border-orange-500">
+                <div className="h-12 w-12 overflow-hidden rounded-full border-2 border-[#0080e8]">
                   {user.avatarUrl ? (
                     <img
                       src={
@@ -441,7 +439,7 @@ export default function Header() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-orange-500 font-black text-white">
+                    <div className="flex h-full w-full items-center justify-center bg-[#0080e8] font-black text-white">
                       {user.fullName?.charAt(0) || "?"}
                     </div>
                   )}
@@ -466,8 +464,8 @@ export default function Header() {
                   className={({ isActive }) =>
                     `rounded-xl border px-5 py-3 text-sm font-bold transition-all ${
                       isActive
-                        ? "border-orange-500/50 bg-orange-500/20 text-orange-500"
-                        : "border-transparent text-gray-300 hover:border-white/10 hover:bg-white/5 hover:text-orange-500"
+                        ? "border-[#0080e8]/50 bg-[#0080e8]/20 text-[#0080e8]"
+                        : "border-transparent text-gray-300 hover:border-white/10 hover:bg-white/5 hover:text-[#0080e8]"
                     }`
                   }
                 >
@@ -490,8 +488,8 @@ export default function Header() {
                     }}
                     className={`rounded-lg border px-3 py-2 text-xs font-bold transition-all ${
                       language === lang
-                        ? "border-orange-500 bg-orange-500 text-white"
-                        : "border-white/10 bg-white/5 text-gray-300 hover:border-white/20 hover:text-orange-400"
+                        ? "border-[#0080e8] bg-[#0080e8] text-white"
+                        : "border-white/10 bg-white/5 text-gray-300 hover:border-white/20 hover:text-[#0080e8]"
                     }`}
                   >
                     <span className="mr-1">{langFlags[lang]}</span>
@@ -505,7 +503,7 @@ export default function Header() {
                   <Link
                     to="/profile"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 rounded-xl border border-transparent px-5 py-3 text-sm text-gray-300 transition-all hover:border-white/10 hover:bg-white/5 hover:text-orange-400"
+                    className="flex items-center gap-3 rounded-xl border border-transparent px-5 py-3 text-sm text-gray-300 transition-all hover:border-white/10 hover:bg-white/5 hover:text-[#0080e8]"
                   >
                     <span>👤</span>
                     <span>{t("profile")}</span>
@@ -513,7 +511,7 @@ export default function Header() {
                   <Link
                     to="/wishlist"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 rounded-xl border border-transparent px-5 py-3 text-sm text-gray-300 transition-all hover:border-white/10 hover:bg-white/5 hover:text-orange-400"
+                    className="flex items-center gap-3 rounded-xl border border-transparent px-5 py-3 text-sm text-gray-300 transition-all hover:border-white/10 hover:bg-white/5 hover:text-[#0080e8]"
                   >
                     <span>♡</span>
                     <span>{t("wishlist")}</span>
@@ -521,7 +519,7 @@ export default function Header() {
                   <button
                     onClick={() => {
                       logout();
-                      logoutServer();
+                      logoutServer({});
                       setMobileMenuOpen(false);
                     }}
                     className="mt-2 flex w-full items-center gap-3 rounded-xl border border-transparent px-5 py-3 text-sm text-red-400 transition-all hover:border-red-500/20 hover:bg-red-500/10"
@@ -535,7 +533,7 @@ export default function Header() {
                   <Link
                     to="/auth/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 rounded-xl border border-transparent px-5 py-3 text-sm text-gray-300 transition-all hover:border-white/10 hover:bg-white/5 hover:text-orange-400"
+                    className="flex items-center gap-3 rounded-xl border border-transparent px-5 py-3 text-sm text-gray-300 transition-all hover:border-white/10 hover:bg-white/5 hover:text-[#0080e8]"
                   >
                     <span>👤</span>
                     <span>{t("login")}</span>
@@ -543,7 +541,7 @@ export default function Header() {
                   <Link
                     to="/auth/register"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 rounded-xl border border-orange-600 bg-orange-500 px-5 py-3 text-sm font-bold text-white transition-all hover:bg-orange-600"
+                    className="flex items-center gap-3 rounded-xl border border-[#0080e8]/90 bg-[#0080e8] px-5 py-3 text-sm font-bold text-white transition-all hover:bg-[#0080e8]/90"
                   >
                     <span>+</span>
                     <span>{t("register")}</span>

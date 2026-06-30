@@ -11,8 +11,8 @@ import type { TranslationKey } from "~/lib/translations";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Qeydiyyat - MetaLoft" },
-    { name: "description", content: "MetaLoft-a qeydiyyatdan keçin" },
+    { title: "Qeydiyyat - MetalX" },
+    { name: "description", content: "MetalX-a qeydiyyatdan keçin" },
   ];
 }
 
@@ -78,36 +78,21 @@ export default function RegisterPage() {
   const strength = getPasswordStrength();
 
   return (
-    <main className="min-h-screen bg-[#0a1428] flex items-center justify-center overflow-hidden">
+    <main className="min-h-screen bg-[#001446] flex items-center justify-center overflow-hidden">
       <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-2 min-h-screen">
         {/* Left Side - Visual / Branding */}
-        <div className="hidden lg:flex flex-col justify-center px-16 bg-gradient-to-br from-[#13223f] to-[#0a1428] relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(#22d3ee15_1px,transparent_1px)] bg-[size:40px_40px]" />
+        <div className="hidden lg:flex flex-col justify-center px-16 bg-gradient-to-br from-[#041d23] to-[#001446] relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(#0080e815_1px,transparent_1px)] bg-[size:40px_40px]" />
 
           <div className="relative z-10 max-w-md">
-            <div className="flex items-center gap-4 mb-12">
-              <div className="bg-orange-500 p-4 rounded-2xl">
-                <svg
-                  className="w-10 h-10 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div className="text-4xl font-bold tracking-tighter text-white">
-                  MetaLoft
-                </div>
-                <div className="text-orange-400 text-sm font-bold tracking-[3px] uppercase">
-                  PREMIUM TOOLS & STEEL
-                </div>
+            <div className="mb-12">
+              <img
+                src="/metalxlogo.svg"
+                alt="MetalX"
+                className="h-14 w-auto max-w-[260px]"
+              />
+              <div className="mt-4 text-sm font-bold uppercase tracking-[3px] text-[#0080e8]">
+                PREMIUM TOOLS & STEEL
               </div>
             </div>
 
@@ -115,12 +100,12 @@ export default function RegisterPage() {
               Yeni hesab yaradın
             </h2>
             <p className="text-zinc-400 text-lg leading-relaxed">
-              MetaLoft ailəsinə qoşulun və keyfiyyətli polad və alətlərə
+              MetalX ailəsinə qoşulun və keyfiyyətli polad və alətlərə
               birbaşa çıxış əldə edin.
             </p>
 
             <div className="mt-16 text-sm text-zinc-500">
-              © 2010–2026 MetaLoft. Bütün hüquqlar qorunur.
+              © 2010–2026 MetalX. Bütün hüquqlar qorunur.
             </div>
           </div>
         </div>
@@ -129,27 +114,12 @@ export default function RegisterPage() {
         <div className="flex items-center justify-center p-6 lg:p-12 bg-white">
           <div className="w-full max-w-md">
             {/* Mobile Logo */}
-            <div className="lg:hidden flex justify-center mb-10">
-              <div className="flex items-center gap-3">
-                <div className="bg-orange-500 p-3 rounded-2xl">
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                    />
-                  </svg>
-                </div>
-                <div className="text-3xl font-bold tracking-tight">
-                  MetaLoft
-                </div>
-              </div>
+            <div className="mb-10 flex justify-center lg:hidden">
+              <img
+                src="/metalxlogo.svg"
+                alt="MetalX"
+                className="h-12 w-auto max-w-[220px]"
+              />
             </div>
 
             <h1 className="text-3xl font-bold text-center lg:text-left mb-2 text-gray-900">
@@ -191,7 +161,7 @@ export default function RegisterPage() {
                     className={`w-full pl-12 py-4 border rounded-2xl text-base focus:outline-none transition-all ${
                       formik.touched.fullName && formik.errors.fullName
                         ? "border-red-400 focus:border-red-400"
-                        : "border-gray-200 focus:border-[#22d3ee]"
+                        : "border-gray-200 focus:border-[#0080e8]"
                     }`}
                   />
                 </div>
@@ -233,7 +203,7 @@ export default function RegisterPage() {
                     className={`w-full pl-12 py-4 border rounded-2xl text-base focus:outline-none transition-all ${
                       formik.touched.email && formik.errors.email
                         ? "border-red-400 focus:border-red-400"
-                        : "border-gray-200 focus:border-[#22d3ee]"
+                        : "border-gray-200 focus:border-[#0080e8]"
                     }`}
                   />
                 </div>
@@ -275,7 +245,7 @@ export default function RegisterPage() {
                     className={`w-full pl-12 pr-12 py-4 border rounded-2xl text-base focus:outline-none transition-all ${
                       formik.touched.password && formik.errors.password
                         ? "border-red-400 focus:border-red-400"
-                        : "border-gray-200 focus:border-[#22d3ee]"
+                        : "border-gray-200 focus:border-[#0080e8]"
                     }`}
                   />
                   <button
@@ -341,7 +311,7 @@ export default function RegisterPage() {
                       formik.touched.confirmPassword &&
                       formik.errors.confirmPassword
                         ? "border-red-400 focus:border-red-400"
-                        : "border-gray-200 focus:border-[#22d3ee]"
+                        : "border-gray-200 focus:border-[#0080e8]"
                     }`}
                   />
                   {formik.values.confirmPassword && (
@@ -401,8 +371,8 @@ export default function RegisterPage() {
                   <div
                     className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                       formik.values.agreed
-                        ? "bg-orange-500 border-orange-500"
-                        : "border-gray-300 hover:border-orange-400"
+                        ? "bg-[#0080e8] border-[#0080e8]"
+                        : "border-gray-300 hover:border-[#0080e8]/70"
                     }`}
                   >
                     {formik.values.agreed && (
@@ -427,14 +397,14 @@ export default function RegisterPage() {
                     Şərtlər və Qaydalar ilə razıyam{" "}
                     <a
                       href="#"
-                      className="text-orange-500 hover:text-orange-600"
+                      className="text-[#0080e8] hover:text-[#0080e8]"
                     >
                       İstifadə Şərtləri
                     </a>{" "}
                     və{" "}
                     <a
                       href="#"
-                      className="text-orange-500 hover:text-orange-600"
+                      className="text-[#0080e8] hover:text-[#0080e8]"
                     >
                       Məxfilik Siyasəti
                     </a>
@@ -451,7 +421,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white py-4 rounded-2xl font-semibold text-lg transition-all active:scale-[0.985] shadow-lg shadow-orange-500/30 mt-2"
+                className="w-full bg-[#0080e8] hover:bg-[#0080e8]/90 disabled:bg-[#0080e8]/70 text-white py-4 rounded-2xl font-semibold text-lg transition-all active:scale-[0.985] shadow-lg shadow-[#0080e8]/30 mt-2"
               >
                 {isPending ? "Qeydiyyat tamamlanır..." : "Qeydiyyat"}
               </button>
@@ -463,7 +433,7 @@ export default function RegisterPage() {
                 Artıq hesabınız var?{" "}
                 <Link
                   to="/auth/login"
-                  className="text-orange-500 font-semibold hover:text-orange-600"
+                  className="text-[#0080e8] font-semibold hover:text-[#0080e8]"
                 >
                   Daxil olun
                 </Link>

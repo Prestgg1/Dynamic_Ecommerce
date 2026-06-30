@@ -1,8 +1,8 @@
 export const DEFAULT_SITE_SETTINGS = {
   key: 'main',
   data: {
-    brandName: 'MetaLoft',
-    logoText: 'MetaLoft',
+    brandName: 'MetalX',
+    logoText: 'MetalX',
     logoSlogan: 'Metal məhsullar',
     bannerText: 'Sifarişləriniz üçün sürətli cavab və etibarlı çatdırılma',
     whatsappNumber: '994501234567',
@@ -91,7 +91,7 @@ export const DEFAULT_SITE_SETTINGS = {
       ],
       aboutTitle: 'Haqqımızda',
       aboutDescription:
-        'MetaLoft müştərilərə etibarlı metal məhsulları, peşəkar xidmət və çevik həllər təqdim edir. Haqqımızda bölməsi və ana səhifə eyni məzmundan qidalanır.',
+        'MetalX müştərilərə etibarlı metal məhsulları, peşəkar xidmət və çevik həllər təqdim edir. Haqqımızda bölməsi və ana səhifə eyni məzmundan qidalanır.',
       aboutImage:
         'https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg',
       aboutHighlights: [

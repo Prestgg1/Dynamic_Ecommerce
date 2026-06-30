@@ -4,7 +4,7 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white sticky top-0 z-10">
+      <header className="bg-gradient-to-r from-[#041d23] via-[#041d23] to-[#041d23] text-white sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Admin Panel</h1>
@@ -21,7 +21,7 @@ export default function AdminLayout() {
               to="/admin"
               end
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-orange-50 text-orange-600 border-r-2 border-orange-500" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -30,7 +30,7 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/categories"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-orange-50 text-orange-600 border-r-2 border-orange-500" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -39,7 +39,7 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/products"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-orange-50 text-orange-600 border-r-2 border-orange-500" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -48,7 +48,7 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/content"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-orange-50 text-orange-600 border-r-2 border-orange-500" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -57,7 +57,7 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/messages"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-orange-50 text-orange-600 border-r-2 border-orange-500" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -66,7 +66,7 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/orders"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-orange-50 text-orange-600 border-r-2 border-orange-500" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -88,7 +88,7 @@ export default function AdminLayout() {
 // Warning Banner Component
 function WarningBanner() {
   return (
-    <div className="mb-6 rounded-lg border border-orange-200 bg-orange-50 p-3 text-sm text-orange-800">
+    <div className="mb-6 rounded-lg border border-[#0080e8]/25 bg-[#0080e8]/10 p-3 text-sm text-[#001446]">
       <p className="font-semibold">Admin panel</p>
       <p className="mt-1 text-xs">
         Məzmun dəyişiklikləri canlı backend endpointləri ilə işləyir.

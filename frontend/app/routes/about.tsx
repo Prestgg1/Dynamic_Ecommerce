@@ -6,10 +6,10 @@ import { fetchSiteSettings, type SiteSettings } from "~/lib/site-settings";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Haqqımızda - MetaLoft" },
+    { title: "Haqqımızda - MetalX" },
     {
       name: "description",
-      content: "MetaLoft haqqında məlumatlar ana səhifə ilə eyni məzmundan gəlir.",
+      content: "MetalX haqqında məlumatlar ana səhifə ilə eyni məzmundan gəlir.",
     },
   ];
 }
@@ -27,11 +27,11 @@ export default function AboutPage() {
   const home = siteSettings?.data.home;
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#0a1428] text-white">
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0a1428] via-[#13223f] to-[#0f253f] py-32 pt-40">
-        <div className="absolute inset-0 bg-[radial-gradient(#22d3ee12_1px,transparent_1px)] bg-[size:50px_50px] opacity-30" />
+    <main className="min-h-screen overflow-hidden bg-[#001446] text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001446] via-[#041d23] to-[#041d23] py-32 pt-40">
+        <div className="absolute inset-0 bg-[radial-gradient(#0080e812_1px,transparent_1px)] bg-[size:50px_50px] opacity-30" />
         <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-          <span className="mb-6 inline-block rounded-full border border-orange-500/30 bg-orange-500/20 px-6 py-2 text-sm font-bold uppercase tracking-widest text-orange-400">
+          <span className="mb-6 inline-block rounded-full border border-[#0080e8]/30 bg-[#0080e8]/20 px-6 py-2 text-sm font-bold uppercase tracking-widest text-[#0080e8]">
             {t("aboutUs" as TranslationKey)}
           </span>
           <h1 className="mb-6 text-6xl font-bold tracking-tighter md:text-7xl">
@@ -42,7 +42,7 @@ export default function AboutPage() {
               t("aboutDescription" as TranslationKey)}
           </p>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a1428] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#001446] to-transparent" />
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-24">
@@ -56,7 +56,7 @@ export default function AboutPage() {
           </div>
 
           <div className="space-y-8">
-            <span className="text-sm font-bold uppercase tracking-[0.125em] text-orange-400">
+            <span className="text-sm font-bold uppercase tracking-[0.125em] text-[#0080e8]">
               {t("ourMission" as TranslationKey)}
             </span>
             <h2 className="text-4xl font-bold leading-tight tracking-tighter text-white">
@@ -71,7 +71,7 @@ export default function AboutPage() {
               <div className="space-y-4 pt-2">
                 {(home?.aboutHighlights ?? []).map((item, i) => (
                   <div key={i} className="flex items-start gap-4">
-                    <div className="mt-1 flex h-7 w-7 items-center justify-center rounded-xl border border-orange-500/30 bg-orange-500/10 text-orange-400">
+                    <div className="mt-1 flex h-7 w-7 items-center justify-center rounded-xl border border-[#0080e8]/30 bg-[#0080e8]/10 text-[#0080e8]">
                       ✓
                     </div>
                     <span className="text-lg text-zinc-300">{item}</span>

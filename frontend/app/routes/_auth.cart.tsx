@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Səbət - MetaLoft" },
+    { title: "Səbət - MetalX" },
     { name: "description", content: "Sizin alış-veriş səbətiniz" },
   ];
 }
@@ -95,10 +95,10 @@ export default function CartPage() {
   // ===== EMPTY CART STATE =====
   if (items.length === 0) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0a1428] pb-12 pt-36">
+      <main className="flex min-h-screen items-center justify-center bg-[#001446] pb-12 pt-36">
         <div className="mx-auto max-w-2xl px-6 text-center">
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#13223f] p-16">
-            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-orange-500/10 blur-3xl" />
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#041d23] p-16">
+            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#0080e8]/10 blur-3xl" />
 
             <div className="relative z-10">
               <h1 className="mb-4 text-4xl font-bold text-white">
@@ -110,7 +110,7 @@ export default function CartPage() {
 
               <Link
                 to="/search"
-                className="rounded-2xl bg-orange-500 px-10 py-5 font-bold text-white hover:bg-orange-600"
+                className="rounded-2xl bg-[#0080e8] px-10 py-5 font-bold text-white hover:bg-[#0080e8]/90"
               >
                 Alış-verişə başla →
               </Link>
@@ -123,7 +123,7 @@ export default function CartPage() {
 
   // ===== CART WITH ITEMS =====
   return (
-    <main className="min-h-screen bg-[#0a1428] pb-24 pt-28 text-white">
+    <main className="min-h-screen bg-[#001446] pb-24 pt-28 text-white">
       <div className="mx-auto max-w-7xl px-6">
         {/* ===== HEADER ===== */}
         <div className="mb-12 flex justify-between">
@@ -151,7 +151,7 @@ export default function CartPage() {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-6 rounded-3xl bg-[#13223f] p-6"
+                className="flex gap-6 rounded-3xl bg-[#041d23] p-6"
               >
                 {/* Product Image */}
                 <img
@@ -170,7 +170,7 @@ export default function CartPage() {
                         : item.nameEn}
                   </h3>
 
-                  <p className="mb-4 text-orange-400">
+                  <p className="mb-4 text-[#0080e8]">
                     {item.price.toFixed(2)} AZN
                   </p>
 
@@ -181,7 +181,7 @@ export default function CartPage() {
                         updateQuantity(item.id, item.quantity - 1)
                       }
                       disabled={item.quantity <= 1}
-                      className="rounded px-3 py-1 hover:bg-[#0a1428] disabled:opacity-50"
+                      className="rounded px-3 py-1 hover:bg-[#001446] disabled:opacity-50"
                     >
                       −
                     </button>
@@ -192,7 +192,7 @@ export default function CartPage() {
                       onClick={() =>
                         updateQuantity(item.id, item.quantity + 1)
                       }
-                      className="rounded px-3 py-1 hover:bg-[#0a1428]"
+                      className="rounded px-3 py-1 hover:bg-[#001446]"
                     >
                       +
                     </button>
@@ -216,7 +216,7 @@ export default function CartPage() {
 
           {/* ===== RIGHT: ORDER SUMMARY ===== */}
           <div className="lg:col-span-4">
-            <div className="sticky top-28 rounded-3xl bg-[#13223f] p-8">
+            <div className="sticky top-28 rounded-3xl bg-[#041d23] p-8">
               <h2 className="mb-6 text-2xl font-bold">
                 {t("cartTitle" as TranslationKey)}
               </h2>
@@ -241,7 +241,7 @@ export default function CartPage() {
               {/* Total Amount */}
               <div className="mb-8 flex justify-between border-t border-white/10 py-4 text-xl font-bold">
                 <span>{t("total" as TranslationKey)}</span>
-                <span className="text-orange-400">
+                <span className="text-[#0080e8]">
                   {total.toFixed(2)} AZN
                 </span>
               </div>

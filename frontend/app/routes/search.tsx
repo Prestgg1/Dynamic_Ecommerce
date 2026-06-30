@@ -35,9 +35,9 @@ function FilterSidebar({
 
   return (
     <aside className="hidden md:block w-72 flex-shrink-0">
-      <div className="bg-[#13223f] border border-white/10 rounded-3xl p-8 sticky top-28 shadow-xl">
+      <div className="bg-[#041d23] border border-white/10 rounded-3xl p-8 sticky top-28 shadow-xl">
         <section className="mb-12">
-          <h3 className="font-black text-[#22d3ee] mb-6 text-xs uppercase tracking-[0.2em] border-b border-white/10 pb-4">
+          <h3 className="font-black text-[#0080e8] mb-6 text-xs uppercase tracking-[0.2em] border-b border-white/10 pb-4">
             {t("filterByCategory" as TranslationKey)}
           </h3>
           <div className="space-y-2">
@@ -45,7 +45,7 @@ function FilterSidebar({
               onClick={() => onCategoryChange("discount")}
               className={`w-full text-left px-5 py-4 rounded-2xl text-sm transition-all duration-300 relative overflow-hidden group ${
                 selectedCategory === "discount"
-                  ? "bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30"
+                  ? "bg-[#0080e8] text-white font-bold shadow-lg shadow-[#0080e8]/30"
                   : "text-zinc-400 hover:bg-white/5 hover:text-white"
               }`}
             >
@@ -56,7 +56,7 @@ function FilterSidebar({
                     className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
                       selectedCategory === "discount"
                         ? "bg-white/20 text-white"
-                        : "bg-orange-500/10 text-orange-300"
+                        : "bg-[#0080e8]/10 text-[#0080e8]"
                     }`}
                   >
                     {discountCounts.discount} məhsul
@@ -70,7 +70,7 @@ function FilterSidebar({
                 onClick={() => onCategoryChange(cat.id)}
                 className={`w-full text-left px-5 py-4 rounded-2xl text-sm transition-all duration-300 relative overflow-hidden group ${
                   selectedCategory === cat.id
-                    ? "bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30"
+                    ? "bg-[#0080e8] text-white font-bold shadow-lg shadow-[#0080e8]/30"
                   : "text-zinc-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
@@ -81,7 +81,7 @@ function FilterSidebar({
                       className={`rounded-full px-2.5 py-1 text-[11px] font-black ${
                         selectedCategory === cat.id
                           ? "bg-white/20 text-white"
-                          : "bg-orange-500/10 text-orange-300"
+                          : "bg-[#0080e8]/10 text-[#0080e8]"
                       }`}
                     >
                       {discountCounts[cat.id]} endirim
@@ -94,7 +94,7 @@ function FilterSidebar({
         </section>
 
         <section>
-          <h3 className="font-black text-[#22d3ee] mb-6 text-xs uppercase tracking-[0.2em] border-b border-white/10 pb-4">
+          <h3 className="font-black text-[#0080e8] mb-6 text-xs uppercase tracking-[0.2em] border-b border-white/10 pb-4">
             {t("priceRange" as TranslationKey)}
           </h3>
           <div className="space-y-4">
@@ -107,7 +107,7 @@ function FilterSidebar({
                 placeholder="Min"
                 value={filters.minPrice}
                 onChange={(e) => onFilterChange("minPrice", e.target.value)}
-                className="w-full pl-12 pr-5 py-4 bg-[#0a1428] border border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:border-[#22d3ee] transition-all placeholder:text-zinc-500"
+                className="w-full pl-12 pr-5 py-4 bg-[#001446] border border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:border-[#0080e8] transition-all placeholder:text-zinc-500"
               />
             </div>
             <div className="relative">
@@ -119,7 +119,7 @@ function FilterSidebar({
                 placeholder="Max"
                 value={filters.maxPrice}
                 onChange={(e) => onFilterChange("maxPrice", e.target.value)}
-                className="w-full pl-12 pr-5 py-4 bg-[#0a1428] border border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:border-[#22d3ee] transition-all placeholder:text-zinc-500"
+                className="w-full pl-12 pr-5 py-4 bg-[#001446] border border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:border-[#0080e8] transition-all placeholder:text-zinc-500"
               />
             </div>
           </div>
@@ -250,7 +250,7 @@ function SearchContent() {
   }, [productsData]);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#0a1428] pt-16 pb-16 text-white md:pt-20 md:pb-20">
+    <main className="min-h-screen overflow-hidden bg-[#001446] pt-16 pb-16 text-white md:pt-20 md:pb-20">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col gap-8 md:flex-row md:gap-10">
           {/* Filters Sidebar */}
@@ -265,9 +265,9 @@ function SearchContent() {
           {/* Results Area */}
           <div className="flex-1">
             {/* Toolbar */}
-            <header className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-[#13223f]/80 p-4 backdrop-blur-lg md:mb-8 md:flex-nowrap md:p-6">
+            <header className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-[#041d23]/80 p-4 backdrop-blur-lg md:mb-8 md:flex-nowrap md:p-6">
               <div className="relative min-w-0 flex-1">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors focus-within:text-[#22d3ee]">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 transition-colors focus-within:text-[#0080e8]">
                   <svg
                     className="h-5 w-5"
                     fill="none"
@@ -287,11 +287,11 @@ function SearchContent() {
                   value={localQuery}
                   onChange={(e) => handleQueryChange(e.target.value)}
                   placeholder={t("searchPlaceholder" as TranslationKey)}
-                  className="w-full rounded-2xl border border-white/10 bg-[#0a1428] py-4 pl-12 pr-4 text-sm font-medium placeholder:text-zinc-500 transition-all focus:border-[#22d3ee] focus:outline-none md:text-base"
+                  className="w-full rounded-2xl border border-white/10 bg-[#001446] py-4 pl-12 pr-4 text-sm font-medium placeholder:text-zinc-500 transition-all focus:border-[#0080e8] focus:outline-none md:text-base"
                 />
                 {isLoading && (
                   <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#0080e8] border-t-transparent" />
                   </div>
                 )}
               </div>
@@ -302,7 +302,7 @@ function SearchContent() {
                   onChange={(e) =>
                     handleFilterChange("sortBy", e.target.value as SortOption)
                   }
-                  className="appearance-none bg-[#0a1428] border border-white/10 text-sm font-medium px-6 py-4 pr-12 rounded-2xl focus:outline-none focus:border-[#22d3ee] cursor-pointer transition-all"
+                  className="appearance-none bg-[#001446] border border-white/10 text-sm font-medium px-6 py-4 pr-12 rounded-2xl focus:outline-none focus:border-[#0080e8] cursor-pointer transition-all"
                 >
                   <option value="default">
                     {t("sortBy" as TranslationKey)}
@@ -342,15 +342,15 @@ function SearchContent() {
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div
                       key={i}
-                      className="bg-[#13223f] border border-white/10 rounded-3xl h-96 animate-pulse"
+                      className="bg-[#041d23] border border-white/10 rounded-3xl h-96 animate-pulse"
                     />
                   ))}
                 </div>
               ) : results.length === 0 ? (
-                <div className="bg-[#13223f] border border-white/10 rounded-3xl p-20 text-center">
-                  <div className="w-28 h-28 bg-orange-500/10 rounded-full flex items-center justify-center mx-auto mb-10">
+                <div className="bg-[#041d23] border border-white/10 rounded-3xl p-20 text-center">
+                  <div className="w-28 h-28 bg-[#0080e8]/10 rounded-full flex items-center justify-center mx-auto mb-10">
                     <svg
-                      className="w-16 h-16 text-orange-400"
+                      className="w-16 h-16 text-[#0080e8]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -380,7 +380,7 @@ function SearchContent() {
                         sortBy: "default",
                       });
                     }}
-                    className="mt-10 px-12 py-5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-2xl transition-all active:scale-95"
+                    className="mt-10 px-12 py-5 bg-[#0080e8] hover:bg-[#0080e8]/90 text-white font-bold rounded-2xl transition-all active:scale-95"
                   >
                     Filtrləri sıfırla
                   </button>
@@ -405,9 +405,9 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#0a1428] flex items-center justify-center">
+        <div className="min-h-screen bg-[#001446] flex items-center justify-center">
           <div className="flex flex-col items-center gap-6">
-            <div className="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-20 h-20 border-4 border-[#0080e8] border-t-transparent rounded-full animate-spin" />
             <p className="text-zinc-400 font-black uppercase tracking-[0.3em] text-xs">
               Axtarılır...
             </p>

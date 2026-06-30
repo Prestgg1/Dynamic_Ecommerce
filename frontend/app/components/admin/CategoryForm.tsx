@@ -62,13 +62,13 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
           </div>
           <div className="p-5 space-y-4">
             <input type="text" placeholder="Category ID" value={form.id} onChange={e => setForm({ ...form, id: e.target.value })}
-              disabled={!isNew} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500 disabled:bg-gray-100" />
+              disabled={!isNew} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#0080e8] disabled:bg-gray-100" />
             <input type="text" placeholder="Label (AZ)" value={form.labelAz} onChange={e => setForm({ ...form, labelAz: e.target.value })}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500" />
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#0080e8]" />
             <input type="text" placeholder="Label (RU)" value={form.labelRu} onChange={e => setForm({ ...form, labelRu: e.target.value })}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500" />
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#0080e8]" />
             <input type="text" placeholder="Label (EN)" value={form.labelEn} onChange={e => setForm({ ...form, labelEn: e.target.value })}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500" />
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#0080e8]" />
             
             <div className="flex gap-2">
               <input 
@@ -76,7 +76,7 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
                 placeholder="Slug (url-path)" 
                 value={form.slug} 
                 onChange={e => setForm({ ...form, slug: e.target.value })}
-                className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500" 
+                className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:border-[#0080e8]"
               />
               <button 
                 type="button"
@@ -88,14 +88,14 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
               </button>
             </div>
 
-            <button onClick={() => setShowIconSelector(true)} className="w-full p-3 border-2 rounded-lg flex items-center justify-center gap-3 hover:border-orange-500">
+            <button onClick={() => setShowIconSelector(true)} className="w-full p-3 border-2 rounded-lg flex items-center justify-center gap-3 hover:border-[#0080e8]">
               <IconDisplay icon={form.icon} size="sm" />
               <span className="font-medium capitalize">{form.icon}</span>
             </button>
           </div>
           <div className="p-5 border-t bg-gray-50 flex justify-end gap-3">
             <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
-            <button onClick={handleSubmit} className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+            <button onClick={handleSubmit} className="px-4 py-2 bg-[#0080e8] text-white rounded-lg hover:bg-[#0080e8]/90">
               {isNew ? "Create" : "Update"}
             </button>
           </div>

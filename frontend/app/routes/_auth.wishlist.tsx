@@ -12,7 +12,7 @@ type WishlistItem = components["schemas"]["Wishlist"];
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Sevilənlər - MetaLoft" },
+    { title: "Sevilənlər - MetalX" },
     { name: "description", content: "Sevilənlər siyahınız" },
   ];
 }
@@ -58,14 +58,14 @@ export default function WishlistPage() {
 
   if (wishlistLoading) {
     return (
-      <div className="min-h-screen bg-[#0a1428] pt-36 flex justify-center items-center">
-        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#001446] pt-36 flex justify-center items-center">
+        <div className="w-10 h-10 border-4 border-[#0080e8] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0a1428] text-white pt-28 pb-20">
+    <main className="min-h-screen bg-[#001446] text-white pt-28 pb-20">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-12">
@@ -79,7 +79,7 @@ export default function WishlistPage() {
         </div>
 
         {_localWishlist.length === 0 ? (
-          <div className="bg-[#13223f] rounded-3xl p-20 text-center border border-white/10">
+          <div className="bg-[#041d23] rounded-3xl p-20 text-center border border-white/10">
             <div className="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-red-500/20">
               <svg className="w-14 h-14 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -91,7 +91,7 @@ export default function WishlistPage() {
             </p>
             <Link
               to="/search"
-              className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-10 py-4 rounded-2xl font-bold transition-all active:scale-95"
+              className="inline-block bg-[#0080e8] hover:bg-[#0080e8]/90 text-white px-10 py-4 rounded-2xl font-bold transition-all active:scale-95"
             >
               Kataloqa keç
             </Link>
@@ -112,10 +112,10 @@ export default function WishlistPage() {
               return (
                 <div
                   key={product.id}
-                  className="bg-[#13223f] border border-white/10 rounded-3xl overflow-hidden hover:border-orange-500/30 transition-all group flex flex-col"
+                  className="bg-[#041d23] border border-white/10 rounded-3xl overflow-hidden hover:border-[#0080e8]/30 transition-all group flex flex-col"
                 >
                   {/* Image */}
-                  <div className="relative aspect-square overflow-hidden bg-[#0a1428]">
+                  <div className="relative aspect-square overflow-hidden bg-[#001446]">
                     <Link to={`/products/${product.id}`}>
                       <img
                         src={imageSrc || "https://picsum.photos/id/1015/600/600"}
@@ -148,14 +148,14 @@ export default function WishlistPage() {
                   {/* Content */}
                   <div className="p-5 flex flex-col flex-1">
                     <Link to={`/products/${product.id}`} className="flex-1">
-                      <h3 className="font-semibold text-lg text-white line-clamp-2 group-hover:text-orange-400 transition-colors">
+                      <h3 className="font-semibold text-lg text-white line-clamp-2 group-hover:text-[#0080e8] transition-colors">
                         {product.name}
                       </h3>
                     </Link>
 
                     <div className="mt-auto pt-6">
                       <div className="flex items-baseline gap-2 mb-4">
-                        <span className="text-2xl font-bold text-orange-400">
+                        <span className="text-2xl font-bold text-[#0080e8]">
                           {product.price.toFixed(2)} AZN
                         </span>
                         {product.oldPrice && (
@@ -170,7 +170,7 @@ export default function WishlistPage() {
                         disabled={!product.inStock}
                         className={`w-full py-3.5 rounded-2xl font-semibold text-sm transition-all ${
                           product.inStock
-                            ? "bg-orange-500 hover:bg-orange-600 text-white"
+                            ? "bg-[#0080e8] hover:bg-[#0080e8]/90 text-white"
                             : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
                         }`}
                       >

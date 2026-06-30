@@ -313,7 +313,7 @@ export default function AdminContentPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white transition-colors hover:bg-orange-600 disabled:opacity-60"
+          className="rounded-xl bg-[#0080e8] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#0080e8]/90 disabled:opacity-60"
         >
           {saving ? "Saving..." : "Save changes"}
         </button>
@@ -710,7 +710,7 @@ export default function AdminContentPage() {
                         aboutHighlights: moveItem(prev.aboutHighlights, index, -1),
                       }))
                     }
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:border-orange-300 hover:text-orange-600"
+                    className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#0080e8]/45 hover:text-[#0080e8]"
                   >
                     ↑
                   </button>
@@ -722,7 +722,7 @@ export default function AdminContentPage() {
                         aboutHighlights: moveItem(prev.aboutHighlights, index, 1),
                       }))
                     }
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:border-orange-300 hover:text-orange-600"
+                    className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#0080e8]/45 hover:text-[#0080e8]"
                   >
                     ↓
                   </button>
@@ -758,7 +758,7 @@ export default function AdminContentPage() {
               aboutHighlights: [...prev.aboutHighlights, ""],
             }))
           }
-          className="mt-4 rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+          className="mt-4 rounded-xl bg-[#0080e8] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0080e8]/90"
         >
           + Yeni mətn
         </button>
@@ -799,7 +799,7 @@ function ListEditor({
         <button
           type="button"
           onClick={onAdd}
-          className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+          className="rounded-xl bg-[#0080e8] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0080e8]/90"
         >
           + {actionLabel}
         </button>
@@ -837,14 +837,14 @@ function ItemCard({
           <button
             type="button"
             onClick={onMoveUp}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:border-orange-300 hover:text-orange-600"
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#0080e8]/45 hover:text-[#0080e8]"
           >
             ↑
           </button>
           <button
             type="button"
             onClick={onMoveDown}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:border-orange-300 hover:text-orange-600"
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#0080e8]/45 hover:text-[#0080e8]"
           >
             ↓
           </button>
@@ -879,7 +879,7 @@ function Field({
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-orange-500"
+        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0080e8]"
       />
     </label>
   );
@@ -903,7 +903,7 @@ function TextArea({
         rows={5}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-orange-500"
+        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-[#0080e8]"
       />
     </label>
   );

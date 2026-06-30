@@ -74,7 +74,7 @@ export default function ProductsPage() {
         </h2>
         <button
           onClick={handleNewProduct}
-          className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 md:py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
+          className="w-full sm:w-auto bg-[#0080e8] hover:bg-[#0080e8]/90 text-white px-5 py-2.5 md:py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
         >
           <span>+</span> Add Product
         </button>
@@ -252,6 +252,6 @@ export default function ProductsPage() {
 
 function Spinner() {
   return (
-    <div className="animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-orange-500 mx-auto" />
+    <div className="animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-[#0080e8] mx-auto" />
   );
 }

@@ -422,7 +422,7 @@ export class SeedService {
         password: hashedPassword,
         role: UserRole.ADMIN,
         avatarUrl:
-          'https://ui-avatars.com/api/?background=f97316&color=fff&name=Test+User',
+          'https://ui-avatars.com/api/?background=0080e8&color=fff&name=Test+User',
       });
       this.logger.log(`Created test user: ${testEmail}`);
     }

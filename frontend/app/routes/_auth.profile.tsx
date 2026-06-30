@@ -18,7 +18,7 @@ const profileSchema = zod.object({
 
 function resolveAvatar(avatarUrl: string | undefined, name: string) {
   if (!avatarUrl) {
-    return `https://ui-avatars.com/api/?background=f97316&color=fff&name=${encodeURIComponent(name)}`;
+    return `https://ui-avatars.com/api/?background=0080e8&color=fff&name=${encodeURIComponent(name)}`;
   }
   return avatarUrl.startsWith("http")
     ? avatarUrl
@@ -90,13 +90,13 @@ export default function ProfilePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a1428] text-white pt-28 pb-20">
+    <main className="min-h-screen bg-[#001446] text-white pt-28 pb-20">
       <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-12">
           <button
             onClick={() => navigate(-1)}
-            className="p-3 rounded-2xl bg-[#13223f] hover:bg-white/5 border border-white/10 transition-all"
+            className="p-3 rounded-2xl bg-[#041d23] hover:bg-white/5 border border-white/10 transition-all"
           >
             <svg
               className="w-6 h-6"
@@ -117,7 +117,7 @@ export default function ProfilePage() {
           </h1>
         </div>
 
-        <div className="bg-[#13223f] rounded-3xl shadow-2xl border border-white/10 overflow-hidden">
+        <div className="bg-[#041d23] rounded-3xl shadow-2xl border border-white/10 overflow-hidden">
           <div className="p-10 md:p-14">
             <Formik
               initialValues={{ fullName: user.fullName }}
@@ -129,7 +129,7 @@ export default function ProfilePage() {
                   {/* Avatar Section */}
                   <div className="flex flex-col items-center">
                     <div className="relative group">
-                      <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-orange-500 shadow-2xl bg-[#0a1428]">
+                      <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-[#0080e8] shadow-2xl bg-[#001446]">
                         <img
                           src={previewUrl}
                           alt="Avatar"
@@ -173,7 +173,7 @@ export default function ProfilePage() {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="absolute -bottom-3 -right-3 bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-2xl shadow-xl transition-all"
+                        className="absolute -bottom-3 -right-3 bg-[#0080e8] hover:bg-[#0080e8]/90 text-white p-3 rounded-2xl shadow-xl transition-all"
                       >
                         <svg
                           className="w-5 h-5"
@@ -205,7 +205,7 @@ export default function ProfilePage() {
                       </p>
                       <p className="text-sm text-zinc-400 mt-1">{user.email}</p>
                       {selectedFile && (
-                        <p className="text-xs text-orange-400 font-medium mt-3 bg-orange-500/10 px-4 py-1.5 rounded-full inline-block">
+                        <p className="text-xs text-[#0080e8] font-medium mt-3 bg-[#0080e8]/10 px-4 py-1.5 rounded-full inline-block">
                           ✓ {selectedFile.name}
                         </p>
                       )}
@@ -220,7 +220,7 @@ export default function ProfilePage() {
                       </label>
                       <Field
                         name="fullName"
-                        className="w-full bg-[#0a1428] border border-white/10 focus:border-orange-400 text-white px-6 py-4 rounded-2xl outline-none transition-all text-lg"
+                        className="w-full bg-[#001446] border border-white/10 focus:border-[#0080e8]/70 text-white px-6 py-4 rounded-2xl outline-none transition-all text-lg"
                         placeholder="Ad və Soyad"
                       />
                       <ErrorMessage
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                         type="email"
                         value={user.email}
                         readOnly
-                        className="w-full bg-[#0a1428] border border-white/10 text-zinc-400 px-6 py-4 rounded-2xl cursor-not-allowed"
+                        className="w-full bg-[#001446] border border-white/10 text-zinc-400 px-6 py-4 rounded-2xl cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -247,7 +247,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white font-bold py-5 rounded-2xl text-lg transition-all active:scale-[0.98] shadow-xl shadow-orange-500/30 flex items-center justify-center gap-3"
+                    className="w-full bg-[#0080e8] hover:bg-[#0080e8]/90 disabled:bg-[#0080e8]/70 text-white font-bold py-5 rounded-2xl text-lg transition-all active:scale-[0.98] shadow-xl shadow-[#0080e8]/30 flex items-center justify-center gap-3"
                   >
                     {isSubmitting ? (
                       <>

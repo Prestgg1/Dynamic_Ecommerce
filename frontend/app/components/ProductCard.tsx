@@ -61,7 +61,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
           {product.badge && (
-            <span className="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+            <span className="bg-[#0080e8] text-white text-xs font-bold px-2 py-0.5 rounded-full">
               {product.badge}
             </span>
           )}
@@ -100,7 +100,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Content */}
       <div className="p-3 flex flex-col flex-1">
         <Link to={`/products/${product.id}`}>
-          <h3 className="text-sm font-medium text-gray-800 line-clamp-2 hover:text-orange-600 transition-colors leading-snug mb-1">
+          <h3 className="text-sm font-medium text-gray-800 line-clamp-2 hover:text-[#0080e8] transition-colors leading-snug mb-1">
             {name}
           </h3>
         </Link>
@@ -108,7 +108,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Price + Cart */}
         <div className="mt-auto">
           <div className="flex items-baseline gap-2 mb-2">
-            <span className="text-base font-bold text-orange-600">
+            <span className="text-base font-bold text-[#0080e8]">
               {Number(product.price).toFixed(2)} AZN
             </span>
             {product.oldPrice && (
@@ -123,7 +123,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             disabled={!product.inStock}
             className={`w-full py-2 rounded-xl text-xs font-semibold transition-all ${
               product.inStock
-                ? "bg-orange-500 hover:bg-orange-600 text-white active:scale-95"
+                ? "bg-[#0080e8] hover:bg-[#0080e8]/90 text-white active:scale-95"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
           >
