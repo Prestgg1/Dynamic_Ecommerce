@@ -10,19 +10,27 @@ export class AdminSeedService implements OnApplicationBootstrap {
   constructor(private readonly usersService: UsersService) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    const existingAdmin = await this.usersService.findFirstAdmin();
-    if (existingAdmin) {
-      return;
-    }
-
-    const email = process.env.ADMIN_SEED_EMAIL ?? 'admin@metalx.az';
+    const email = (process.env.ADMIN_SEED_EMAIL ?? 'admin@metalx.az').trim();
+    const normalizedEmail = email.toLowerCase();
     const password = process.env.ADMIN_SEED_PASSWORD ?? 'Metalx123!';
     const fullName = process.env.ADMIN_SEED_NAME ?? 'Admin';
 
+    const existingAdmins = await this.usersService.findAdmins();
+    for (const admin of existingAdmins) {
+      if (admin.email.toLowerCase() !== normalizedEmail) {
+        await this.usersService.remove(admin.id);
+        this.logger.log(`Removed admin with mismatched email: ${admin.email}`);
+      }
+    }
+
     const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
-      await this.usersService.update(existingUser.id, { role: UserRole.ADMIN });
-      this.logger.log(`Promoted existing user to admin: ${email}`);
+      if (existingUser.role !== UserRole.ADMIN) {
+        await this.usersService.update(existingUser.id, {
+          role: UserRole.ADMIN,
+        });
+        this.logger.log(`Promoted existing user to admin: ${email}`);
+      }
       return;
     }
 

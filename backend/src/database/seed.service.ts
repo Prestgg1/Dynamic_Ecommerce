@@ -411,20 +411,39 @@ export class SeedService {
       }
     }
 
-    // Users
-    const testEmail = 'admin@demirmart.az';
-    const existingUser = await this.usersService.findByEmail(testEmail);
+    // Admin user
+    const adminEmail = (
+      process.env.ADMIN_SEED_EMAIL ?? 'admin@metalx.az'
+    ).trim();
+    const normalizedAdminEmail = adminEmail.toLowerCase();
+    const adminPassword = process.env.ADMIN_SEED_PASSWORD ?? 'password123';
+    const adminFullName = process.env.ADMIN_SEED_NAME ?? 'Admin';
+
+    const existingAdmins = await this.usersService.findAdmins();
+    for (const admin of existingAdmins) {
+      if (admin.email.toLowerCase() !== normalizedAdminEmail) {
+        await this.usersService.remove(admin.id);
+        this.logger.log(`Removed admin with mismatched email: ${admin.email}`);
+      }
+    }
+
+    const existingUser = await this.usersService.findByEmail(adminEmail);
     if (!existingUser) {
-      const hashedPassword = await bcrypt.hash('password123', 10);
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
       await this.usersService.create({
-        fullName: 'Admin',
-        email: testEmail,
+        fullName: adminFullName,
+        email: adminEmail,
         password: hashedPassword,
         role: UserRole.ADMIN,
         avatarUrl:
           'https://ui-avatars.com/api/?background=0080e8&color=fff&name=Test+User',
       });
-      this.logger.log(`Created test user: ${testEmail}`);
+      this.logger.log(`Created admin user: ${adminEmail}`);
+    } else if (existingUser.role !== UserRole.ADMIN) {
+      await this.usersService.update(existingUser.id, {
+        role: UserRole.ADMIN,
+      });
+      this.logger.log(`Promoted existing user to admin: ${adminEmail}`);
     }
 
     this.logger.log('Seeding completed.');

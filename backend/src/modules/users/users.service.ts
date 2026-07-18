@@ -18,8 +18,8 @@ export class UsersService {
     return this.userRepository.findOne({ where: { id } });
   }
 
-  async findFirstAdmin(): Promise<User | null> {
-    return this.userRepository.findOne({
+  async findAdmins(): Promise<User[]> {
+    return this.userRepository.find({
       where: { role: UserRole.ADMIN },
       order: { id: 'ASC' },
     });
@@ -39,5 +39,9 @@ export class UsersService {
   async update(id: number, params: Partial<User>): Promise<User | null> {
     await this.userRepository.update(id, params);
     return this.findById(id);
+  }
+
+  async remove(id: number): Promise<void> {
+    await this.userRepository.delete(id);
   }
 }
