@@ -15,8 +15,8 @@ export class AdminSeedService implements OnApplicationBootstrap {
       return;
     }
 
-    const email = process.env.ADMIN_SEED_EMAIL ?? 'admin@demirmart.az';
-    const password = process.env.ADMIN_SEED_PASSWORD ?? 'password123';
+    const email = process.env.ADMIN_SEED_EMAIL ?? 'admin@metalx.az';
+    const password = process.env.ADMIN_SEED_PASSWORD ?? 'Metalx123!';
     const fullName = process.env.ADMIN_SEED_NAME ?? 'Admin';
 
     const existingUser = await this.usersService.findByEmail(email);
