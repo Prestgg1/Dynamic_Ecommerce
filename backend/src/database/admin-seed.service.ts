@@ -24,17 +24,21 @@ export class AdminSeedService implements OnApplicationBootstrap {
     }
 
     const existingUser = await this.usersService.findByEmail(email);
+    const hashedPassword = await bcrypt.hash(password, 10);
     if (existingUser) {
+      await this.usersService.update(existingUser.id, {
+        fullName,
+        password: hashedPassword,
+        role: UserRole.ADMIN,
+      });
       if (existingUser.role !== UserRole.ADMIN) {
-        await this.usersService.update(existingUser.id, {
-          role: UserRole.ADMIN,
-        });
         this.logger.log(`Promoted existing user to admin: ${email}`);
+      } else {
+        this.logger.log(`Updated seeded admin credentials: ${email}`);
       }
       return;
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
     await this.usersService.create({
       fullName,
       email,

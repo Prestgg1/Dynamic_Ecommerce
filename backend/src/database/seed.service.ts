@@ -416,7 +416,7 @@ export class SeedService {
       process.env.ADMIN_SEED_EMAIL ?? 'admin@metalx.az'
     ).trim();
     const normalizedAdminEmail = adminEmail.toLowerCase();
-    const adminPassword = process.env.ADMIN_SEED_PASSWORD ?? 'password123';
+    const adminPassword = process.env.ADMIN_SEED_PASSWORD ?? 'Metalx123!';
     const adminFullName = process.env.ADMIN_SEED_NAME ?? 'Admin';
 
     const existingAdmins = await this.usersService.findAdmins();
@@ -428,8 +428,8 @@ export class SeedService {
     }
 
     const existingUser = await this.usersService.findByEmail(adminEmail);
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
     if (!existingUser) {
-      const hashedPassword = await bcrypt.hash(adminPassword, 10);
       await this.usersService.create({
         fullName: adminFullName,
         email: adminEmail,
@@ -439,11 +439,17 @@ export class SeedService {
           'https://ui-avatars.com/api/?background=0080e8&color=fff&name=Test+User',
       });
       this.logger.log(`Created admin user: ${adminEmail}`);
-    } else if (existingUser.role !== UserRole.ADMIN) {
+    } else {
       await this.usersService.update(existingUser.id, {
+        fullName: adminFullName,
+        password: hashedPassword,
         role: UserRole.ADMIN,
       });
-      this.logger.log(`Promoted existing user to admin: ${adminEmail}`);
+      if (existingUser.role !== UserRole.ADMIN) {
+        this.logger.log(`Promoted existing user to admin: ${adminEmail}`);
+      } else {
+        this.logger.log(`Updated seeded admin credentials: ${adminEmail}`);
+      }
     }
 
     this.logger.log('Seeding completed.');
