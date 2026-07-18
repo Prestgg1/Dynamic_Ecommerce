@@ -7,13 +7,18 @@ import type { TranslationKey } from "~/lib/translations";
 import { trpc } from "~/lib/trpc";
 import { useAuthStore } from "~/store/auth.store";
 import { useCartStore } from "~/store/cart.store";
-import { apiUrl, fetchSiteSettings, type SiteSettings } from "~/lib/site-settings";
+import {
+  apiUrl,
+  fetchSiteSettings,
+  type SiteSettings,
+} from "~/lib/site-settings";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const isAdmin = user?.role === "ADMIN";
   const { mutate: logoutServer } = trpc.useMutation("post", "/auth/logout");
   const { language, setLanguage, t } = useLanguage();
   const cartCount = useCartStore((s) =>
@@ -72,11 +77,13 @@ export default function Header() {
 
   const bannerText =
     siteSettings?.data.bannerText ??
-    ({
-      az: "Pulsuz çatdırılma - 50 AZN-dən yuxarı sifarişlərə!",
-      ru: "Бесплатная доставка при заказе от 50 AZN!",
-      en: "Free shipping on orders over 50 AZN!",
-    } as const)[language];
+    (
+      {
+        az: "Pulsuz çatdırılma - 50 AZN-dən yuxarı sifarişlərə!",
+        ru: "Бесплатная доставка при заказе от 50 AZN!",
+        en: "Free shipping on orders over 50 AZN!",
+      } as const
+    )[language];
 
   const brandName = siteSettings?.data.logoText ?? "MetalX";
   const brandSlogan = siteSettings?.data.logoSlogan ?? "Metal məhsullar";
@@ -146,8 +153,18 @@ export default function Header() {
                       {t("searchPlaceholder" as TranslationKey)}
                     </label>
                     <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      <svg
+                        className="h-5 w-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2.5}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
                       </svg>
                       <input
                         autoFocus
@@ -165,19 +182,21 @@ export default function Header() {
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {["tools", "hardware", "pipes", "fasteners"].map((category) => (
-                        <button
-                          key={category}
-                          type="button"
-                          onClick={() => {
-                            setSearchPopupOpen(false);
-                            navigate(`/search?category=${category}`);
-                          }}
-                          className="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-gray-300 transition-colors hover:border-[#0080e8] hover:text-[#0080e8]"
-                        >
-                          {category}
-                        </button>
-                      ))}
+                      {["tools", "hardware", "pipes", "fasteners"].map(
+                        (category) => (
+                          <button
+                            key={category}
+                            type="button"
+                            onClick={() => {
+                              setSearchPopupOpen(false);
+                              navigate(`/search?category=${category}`);
+                            }}
+                            className="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-gray-300 transition-colors hover:border-[#0080e8] hover:text-[#0080e8]"
+                          >
+                            {category}
+                          </button>
+                        ),
+                      )}
                     </div>
                   </form>
                 </div>
@@ -188,8 +207,18 @@ export default function Header() {
                 className="mt-0 rounded-xl border border-white/10 bg-white/5 p-2.5 transition-all hover:border-[#0080e8]/50 md:hidden"
                 aria-label="Search"
               >
-                <svg className="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="h-5 w-5 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </button>
             </div>
@@ -267,7 +296,12 @@ export default function Header() {
                 onClick={() => navigate("/cart")}
                 className="relative rounded-xl p-2.5 transition-all hover:bg-white/5"
               >
-                <svg className="h-5 w-5 text-gray-400 transition-all lg:h-6 lg:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="h-5 w-5 text-gray-400 transition-all lg:h-6 lg:w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -282,11 +316,23 @@ export default function Header() {
                 )}
               </button>
 
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="hidden items-center gap-2 rounded-xl border border-[#0080e8]/40 bg-[#0080e8]/15 px-3 py-2 text-xs font-black text-[#0080e8] transition-all hover:border-[#0080e8] hover:bg-[#0080e8] hover:text-white lg:inline-flex"
+                >
+                  <span>⚙</span>
+                  <span>Admin panel</span>
+                </Link>
+              )}
+
               <div ref={profileRef} className="relative hidden lg:block">
                 {user ? (
                   <>
                     <button
-                      onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                      onClick={() =>
+                        setProfileDropdownOpen(!profileDropdownOpen)
+                      }
                       className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 p-1.5 pr-3 transition-all duration-300 hover:border-[#0080e8]/50"
                     >
                       <div className="h-8 w-8 overflow-hidden rounded-full border-2 border-[#0080e8] shadow-lg shadow-[#0080e8]/20">
@@ -373,11 +419,26 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="rounded-xl border border-white/10 bg-white/5 p-2.5 transition-all hover:border-[#0080e8]/50 lg:hidden"
               >
-                <svg className="h-6 w-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="h-6 w-6 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   {mobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   )}
                 </svg>
               </button>
@@ -418,8 +479,18 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(false)}
               className="rounded-xl bg-white/5 p-2 text-gray-400 transition-all hover:text-white"
             >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -508,6 +579,16 @@ export default function Header() {
                     <span>👤</span>
                     <span>{t("profile")}</span>
                   </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 rounded-xl border border-[#0080e8]/30 bg-[#0080e8]/10 px-5 py-3 text-sm font-bold text-[#0080e8] transition-all hover:border-[#0080e8] hover:bg-[#0080e8] hover:text-white"
+                    >
+                      <span>⚙</span>
+                      <span>Admin panel</span>
+                    </Link>
+                  )}
                   <Link
                     to="/wishlist"
                     onClick={() => setMobileMenuOpen(false)}

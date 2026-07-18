@@ -1,6 +1,31 @@
-import { Outlet, NavLink } from "react-router";
+import { useEffect } from "react";
+import { Outlet, NavLink, useNavigate } from "react-router";
+import { useAuthStore } from "~/store/auth.store";
 
 export default function AdminLayout() {
+  const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
+  const hasCheckedAuth = useAuthStore((s) => s.hasCheckedAuth);
+  const isAdmin = user?.role === "ADMIN";
+
+  useEffect(() => {
+    if (hasCheckedAuth && !isAdmin) {
+      navigate("/", { replace: true });
+    }
+  }, [hasCheckedAuth, isAdmin, navigate]);
+
+  if (!hasCheckedAuth) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 text-sm font-semibold text-gray-500">
+        Yüklənir...
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -21,7 +46,10 @@ export default function AdminLayout() {
               to="/admin"
               end
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive
+                    ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -30,7 +58,10 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/categories"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive
+                    ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -39,7 +70,10 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/products"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive
+                    ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -48,7 +82,10 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/content"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive
+                    ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -57,7 +94,10 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/messages"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive
+                    ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
@@ -66,7 +106,10 @@ export default function AdminLayout() {
             <NavLink
               to="/admin/orders"
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]" : "text-gray-600 hover:bg-gray-50"
+                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive
+                    ? "bg-[#0080e8]/10 text-[#0080e8] border-r-2 border-[#0080e8]"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >

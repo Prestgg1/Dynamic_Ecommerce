@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import { loginSchema } from "~/schemas/auth";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
+import { apiUrl } from "~/lib/site-settings";
+import { useAuthStore } from "~/store/auth.store";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -19,6 +21,7 @@ export function meta({}: Route.MetaArgs) {
 export default function LoginPage() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const setUser = useAuthStore((s) => s.setUser);
   const [showPassword, setShowPassword] = useState(false);
 
   const { mutate: login, isPending } = trpc.useMutation("post", "/auth/login");
@@ -35,7 +38,17 @@ export default function LoginPage() {
           },
         },
         {
-          onSuccess: () => {
+          onSuccess: async () => {
+            try {
+              const response = await fetch(apiUrl("/auth/me"), {
+                credentials: "include",
+              });
+              if (response.ok) {
+                setUser(await response.json());
+              }
+            } catch {
+              // The session cookie is already set; the layout can refetch later.
+            }
             toast.success(
               t("loginSuccess" as TranslationKey) || "Uğurla daxil oldunuz!",
             );
