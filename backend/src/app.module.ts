@@ -9,13 +9,12 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { ProductsModule } from './modules/products/products.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ReviewsModule } from './modules/reviews/review.module';
 import { AdminSeedService } from './database/admin-seed.service';
 import { SiteContentModule } from './modules/site-content/site-content.module';
 import { ContactMessagesModule } from './modules/contact-messages/contact-messages.module';
+import { UploadsModule } from './modules/uploads/uploads.module';
 
 import { StatisticsModule } from './modules/statistics/statistics.module';
 
@@ -38,10 +37,7 @@ import { StatisticsModule } from './modules/statistics/statistics.module';
     StatisticsModule,
     SiteContentModule,
     ContactMessagesModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads',
-    }),
+    UploadsModule,
     ReviewsModule,
   ],
   controllers: [AppController],

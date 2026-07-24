@@ -8,8 +8,8 @@ import { trpc } from "~/lib/trpc";
 import { useAuthStore } from "~/store/auth.store";
 import { useCartStore } from "~/store/cart.store";
 import {
-  apiUrl,
   fetchSiteSettings,
+  mediaUrl,
   type SiteSettings,
 } from "~/lib/site-settings";
 
@@ -338,11 +338,7 @@ export default function Header() {
                       <div className="h-8 w-8 overflow-hidden rounded-full border-2 border-[#0080e8] shadow-lg shadow-[#0080e8]/20">
                         {user.avatarUrl ? (
                           <img
-                            src={
-                              user.avatarUrl.startsWith("http")
-                                ? user.avatarUrl
-                                : apiUrl(user.avatarUrl)
-                            }
+                            src={mediaUrl(user.avatarUrl)}
                             alt={user.fullName || "User"}
                             className="h-full w-full object-cover"
                           />
@@ -501,11 +497,7 @@ export default function Header() {
                 <div className="h-12 w-12 overflow-hidden rounded-full border-2 border-[#0080e8]">
                   {user.avatarUrl ? (
                     <img
-                      src={
-                        user.avatarUrl.startsWith("http")
-                          ? user.avatarUrl
-                          : apiUrl(user.avatarUrl)
-                      }
+                      src={mediaUrl(user.avatarUrl)}
                       alt={user.fullName || "User"}
                       className="h-full w-full object-cover"
                     />

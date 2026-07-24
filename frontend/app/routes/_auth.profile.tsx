@@ -7,8 +7,7 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import toast from "react-hot-toast";
 import { trpc } from "~/lib/trpc";
 import { useAuthStore } from "~/store/auth.store";
-
-const BACKEND_URL = "http://localhost:4000";
+import { mediaUrl } from "~/lib/site-settings";
 
 const profileSchema = zod.object({
   fullName: zod
@@ -20,9 +19,7 @@ function resolveAvatar(avatarUrl: string | undefined, name: string) {
   if (!avatarUrl) {
     return `https://ui-avatars.com/api/?background=0080e8&color=fff&name=${encodeURIComponent(name)}`;
   }
-  return avatarUrl.startsWith("http")
-    ? avatarUrl
-    : `${BACKEND_URL}${avatarUrl}`;
+  return mediaUrl(avatarUrl);
 }
 
 export default function ProfilePage() {

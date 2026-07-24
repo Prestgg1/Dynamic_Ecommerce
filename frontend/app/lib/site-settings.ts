@@ -31,7 +31,12 @@ export type SiteSettings = {
       heroSlides?: HeroSlide[];
       heroStats?: { value: string; label: string }[];
       capabilitiesTitle?: string;
-      capabilities?: { title: string; desc: string; image?: string; stat?: string }[];
+      capabilities?: {
+        title: string;
+        desc: string;
+        image?: string;
+        stat?: string;
+      }[];
       productsTitle?: string;
       products?: { title: string; desc: string; image: string }[];
       aboutTitle?: string;
@@ -52,9 +57,33 @@ export function apiUrl(path: string) {
   return `${BASE_URL}${path}`;
 }
 
+export function mediaUrl(path?: string | null) {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  return apiUrl(path.startsWith("/") ? path : `/${path}`);
+}
+
+export async function uploadImage(file: File, path = "/uploads/product") {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(apiUrl(path), {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || `Image upload failed: ${response.status}`);
+  }
+
+  return response.json() as Promise<{ url: string }>;
+}
+
 export async function fetchSiteSettings(): Promise<SiteSettings> {
-  const response = await fetch(apiUrl('/site-settings'), {
-    credentials: 'include',
+  const response = await fetch(apiUrl("/site-settings"), {
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -65,12 +94,12 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function saveSiteSettings(
-  data: Partial<SiteSettings['data']>,
+  data: Partial<SiteSettings["data"]>,
 ): Promise<SiteSettings> {
-  const response = await fetch(apiUrl('/site-settings'), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
+  const response = await fetch(apiUrl("/site-settings"), {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(data),
   });
 
@@ -87,10 +116,10 @@ export async function createContactMessage(input: {
   phone?: string;
   message: string;
 }) {
-  const response = await fetch(apiUrl('/contact-messages'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
+  const response = await fetch(apiUrl("/contact-messages"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(input),
   });
 
@@ -102,8 +131,8 @@ export async function createContactMessage(input: {
 }
 
 export async function fetchContactMessages() {
-  const response = await fetch(apiUrl('/contact-messages/admin'), {
-    credentials: 'include',
+  const response = await fetch(apiUrl("/contact-messages/admin"), {
+    credentials: "include",
   });
 
   if (!response.ok) {

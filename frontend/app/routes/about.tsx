@@ -2,14 +2,19 @@ import type { Route } from "./+types/about";
 import { useEffect, useState } from "react";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
-import { fetchSiteSettings, type SiteSettings } from "~/lib/site-settings";
+import {
+  fetchSiteSettings,
+  mediaUrl,
+  type SiteSettings,
+} from "~/lib/site-settings";
 
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Haqqımızda - MetalX" },
     {
       name: "description",
-      content: "MetalX haqqında məlumatlar ana səhifə ilə eyni məzmundan gəlir.",
+      content:
+        "MetalX haqqında məlumatlar ana səhifə ilə eyni məzmundan gəlir.",
     },
   ];
 }
@@ -38,8 +43,7 @@ export default function AboutPage() {
             {home?.aboutTitle ?? "Haqqımızda"}
           </h1>
           <p className="mx-auto max-w-2xl text-xl leading-relaxed text-zinc-300">
-            {home?.aboutDescription ??
-              t("aboutDescription" as TranslationKey)}
+            {home?.aboutDescription ?? t("aboutDescription" as TranslationKey)}
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#001446] to-transparent" />
@@ -49,7 +53,10 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div className="overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
             <img
-              src={home?.aboutImage ?? "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg"}
+              src={mediaUrl(
+                home?.aboutImage ??
+                  "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg",
+              )}
               alt={home?.aboutTitle ?? "Haqqımızda"}
               className="h-full w-full object-cover"
             />

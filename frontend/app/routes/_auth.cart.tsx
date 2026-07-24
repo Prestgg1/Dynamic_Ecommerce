@@ -4,8 +4,7 @@ import toast from "react-hot-toast";
 import { useCartStore } from "~/store/cart.store";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
-import { fetchSiteSettings } from "~/lib/site-settings";
-import { apiUrl } from "~/lib/site-settings";
+import { fetchSiteSettings, mediaUrl } from "~/lib/site-settings";
 import { useEffect, useState } from "react";
 
 export function meta({}: Route.MetaArgs) {
@@ -21,12 +20,16 @@ export function meta({}: Route.MetaArgs) {
 const generateWhatsAppMessage = (
   items: any[],
   total: number,
-  language: string
+  language: string,
 ): string => {
   const itemsText = items
     .map((item) => {
       const name =
-        language === "az" ? item.name : language === "ru" ? item.nameRu : item.nameEn;
+        language === "az"
+          ? item.name
+          : language === "ru"
+            ? item.nameRu
+            : item.nameEn;
       return `• ${name}\n  ${item.quantity}x ${item.price} AZN = ${(item.price * item.quantity).toFixed(2)} AZN`;
     })
     .join("\n\n");
@@ -71,8 +74,7 @@ export default function CartPage() {
   const subtotal = getTotalPrice();
   const shipping = subtotal > 500 || subtotal === 0 ? 0 : 10;
   const total = subtotal + shipping;
-  const resolveImage = (src: string) =>
-    src ? (src.startsWith("http") ? src : apiUrl(src)) : "";
+  const resolveImage = (src: string) => mediaUrl(src);
 
   /**
    * Handle WhatsApp checkout
@@ -88,7 +90,7 @@ export default function CartPage() {
 
     clearCart();
     toast.success(
-      t("messageSentSuccess" as TranslationKey) || "Order sent to WhatsApp!"
+      t("messageSentSuccess" as TranslationKey) || "Order sent to WhatsApp!",
     );
   };
 
@@ -177,9 +179,7 @@ export default function CartPage() {
                   {/* Quantity Controls */}
                   <div className="flex items-center gap-4">
                     <button
-                      onClick={() =>
-                        updateQuantity(item.id, item.quantity - 1)
-                      }
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       disabled={item.quantity <= 1}
                       className="rounded px-3 py-1 hover:bg-[#001446] disabled:opacity-50"
                     >
@@ -189,9 +189,7 @@ export default function CartPage() {
                     <span className="w-8 text-center">{item.quantity}</span>
 
                     <button
-                      onClick={() =>
-                        updateQuantity(item.id, item.quantity + 1)
-                      }
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="rounded px-3 py-1 hover:bg-[#001446]"
                     >
                       +
@@ -241,9 +239,7 @@ export default function CartPage() {
               {/* Total Amount */}
               <div className="mb-8 flex justify-between border-t border-white/10 py-4 text-xl font-bold">
                 <span>{t("total" as TranslationKey)}</span>
-                <span className="text-[#0080e8]">
-                  {total.toFixed(2)} AZN
-                </span>
+                <span className="text-[#0080e8]">{total.toFixed(2)} AZN</span>
               </div>
 
               {/* WhatsApp Checkout Button */}

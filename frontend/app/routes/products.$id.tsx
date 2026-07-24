@@ -5,7 +5,7 @@ import { useLanguage } from "~/context/LanguageContext";
 import { trpc } from "~/lib/trpc";
 import toast from "react-hot-toast";
 import { useCartStore } from "~/store/cart.store";
-import { apiUrl } from "~/lib/site-settings";
+import { mediaUrl } from "~/lib/site-settings";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -36,10 +36,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
     return Array.from(new Set(ordered));
   }, [product]);
 
-  const resolvedImages = useMemo(
-    () => images.map((img) => (img.startsWith("http") ? img : apiUrl(img))),
-    [images],
-  );
+  const resolvedImages = useMemo(() => images.map(mediaUrl), [images]);
 
   useEffect(() => {
     if (!resolvedImages.length) {
@@ -84,9 +81,7 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
         ? product.descriptionRu
         : product.descriptionEn;
 
-  const currentImage =
-    selectedImage ??
-    (product.image.startsWith("http") ? product.image : apiUrl(product.image));
+  const currentImage = selectedImage ?? mediaUrl(product.image);
 
   const handleAddToCart = () => {
     addItem(product as any, quantity);

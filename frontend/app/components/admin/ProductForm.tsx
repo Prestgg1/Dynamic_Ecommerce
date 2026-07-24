@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import { trpc } from "~/lib/trpc";
 import toast from "react-hot-toast";
-import { apiUrl } from "~/lib/site-settings";
+import { mediaUrl, uploadImage } from "~/lib/site-settings";
 
 interface ProductFormProps {
   product?: any;
@@ -24,7 +24,7 @@ type ProductFormState = {
   category: string;
   image: string;
   imagePreview: string | null;
-  galleryImages: string;
+  galleryImages: string[];
   inStock: boolean;
 };
 
@@ -49,41 +49,94 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
     imagePreview: product?.image
       ? product.image.startsWith("http")
         ? product.image
-        : apiUrl(product.image)
+        : mediaUrl(product.image)
       : null,
-    galleryImages: Array.isArray(product?.images)
-      ? product.images.join("\n")
-      : "",
+    galleryImages: Array.isArray(product?.images) ? product.images : [],
     inStock: product?.inStock !== false,
   });
+  const [uploadingCount, setUploadingCount] = useState(0);
 
   const { mutate: create } = (trpc as any).useMutation("post", "/products");
   const { mutate: update } = trpc.useMutation("put", "/products/{id}");
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () =>
-        setForm((prev) => ({
-          ...prev,
-          imagePreview: reader.result as string,
-          image: file.name,
-        }));
-      reader.readAsDataURL(file);
+  const isUploading = uploadingCount > 0;
+
+  const runUpload = async <T,>(task: () => Promise<T>) => {
+    setUploadingCount((count) => count + 1);
+    try {
+      return await task();
+    } finally {
+      setUploadingCount((count) => Math.max(0, count - 1));
     }
   };
 
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    const previousPreview = form.imagePreview;
+    const previewUrl = URL.createObjectURL(file);
+    setForm((prev) => ({ ...prev, imagePreview: previewUrl }));
+
+    try {
+      const { url } = await runUpload(() => uploadImage(file));
+      setForm((prev) => ({
+        ...prev,
+        image: url,
+        imagePreview: mediaUrl(url),
+      }));
+      toast.success("Main image uploaded");
+    } catch (error) {
+      setForm((prev) => ({ ...prev, imagePreview: previousPreview }));
+      toast.error(
+        error instanceof Error ? error.message : "Image upload failed",
+      );
+    } finally {
+      URL.revokeObjectURL(previewUrl);
+    }
+  };
+
+  const handleGallerySelect = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (!files.length) return;
+
+    try {
+      const uploaded = await runUpload(async () => {
+        const results = await Promise.all(
+          files.map((file) => uploadImage(file)),
+        );
+        return results.map((result) => result.url);
+      });
+
+      setForm((prev) => ({
+        ...prev,
+        galleryImages: [...prev.galleryImages, ...uploaded],
+      }));
+      toast.success("Gallery images uploaded");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Gallery upload failed",
+      );
+    }
+  };
+
+  const removeGalleryImage = (image: string) => {
+    setForm((prev) => ({
+      ...prev,
+      galleryImages: prev.galleryImages.filter((item) => item !== image),
+    }));
+  };
+
   const handleSubmit = () => {
-    if (!form.name || !form.price || !form.category) {
+    if (!form.name || !form.price || !form.category || !form.image) {
       toast.error("Please fill required fields");
       return;
     }
 
-    const orderedImages = form.galleryImages
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean);
     const payload = {
       name: form.name,
       nameRu: form.nameRu,
@@ -97,7 +150,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
       price: Number(form.price),
       oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined,
       rating: form.rating ? Number(form.rating) : undefined,
-      images: orderedImages,
+      images: form.galleryImages,
     };
     const action = isNew ? create : update;
     const config = isNew
@@ -137,7 +190,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           <div className="flex gap-4">
             <div
               className="w-32 h-32 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden cursor-pointer bg-gray-50"
-              onClick={() => fileRef.current?.click()}
+              onClick={() => !isUploading && fileRef.current?.click()}
             >
               {form.imagePreview ? (
                 <img
@@ -250,17 +303,42 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
 
           <div>
             <label className="block text-sm font-medium mb-2">
-              Gallery images, one per line, in display order
+              Gallery images
             </label>
-            <textarea
-              rows={5}
-              value={form.galleryImages}
-              onChange={(e) =>
-                setForm({ ...form, galleryImages: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-lg"
-              placeholder="https://...\n/uploads/..."
-            />
+            <label className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-sm font-medium text-gray-600 hover:border-[#0080e8] hover:text-[#0080e8]">
+              Upload gallery images
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleGallerySelect}
+                disabled={isUploading}
+                className="hidden"
+              />
+            </label>
+            {form.galleryImages.length > 0 && (
+              <div className="mt-3 grid grid-cols-4 gap-3">
+                {form.galleryImages.map((image) => (
+                  <div
+                    key={image}
+                    className="group relative aspect-square overflow-hidden rounded-lg border bg-gray-100"
+                  >
+                    <img
+                      src={mediaUrl(image)}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(image)}
+                      className="absolute right-1 top-1 rounded bg-red-500 px-2 py-1 text-xs font-bold text-white opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Checkbox */}
@@ -284,9 +362,10 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-[#0080e8] text-white rounded-lg hover:bg-[#0080e8]/90"
+            disabled={isUploading}
+            className="px-4 py-2 bg-[#0080e8] text-white rounded-lg hover:bg-[#0080e8]/90 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isNew ? "Create" : "Update"}
+            {isUploading ? "Uploading..." : isNew ? "Create" : "Update"}
           </button>
         </div>
       </div>

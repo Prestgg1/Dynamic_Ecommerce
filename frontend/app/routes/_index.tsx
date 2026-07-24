@@ -4,14 +4,20 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useLanguage } from "~/context/LanguageContext";
 import type { TranslationKey } from "~/lib/translations";
-import { fetchSiteSettings, type SiteSettings } from "~/lib/site-settings";
+import {
+  fetchSiteSettings,
+  mediaUrl,
+  type SiteSettings,
+} from "~/lib/site-settings";
 
 export default function Home() {
   const { t } = useLanguage();
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const [displaySlideIndex, setDisplaySlideIndex] = useState(0);
-  const [transitionSlideIndex, setTransitionSlideIndex] = useState<number | null>(null);
+  const [transitionSlideIndex, setTransitionSlideIndex] = useState<
+    number | null
+  >(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
@@ -65,9 +71,11 @@ export default function Home() {
     title: t("heroMainTitle" as TranslationKey),
     subtitle: t("heroMainSubtitle" as TranslationKey),
     description: t("heroDescription" as TranslationKey),
-    image: "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
+    image:
+      "https://images.pexels.com/photos/27382493/pexels-photo-27382493.jpeg",
   };
-  const nextSlide = transitionSlideIndex != null ? slides[transitionSlideIndex] : null;
+  const nextSlide =
+    transitionSlideIndex != null ? slides[transitionSlideIndex] : null;
 
   const capabilities = home?.capabilities ?? [];
   const products = home?.products ?? [];
@@ -79,7 +87,7 @@ export default function Home() {
       <section className="relative min-h-screen overflow-hidden pt-16">
         <div className="absolute inset-0">
           <img
-            src={currentSlide.image}
+            src={mediaUrl(currentSlide.image)}
             alt={currentSlide.title}
             className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out motion-reduce:transition-none ${
               isTransitioning ? "opacity-0 scale-105" : "opacity-100 scale-100"
@@ -87,10 +95,12 @@ export default function Home() {
           />
           {nextSlide && (
             <img
-              src={nextSlide.image}
+              src={mediaUrl(nextSlide.image)}
               alt={nextSlide.title}
               className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out motion-reduce:transition-none ${
-                isTransitioning ? "opacity-100 scale-100" : "opacity-0 scale-105"
+                isTransitioning
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-105"
               }`}
             />
           )}
@@ -101,19 +111,24 @@ export default function Home() {
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 lg:min-h-screen lg:grid-cols-2">
           <div className="space-y-8 transition-all duration-700 ease-out motion-reduce:transition-none">
             <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm tracking-[2px] backdrop-blur">
-              ⚒️ {home?.heroEstablished ?? "TƏSIS EDILDI 2010 • BAKI, AZƏRBAYCAN"}
+              ⚒️{" "}
+              {home?.heroEstablished ?? "TƏSIS EDILDI 2010 • BAKI, AZƏRBAYCAN"}
             </div>
 
             <div className="relative min-h-[13rem]">
               <div
                 className={`space-y-4 transition-all duration-700 ease-out motion-reduce:transition-none ${
-                  isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+                  isTransitioning
+                    ? "opacity-0 translate-y-4"
+                    : "opacity-100 translate-y-0"
                 }`}
               >
                 <h1 className="text-5xl font-bold leading-none tracking-tighter md:text-7xl">
                   {currentSlide.title}
                   <br />
-                  <span className="text-[#0080e8]">{currentSlide.subtitle}</span>
+                  <span className="text-[#0080e8]">
+                    {currentSlide.subtitle}
+                  </span>
                 </h1>
                 <p className="max-w-xl text-lg leading-relaxed text-zinc-300 md:text-xl">
                   {currentSlide.description}
@@ -122,7 +137,9 @@ export default function Home() {
               {nextSlide && (
                 <div
                   className={`pointer-events-none absolute inset-0 space-y-4 transition-all duration-700 ease-out motion-reduce:transition-none ${
-                    isTransitioning ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                    isTransitioning
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-4"
                   }`}
                   aria-hidden="true"
                 >
@@ -178,7 +195,9 @@ export default function Home() {
                 <div className="relative mt-2 min-h-16">
                   <p
                     className={`absolute inset-0 text-xl font-bold transition-all duration-700 ease-out motion-reduce:transition-none ${
-                      isTransitioning ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+                      isTransitioning
+                        ? "opacity-0 translate-y-2"
+                        : "opacity-100 translate-y-0"
                     }`}
                   >
                     {currentSlide.title}
@@ -186,7 +205,9 @@ export default function Home() {
                   {nextSlide && (
                     <p
                       className={`absolute inset-0 text-xl font-bold transition-all duration-700 ease-out motion-reduce:transition-none ${
-                        isTransitioning ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+                        isTransitioning
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 translate-y-2"
                       }`}
                     >
                       {nextSlide.title}
@@ -196,7 +217,9 @@ export default function Home() {
                 <div className="relative mt-1 min-h-10">
                   <p
                     className={`absolute inset-0 text-sm text-zinc-300 transition-all duration-700 ease-out motion-reduce:transition-none ${
-                      isTransitioning ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+                      isTransitioning
+                        ? "opacity-0 translate-y-2"
+                        : "opacity-100 translate-y-0"
                     }`}
                   >
                     {currentSlide.description}
@@ -204,7 +227,9 @@ export default function Home() {
                   {nextSlide && (
                     <p
                       className={`absolute inset-0 text-sm text-zinc-300 transition-all duration-700 ease-out motion-reduce:transition-none ${
-                        isTransitioning ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+                        isTransitioning
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 translate-y-2"
                       }`}
                     >
                       {nextSlide.description}
@@ -254,7 +279,10 @@ export default function Home() {
 
           <div className="overflow-hidden rounded-[2rem] border border-white/10">
             <img
-              src={home?.aboutImage ?? "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg"}
+              src={mediaUrl(
+                home?.aboutImage ??
+                  "https://images.pexels.com/photos/6804258/pexels-photo-6804258.jpeg",
+              )}
               alt={home?.aboutTitle ?? "Haqqımızda"}
               className="h-full w-full object-cover"
             />
@@ -289,10 +317,10 @@ export default function Home() {
                 >
                   <div className="relative overflow-hidden bg-gray-50">
                     <img
-                      src={
+                      src={mediaUrl(
                         cap.image ??
-                        "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&q=80"
-                      }
+                          "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=900&q=80",
+                      )}
                       alt={cap.title}
                       className="h-64 w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -344,7 +372,7 @@ export default function Home() {
                 className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#041d23] shadow-xl"
               >
                 <img
-                  src={product.image}
+                  src={mediaUrl(product.image)}
                   alt={product.title}
                   className="h-64 w-full object-cover"
                 />
@@ -363,7 +391,10 @@ export default function Home() {
       <section
         className="relative overflow-hidden bg-cover bg-center py-24"
         style={{
-          backgroundImage: `url('${home?.contactBackgroundImage ?? "https://images.pexels.com/photos/8728388/pexels-photo-8728388.jpeg"}')`,
+          backgroundImage: `url('${mediaUrl(
+            home?.contactBackgroundImage ??
+              "https://images.pexels.com/photos/8728388/pexels-photo-8728388.jpeg",
+          )}')`,
         }}
       >
         <div className="absolute inset-0 bg-[#001446]/80" />

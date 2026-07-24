@@ -3,6 +3,7 @@ import { trpc } from "~/lib/trpc";
 import toast from "react-hot-toast";
 import { ProductForm } from "~/components/admin/ProductForm";
 import { DeleteConfirmModal } from "~/components/admin/DeleteConfirmModal";
+import { mediaUrl } from "~/lib/site-settings";
 
 export default function ProductsPage() {
   const [showForm, setShowForm] = useState(false);
@@ -42,6 +43,7 @@ export default function ProductsPage() {
   const handleSuccessForm = () => {
     refetch();
     handleCloseForm();
+    window.location.reload();
   };
 
   const handleDelete = () => {
@@ -61,8 +63,7 @@ export default function ProductsPage() {
 
   const getImageUrl = (image: string) => {
     if (!image) return "https://via.placeholder.com/48?text=No+Image";
-    if (image.includes("unsplash")) return image;
-    return `http://localhost:4000${image}`;
+    return mediaUrl(image);
   };
 
   return (

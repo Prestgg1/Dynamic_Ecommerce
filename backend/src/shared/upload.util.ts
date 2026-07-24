@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
-import { mkdir, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { randomUUID } from 'crypto';
+import { getObject, uploadObject } from './minio.util';
 
 const IMAGE_SIGNATURES = {
   'image/jpeg': {
@@ -50,13 +50,24 @@ export async function persistUploadedImage(
   options: { prefix: string },
 ) {
   const extension = assertSafeImage(file);
-  const fileName = `${options.prefix}-${Date.now()}-${Math.round(
-    Math.random() * 1e9,
-  )}${extension}`;
-  const uploadDir = join(process.cwd(), 'uploads');
+  const fileName = `${options.prefix}-${Date.now()}-${randomUUID()}${extension}`;
 
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(join(uploadDir, fileName), file.buffer);
+  await uploadObject(fileName, file.buffer, file.mimetype);
 
   return `/uploads/${fileName}`;
+}
+
+export async function getUploadedImage(fileName: string) {
+  const safeName = fileName.trim();
+
+  if (
+    !safeName ||
+    safeName.includes('/') ||
+    safeName.includes('\\') ||
+    safeName.includes('..')
+  ) {
+    throw new BadRequestException('Invalid image path');
+  }
+
+  return getObject(safeName);
 }

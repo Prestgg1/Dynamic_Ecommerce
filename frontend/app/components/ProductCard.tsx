@@ -4,7 +4,7 @@ import { useLanguage } from "~/context/LanguageContext";
 import { useWishlist } from "~/hooks/useWishlist";
 import { useCartStore } from "~/store/cart.store";
 import toast from "react-hot-toast";
-import { apiUrl } from "~/lib/site-settings";
+import { mediaUrl } from "~/lib/site-settings";
 
 interface ProductCardProps {
   product: Product;
@@ -19,17 +19,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     language === "az"
       ? product.name
       : language === "ru"
-      ? product.nameRu
-      : product.nameEn;
+        ? product.nameRu
+        : product.nameEn;
 
   const discount = product.oldPrice
     ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
     : null;
-  const imageSrc = product.image
-    ? product.image.startsWith("http")
-      ? product.image
-      : apiUrl(product.image)
-    : "";
+  const imageSrc = mediaUrl(product.image);
 
   // TODO: Backend inteqrasiyasından sonra doldurul
   const handleAddToCart = () => {
@@ -75,7 +71,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             toggle();
           }}
           className="absolute top-2 right-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-all z-10"
-          aria-label={isInWishlist ? "Sevilənlərdən çıxar" : "Sevilənlərə əlavə et"}
+          aria-label={
+            isInWishlist ? "Sevilənlərdən çıxar" : "Sevilənlərə əlavə et"
+          }
         >
           <svg
             className={`w-4 h-4 transition-colors ${

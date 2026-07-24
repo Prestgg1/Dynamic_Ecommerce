@@ -5,7 +5,7 @@ import { useDebounce } from "~/hooks/useDebounce";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import type { components } from "~/lib/types";
-import { apiUrl } from "~/lib/site-settings";
+import { mediaUrl } from "~/lib/site-settings";
 
 type Product = components["schemas"]["Product"];
 type WishlistItem = components["schemas"]["Wishlist"];
@@ -135,11 +135,7 @@ export default function WishlistPage() {
                       100,
                   )
                 : null;
-              const imageSrc = product.image
-                ? product.image.startsWith("http")
-                  ? product.image
-                  : apiUrl(product.image)
-                : "";
+              const imageSrc = mediaUrl(product.image);
 
               return (
                 <div
