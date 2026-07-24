@@ -40,9 +40,9 @@ export default function ProductsPage() {
     setSelectedProduct(null);
   };
 
-  const handleSuccessForm = () => {
-    refetch();
+  const handleSuccessForm = async () => {
     handleCloseForm();
+    await refetch();
     window.location.reload();
   };
 

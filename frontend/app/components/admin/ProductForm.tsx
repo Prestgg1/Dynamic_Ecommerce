@@ -156,21 +156,19 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
     const config = isNew
       ? {
           body: payload,
-          onSuccess: () => {
-            toast.success("Product created");
-            onSuccess();
-          },
         }
       : {
           params: { path: { id: form.id.toString() } },
           body: payload,
-          onSuccess: () => {
-            toast.success("Product updated");
-            onSuccess();
-          },
         };
 
-    action(config as any, { onError: () => toast.error("Failed to save") });
+    action(config as any, {
+      onSuccess: () => {
+        toast.success(isNew ? "Product created" : "Product updated");
+        onSuccess();
+      },
+      onError: () => toast.error("Failed to save"),
+    });
   };
 
   return (
