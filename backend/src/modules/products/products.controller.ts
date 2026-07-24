@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -68,6 +69,7 @@ export class ProductsController {
     return this.productsService.findOne(+id, req.user?.id);
   }
   @Put(':id')
+  @Patch(':id')
   @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Update product (Admin only)' })
   @ApiResponse({ status: 200, type: Product })

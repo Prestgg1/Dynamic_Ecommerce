@@ -20,9 +20,13 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
 
-  const { data: product, isLoading: productLoading } = trpc.useQuery("get", "/products/{id}", {
-    params: { path: { id: id as never } },
-  });
+  const { data: product, isLoading: productLoading } = trpc.useQuery(
+    "get",
+    "/products/{id}",
+    {
+      params: { path: { id: id as never } },
+    },
+  );
 
   const addItem = useCartStore((s) => s.addItem);
 
@@ -68,13 +72,17 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
   }
 
   const name =
-    language === "az" ? product.name : language === "ru" ? product.nameRu : product.nameEn;
+    language === "az"
+      ? product.name
+      : language === "ru"
+        ? product.nameRu
+        : product.nameEn;
   const description =
     language === "az"
       ? product.description
       : language === "ru"
-      ? product.descriptionRu
-      : product.descriptionEn;
+        ? product.descriptionRu
+        : product.descriptionEn;
 
   const currentImage =
     selectedImage ??
@@ -92,18 +100,23 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
       <div className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-3">
           <nav className="flex items-center gap-2 text-sm text-gray-500">
-            <Link to="/" className="font-semibold transition-colors hover:text-[#0080e8]">
+            <Link
+              to="/"
+              className="font-semibold transition-colors hover:text-[#0080e8]"
+            >
               {t("home")}
             </Link>
             <span>›</span>
             <Link
-              to={`/search?category=${product.categoryId || product.category?.slug || ""}`}
+              to={`/search?category=${product.category?.id || ""}`}
               className="font-semibold capitalize transition-colors hover:text-[#0080e8]"
             >
               {product.category?.name || "Kategoriya"}
             </Link>
             <span>›</span>
-            <span className="max-w-xs truncate font-bold text-gray-800">{name}</span>
+            <span className="max-w-xs truncate font-bold text-gray-800">
+              {name}
+            </span>
           </nav>
         </div>
       </div>
@@ -131,7 +144,11 @@ export default function ProductDetailPage({ params }: Route.ComponentProps) {
                         : "border-transparent hover:border-gray-200"
                     }`}
                   >
-                    <img src={img} alt="" className="h-20 w-full object-contain" />
+                    <img
+                      src={img}
+                      alt=""
+                      className="h-20 w-full object-contain"
+                    />
                   </button>
                 ))}
               </div>

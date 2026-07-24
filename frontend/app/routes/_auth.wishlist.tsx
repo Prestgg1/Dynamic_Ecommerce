@@ -1,4 +1,4 @@
-import type { Route } from "./+types/wishlist";
+import type { Route } from "./+types/_auth.wishlist";
 import { Link, useNavigate } from "react-router";
 import { trpc } from "~/lib/trpc";
 import { useDebounce } from "~/hooks/useDebounce";
@@ -19,9 +19,13 @@ export function meta({}: Route.MetaArgs) {
 
 export default function WishlistPage() {
   const navigate = useNavigate();
-  
-  const { data: wishlistItems, refetch: refetchWishlist, isLoading: wishlistLoading } = trpc.useQuery("get", "/wishlist");
-  
+
+  const {
+    data: wishlistItems,
+    refetch: refetchWishlist,
+    isLoading: wishlistLoading,
+  } = trpc.useQuery("get", "/wishlist");
+
   const addMutation = trpc.useMutation("post", "/wishlist/{productId}");
   const removeMutation = trpc.useMutation("delete", "/wishlist/{productId}");
 
@@ -33,25 +37,38 @@ export default function WishlistPage() {
     }
   }, [wishlistItems]);
 
-  const updateFavoriteApi = useDebounce(async (id: number, favorited: boolean) => {
-    try {
-      if (favorited) {
-        await addMutation.mutateAsync({ params: { path: { productId: id } } });
-      } else {
-        await removeMutation.mutateAsync({ params: { path: { productId: id } } });
+  const updateFavoriteApi = useDebounce(
+    async (id: number, favorited: boolean) => {
+      try {
+        if (favorited) {
+          await addMutation.mutateAsync({
+            params: { path: { productId: id } },
+          });
+        } else {
+          await removeMutation.mutateAsync({
+            params: { path: { productId: id } },
+          });
+        }
+        toast.success(
+          favorited
+            ? "Məhsul sevilənlərə əlavə olundu"
+            : "Məhsul sevilənlərdən çıxarıldı",
+        );
+        refetchWishlist();
+      } catch {
+        toast.error("Bir xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
+        refetchWishlist();
       }
-      toast.success(favorited ? "Məhsul sevilənlərə əlavə olundu" : "Məhsul sevilənlərdən çıxarıldı");
-      refetchWishlist();
-    } catch {
-      toast.error("Bir xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
-      refetchWishlist();
-    }
-  }, 1000);
+    },
+    1000,
+  );
 
   const toggleWishlist = (productId: number, currentlyFavorited: boolean) => {
     // Optimistic UI update
     if (currentlyFavorited) {
-      setLocalWishlist((prev) => prev.filter((item) => item.product.id !== productId));
+      setLocalWishlist((prev) =>
+        prev.filter((item) => item.product.id !== productId),
+      );
     }
     updateFavoriteApi(productId, !currentlyFavorited);
   };
@@ -81,11 +98,23 @@ export default function WishlistPage() {
         {_localWishlist.length === 0 ? (
           <div className="bg-[#041d23] rounded-3xl p-20 text-center border border-white/10">
             <div className="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-red-500/20">
-              <svg className="w-14 h-14 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              <svg
+                className="w-14 h-14 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold mb-4">Sevilənlər siyahısı boşdur</h2>
+            <h2 className="text-3xl font-bold mb-4">
+              Sevilənlər siyahısı boşdur
+            </h2>
             <p className="text-zinc-400 mb-10 max-w-md mx-auto">
               Bəyəndiyiniz məhsulları bura əlavə edə bilərsiniz
             </p>
@@ -101,7 +130,10 @@ export default function WishlistPage() {
             {_localWishlist.map((item) => {
               const product = item.product as Product;
               const discount = product.oldPrice
-                ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+                ? Math.round(
+                    ((product.oldPrice - product.price) / product.oldPrice) *
+                      100,
+                  )
                 : null;
               const imageSrc = product.image
                 ? product.image.startsWith("http")
@@ -118,11 +150,14 @@ export default function WishlistPage() {
                   <div className="relative aspect-square overflow-hidden bg-[#001446]">
                     <Link to={`/products/${product.id}`}>
                       <img
-                        src={imageSrc || "https://picsum.photos/id/1015/600/600"}
+                        src={
+                          imageSrc || "https://picsum.photos/id/1015/600/600"
+                        }
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={(e) => {
-                          e.currentTarget.src = "https://picsum.photos/id/1015/600/600";
+                          e.currentTarget.src =
+                            "https://picsum.photos/id/1015/600/600";
                         }}
                       />
                     </Link>
@@ -139,7 +174,10 @@ export default function WishlistPage() {
                       onClick={() => toggleWishlist(product.id, true)}
                       className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 transition-all"
                     >
-                      <svg className="w-5 h-5 text-red-500 fill-red-500" viewBox="0 0 24 24">
+                      <svg
+                        className="w-5 h-5 text-red-500 fill-red-500"
+                        viewBox="0 0 24 24"
+                      >
                         <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                       </svg>
                     </button>
@@ -166,7 +204,7 @@ export default function WishlistPage() {
                       </div>
 
                       <button
-                        onClick={() => product.inStock }
+                        onClick={() => product.inStock}
                         disabled={!product.inStock}
                         className={`w-full py-3.5 rounded-2xl font-semibold text-sm transition-all ${
                           product.inStock
